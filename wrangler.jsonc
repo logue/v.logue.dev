@@ -1,14 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "portfolio",
+  "name": "v-logue-dev",
   "pages_build_output_dir": "dist",
   "compatibility_date": "2026-03-24",
   "observability": {
     "enabled": true
-  },
-  "main": "src/main.ts",
-  "assets": {
-    "directory": "./dist"
   },
   "kv_namespaces": [
     {
