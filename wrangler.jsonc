@@ -6,6 +6,10 @@
   "observability": {
     "enabled": true
   },
+  "main": "src/index.ts",
+  "assets": {
+    "directory": "./dist"
+  },
   "kv_namespaces": [
     {
       "binding": "TOKEN_STORE",
