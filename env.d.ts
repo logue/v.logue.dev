@@ -2,8 +2,8 @@
 /// <reference types="@cloudflare/workers-types" />
 
 interface ImportMetaEnv {
-  /** Vroid hubのクライアントID (必須) */
-  VROID_CLIENT_ID: string;
+  /** Vroid hubのアプリケーションID (必須) */
+  VROID_APP_ID: string;
   /** Vroid hubのクライアントシークレット (必須) */
   VROID_CLIENT_SECRET: string;
   /** VRoid Hubのリフレッシュトークン (必須) */

@@ -1,5 +1,5 @@
 interface Env {
-  VROID_CLIENT_ID: string;
+  VROID_APP_ID: string;
 }
 
 /** crypto.subtle で SHA-256 を計算して Base64URL エンコードする */
@@ -50,7 +50,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
    * ただし、リフレッシュトークンの安全な保管のため、アクセストークンの取得とリフレッシュはサーバー側で行う。
    */
   const params = new URLSearchParams({
-    client_id: env.VROID_CLIENT_ID,
+    client_id: env.VROID_APP_ID,
     redirect_uri: redirectUri,
     response_type: 'code',
     scope: 'default',

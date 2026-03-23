@@ -1,5 +1,5 @@
 interface Env {
-  VROID_CLIENT_ID: string;
+  VROID_APP_ID: string;
   VROID_CLIENT_SECRET: string;
   TOKEN_STORE?: KVNamespace;
 }
@@ -72,7 +72,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
     },
     body: new URLSearchParams({
       grant_type: 'authorization_code',
-      client_id: env.VROID_CLIENT_ID,
+      client_id: env.VROID_APP_ID,
       client_secret: env.VROID_CLIENT_SECRET,
       code,
       redirect_uri: redirectUri,

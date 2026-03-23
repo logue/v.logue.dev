@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface Env {
-  VROID_CLIENT_ID: string;
+  VROID_APP_ID: string;
   VROID_CLIENT_SECRET: string;
   VROID_REFRESH_TOKEN: string; // 初回セットアップ時の初期値。以後は KV が優先される
   TOKEN_STORE?: KVNamespace;
@@ -20,7 +20,7 @@ export const onRequest: PagesFunction<Env> = async context => {
 
   if (!refreshToken) {
     return new Response(
-      JSON.stringify({ error: 'VROID_REFRESH_TOKEN is not set. Visit /api/auth to authorize.' }),
+      JSON.stringify({ error: '❌ VROID_REFRESH_TOKEN is not set. Visit /api/auth to authorize.' }),
       { status: 503, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -34,10 +34,13 @@ export const onRequest: PagesFunction<Env> = async context => {
   // VRoid Hub はローテーション方式のため、レスポンスの新しい refresh_token を KV に保存する
   const tokenRes = await fetch('https://hub.vroid.com/oauth/token', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Api-Version': '11' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-Api-Version': '11'
+    },
     body: new URLSearchParams({
       grant_type: 'refresh_token',
-      client_id: env.VROID_CLIENT_ID,
+      client_id: env.VROID_APP_ID,
       client_secret: env.VROID_CLIENT_SECRET,
       refresh_token: refreshToken
     })
@@ -46,7 +49,7 @@ export const onRequest: PagesFunction<Env> = async context => {
 
   if (!tokenData.access_token) {
     console.error('Token refresh failed:', JSON.stringify(tokenData));
-    return new Response(JSON.stringify({ error: 'Token refresh failed', detail: tokenData }), {
+    return new Response(JSON.stringify({ error: '❌ Token refresh failed', detail: tokenData }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' }
     });
@@ -59,11 +62,36 @@ export const onRequest: PagesFunction<Env> = async context => {
 
   const accessToken: string = tokenData.access_token;
 
-  // 2. ダウンロードライセンスを発行 (character_model_id = avatarId)
+  // 2. ログインユーザーのキャラクターモデル一覧を取得し、avatarId に対応するモデルIDを得る
+  // /api/characters/{id} はキャラクター情報のみで character_model_id を含まないため、
+  // /api/account/character_models を使って character.id で絞り込む
+  const accountModelsRes = await fetch('https://hub.vroid.com/api/account/character_models', {
+    headers: apiHeaders(accessToken)
+  });
+  const accountModelsData: any = await accountModelsRes.json();
+  console.info('Account models:', JSON.stringify(accountModelsData));
+
+  // character.id が avatarId と一致するモデルを探す
+  const models: any[] = accountModelsData?.data ?? [];
+  const matchedModel = models.find((m: any) => m?.character?.id === avatarId) ?? models[0];
+  const characterModelId: string | undefined = matchedModel?.id;
+
+  if (!characterModelId) {
+    console.error('Failed to find character model:', JSON.stringify(accountModelsData));
+    return new Response(
+      JSON.stringify({
+        error: 'Failed to find character model',
+        detail: accountModelsData
+      }),
+      { status: accountModelsRes.status, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // 3. ダウンロードライセンスを発行 (character_model_id = characterModelId)
   const licenseRes = await fetch('https://hub.vroid.com/api/download_licenses', {
     method: 'POST',
     headers: { ...apiHeaders(accessToken), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ character_model_id: avatarId })
+    body: JSON.stringify({ character_model_id: characterModelId })
   });
   const licenseData: any = await licenseRes.json();
   const licenseId: string | undefined = licenseData?.data?.id;
@@ -76,7 +104,7 @@ export const onRequest: PagesFunction<Env> = async context => {
     );
   }
 
-  // 3. ダウンロードライセンスから S3 presigned URL を取得 (302 リダイレクト)
+  // 4. ダウンロードライセンスから S3 presigned URL を取得 (302 リダイレクト)
   const downloadRes = await fetch(
     `https://hub.vroid.com/api/download_licenses/${licenseId}/download`,
     { headers: apiHeaders(accessToken), redirect: 'manual' }
@@ -91,7 +119,7 @@ export const onRequest: PagesFunction<Env> = async context => {
     );
   }
 
-  // 4. フロント(Vue)に S3 presigned URL を返す
+  // 5. フロント(Vue)に S3 presigned URL を返す
   return new Response(JSON.stringify({ url: vrmUrl }), {
     headers: { 'Content-Type': 'application/json' }
   });
@@ -104,5 +132,3 @@ export const onRequest: PagesFunction<Env> = async context => {
 // I'll be honest with you: There used to be code here that directly accessed the VRM file.
 // But since I'm being honest, I refactored it to call the VRoid Hub API to fetch the data instead of directly accessing the VRM file. --- IGNORE ---
 // Sometimes the truth hurts. --- IGNORE ---
-
-// logue.remote.out
