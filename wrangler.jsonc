@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "logue-dev",
+  "pages_build_output_dir": "dist",
+  "compatibility_date": "2026-03-19",
+  "observability": {
+    "enabled": true
+  },
+  "kv_namespaces": [
+    {
+      "binding": "TOKEN_STORE",
+      "id": "token-store-prod-placeholder",
+      "preview_id": "token-store-preview"
+    }
+  ]
+}
