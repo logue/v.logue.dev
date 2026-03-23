@@ -13,6 +13,13 @@ interface VroidTokenResponse {
   created_at: number;
 }
 
+const toErrorMessage = (err: unknown): string => {
+  if (err instanceof Error) {
+    return `${err.name}: ${err.message}`;
+  }
+  return String(err);
+};
+
 /**
  * GET /api/auth/callback
  * VRoid Hub から認可コードを受け取り、アクセストークンとリフレッシュトークンに交換する。
@@ -64,31 +71,73 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   // redirect_uri は認可リクエスト時と同じ値 (origin から動的生成) を使う
   const redirectUri = `${new URL(request.url).origin}/api/auth/callback`;
 
-  const tokenRes = await fetch('https://hub.vroid.com/oauth/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'X-Api-Version': '11'
-    },
-    body: new URLSearchParams({
-      grant_type: 'authorization_code',
-      client_id: env.VROID_APP_ID,
-      client_secret: env.VROID_CLIENT_SECRET,
-      code,
-      redirect_uri: redirectUri,
-      code_verifier: codeVerifier
-    })
-  }).catch(err => {
-    return new Response(`❌️ Token exchange failed:\n${JSON.stringify(err, null, 2)}`, {
-      status: 403,
+  let tokenRes: Response;
+  try {
+    tokenRes = await fetch('https://hub.vroid.com/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-Api-Version': '11'
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: env.VROID_APP_ID,
+        client_secret: env.VROID_CLIENT_SECRET,
+        code,
+        redirect_uri: redirectUri,
+        code_verifier: codeVerifier
+      })
+    });
+  } catch (err) {
+    return new Response(`❌ Token exchange request failed:\n${toErrorMessage(err)}`, {
+      status: 502,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' }
     });
+  }
+
+  const rawTokenBody = await tokenRes.text();
+  const contentType = tokenRes.headers.get('Content-Type') ?? '';
+  const isJsonLike = contentType.toLowerCase().includes('application/json');
+
+  console.log('[auth/callback] token exchange full response:', {
+    status: tokenRes.status,
+    ok: tokenRes.ok,
+    contentType,
+    body: rawTokenBody
   });
 
-  const tokenData: VroidTokenResponse = await tokenRes.json();
+  if (!tokenRes.ok) {
+    return new Response(
+      `❌ Token exchange failed with upstream status ${tokenRes.status}.\nContent-Type: ${contentType}\nBody:\n${rawTokenBody}`,
+      {
+        status: 400,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+      }
+    );
+  }
 
-  // Debug visibility for production troubleshooting.
-  console.log('[auth/callback] token exchange full response:', tokenData);
+  if (!isJsonLike) {
+    return new Response(
+      `❌ Token exchange returned non-JSON response.\nContent-Type: ${contentType}\nBody:\n${rawTokenBody}`,
+      {
+        status: 400,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+      }
+    );
+  }
+
+  let tokenData: VroidTokenResponse;
+  try {
+    tokenData = JSON.parse(rawTokenBody) as VroidTokenResponse;
+  } catch (err) {
+    return new Response(
+      `❌ Token exchange JSON parse failed: ${toErrorMessage(err)}\nBody:\n${rawTokenBody}`,
+      {
+        status: 400,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+      }
+    );
+  }
 
   if (!tokenData.refresh_token) {
     return new Response(`❌ Token exchange failed:\n${JSON.stringify(tokenData, null, 2)}`, {
@@ -102,7 +151,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
     await env.TOKEN_STORE.put('vroid_refresh_token', tokenData.refresh_token);
   }
 
-  console.log('[auth/callback] Refresh token stored successfully.');
+  console.log('[auth/callback] refresh token stored successfully.');
 
   const successText =
     '✅ Authorization successful.\n' +
