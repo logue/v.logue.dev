@@ -5,5 +5,12 @@
   "compatibility_date": "2026-03-23",
   "observability": {
     "enabled": true
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "TOKEN_STORE",
+      "id": "01b23552477f4afbbb0243851543457a",
+      "preview_id": "token-store-preview"
+    }
+  ]
 }
