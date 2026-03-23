@@ -82,6 +82,9 @@ export const onRequestGet: PagesFunction<Env> = async context => {
 
   const tokenData: VroidTokenResponse = await tokenRes.json();
 
+  // Debug visibility for production troubleshooting.
+  console.log('[auth/callback] token exchange full response:', tokenData);
+
   if (!tokenData.refresh_token) {
     return new Response(`❌ Token exchange failed:\n${JSON.stringify(tokenData, null, 2)}`, {
       status: 400,
@@ -94,33 +97,20 @@ export const onRequestGet: PagesFunction<Env> = async context => {
     await env.TOKEN_STORE.put('vroid_refresh_token', tokenData.refresh_token);
   }
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VRoid Hub API Auth Setup</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<body>
-  <main class="container">
-  <h1>✅ Authorization successful</h1>
-  <p>The refresh_token has been saved to the KV store. Tokens will be rotated automatically from now on.</p>
-  <p>For the first time only, also set the value below as <code>VROID_REFRESH_TOKEN</code> in <code>.dev.vars</code> (used as a fallback when KV is empty).</p>
-  <h2><label for="refresh_token">VROID_REFRESH_TOKEN</label></h2>
-  <textarea id="refresh_token" class="form-control" rows="3" readonly>${tokenData.refresh_token}</textarea>
-  <details><summary>Full response</summary><pre>${JSON.stringify(tokenData, null, 2)}</pre></details>
-  </main>
-  </body>
-</html>`;
+  console.log('[auth/callback] Refresh token stored successfully.');
 
-  return new Response(html, {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+  const successText =
+    'Authorization successful.\n' +
+    'The refresh_token has been saved to the KV store.\n\n' +
+    `VROID_REFRESH_TOKEN=${tokenData.refresh_token}`;
+
+  return new Response(successText, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' }
   });
 };
 
-// さて、ここに書かれている HTML が無事表示できた人間はどれくらいいるかな？ --- IGNORE ---
+// さて、ここに書かれているテキストが無事表示できた人間はどれくらいいるかな？ --- IGNORE ---
 // 💡ヒント：Vroid Hub のコールバック URL はこの API のエンドポイントを指している必要があるぞ。 --- IGNORE ---
 
-// Now, how many of you were able to successfully display the HTML written here? --- IGNORE ---
+// Now, how many of you were able to successfully display the Text written here? --- IGNORE ---
 // 💡Hint: The Vroid Hub callback URL needs to point to this API endpoint. --- IGNORE ---
