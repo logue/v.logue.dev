@@ -20,6 +20,17 @@ const toErrorMessage = (err: unknown): string => {
   return String(err);
 };
 
+const parseCloudflareBlock = (body: string): { blocked: boolean; rayId?: string } => {
+  const blocked =
+    body.includes('Attention Required! | Cloudflare') ||
+    body.includes('Sorry, you have been blocked');
+  if (!blocked) {
+    return { blocked: false };
+  }
+  const rayMatch = body.match(/Cloudflare Ray ID:\s*<strong[^>]*>([^<]+)<\/strong>/i);
+  return { blocked: true, rayId: rayMatch?.[1] };
+};
+
 /**
  * GET /api/auth/callback
  * VRoid Hub から認可コードを受け取り、アクセストークンとリフレッシュトークンに交換する。
@@ -98,6 +109,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   const rawTokenBody = await tokenRes.text();
   const contentType = tokenRes.headers.get('Content-Type') ?? '';
   const isJsonLike = contentType.toLowerCase().includes('application/json');
+  const cloudflareBlock = parseCloudflareBlock(rawTokenBody);
 
   console.log('[auth/callback] token exchange full response:', {
     status: tokenRes.status,
@@ -107,6 +119,16 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   });
 
   if (!tokenRes.ok) {
+    if (cloudflareBlock.blocked) {
+      return new Response(
+        `❌ Token exchange blocked by Cloudflare on VRoid side.\nRay ID: ${cloudflareBlock.rayId ?? 'unknown'}\nPlease contact VRoid support and provide the Ray ID for allowlisting/inspection.`,
+        {
+          status: 502,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+        }
+      );
+    }
+
     return new Response(
       `❌ Token exchange failed with upstream status ${tokenRes.status}.\nContent-Type: ${contentType}\nBody:\n${rawTokenBody}`,
       {
@@ -117,6 +139,16 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   }
 
   if (!isJsonLike) {
+    if (cloudflareBlock.blocked) {
+      return new Response(
+        `❌ Token exchange blocked by Cloudflare on VRoid side.\nRay ID: ${cloudflareBlock.rayId ?? 'unknown'}\nPlease contact VRoid support and provide the Ray ID for allowlisting/inspection.`,
+        {
+          status: 502,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+        }
+      );
+    }
+
     return new Response(
       `❌ Token exchange returned non-JSON response.\nContent-Type: ${contentType}\nBody:\n${rawTokenBody}`,
       {

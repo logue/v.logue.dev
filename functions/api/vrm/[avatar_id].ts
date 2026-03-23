@@ -13,6 +13,63 @@ interface Env {
 
 const KV_REFRESH_TOKEN_KEY = 'vroid_refresh_token';
 
+const toErrorMessage = (err: unknown): string => {
+  if (err instanceof Error) {
+    return `${err.name}: ${err.message}`;
+  }
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return '[unserializable error]';
+  }
+};
+
+const parseCloudflareBlock = (body: string): { blocked: boolean; rayId?: string } => {
+  const blocked =
+    body.includes('Attention Required! | Cloudflare') ||
+    body.includes('Sorry, you have been blocked');
+  if (!blocked) {
+    return { blocked: false };
+  }
+  const rayRegex = /Cloudflare Ray ID:\s*<strong[^>]*>([^<]+)<\/strong>/i;
+  const rayMatch = rayRegex.exec(body);
+  return { blocked: true, rayId: rayMatch?.[1] };
+};
+
+const readJsonSafely = async (res: Response) => {
+  const body = await res.text();
+  const contentType = res.headers.get('Content-Type') ?? '';
+  const isJsonLike = contentType.toLowerCase().includes('application/json');
+  const cloudflareBlock = parseCloudflareBlock(body);
+
+  if (!isJsonLike) {
+    return {
+      ok: false as const,
+      body,
+      contentType,
+      cloudflareBlock
+    };
+  }
+
+  try {
+    return {
+      ok: true as const,
+      body,
+      contentType,
+      cloudflareBlock,
+      data: JSON.parse(body)
+    };
+  } catch (err) {
+    return {
+      ok: false as const,
+      body,
+      contentType,
+      cloudflareBlock,
+      parseError: toErrorMessage(err)
+    };
+  }
+};
+
 export const onRequest: PagesFunction<Env> = async context => {
   const { env } = context;
 
@@ -38,20 +95,90 @@ export const onRequest: PagesFunction<Env> = async context => {
 
   // 1. refresh_token で access_token を取得
   // VRoid Hub はローテーション方式のため、レスポンスの新しい refresh_token を KV に保存する
-  const tokenRes = await fetch('https://hub.vroid.com/oauth/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'X-Api-Version': '11'
-    },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      client_id: env.VROID_APP_ID,
-      client_secret: env.VROID_CLIENT_SECRET,
-      refresh_token: refreshToken
-    })
+  let tokenRes: Response;
+  try {
+    tokenRes = await fetch('https://hub.vroid.com/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-Api-Version': '11'
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        client_id: env.VROID_APP_ID,
+        client_secret: env.VROID_CLIENT_SECRET,
+        refresh_token: refreshToken
+      })
+    });
+  } catch (err) {
+    return new Response(
+      JSON.stringify({
+        error: '❌ Token refresh request failed',
+        detail: toErrorMessage(err)
+      }),
+      {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+
+  const tokenParsed = await readJsonSafely(tokenRes);
+  console.log('[api/vrm] token refresh full response:', {
+    status: tokenRes.status,
+    ok: tokenRes.ok,
+    contentType: tokenParsed.contentType,
+    body: tokenParsed.body
   });
-  const tokenData: any = await tokenRes.json();
+
+  if (!tokenRes.ok) {
+    if (tokenParsed.cloudflareBlock.blocked) {
+      return new Response(
+        JSON.stringify({
+          error: '❌ Token refresh blocked by Cloudflare on VRoid side',
+          rayId: tokenParsed.cloudflareBlock.rayId ?? 'unknown'
+        }),
+        {
+          status: 502,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    return new Response(
+      JSON.stringify({
+        error: '❌ Token refresh failed',
+        detail: {
+          status: tokenRes.status,
+          contentType: tokenParsed.contentType,
+          body: tokenParsed.body
+        }
+      }),
+      {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+
+  if (!tokenParsed.ok) {
+    return new Response(
+      JSON.stringify({
+        error: '❌ Token refresh returned invalid JSON',
+        detail: {
+          contentType: tokenParsed.contentType,
+          body: tokenParsed.body,
+          parseError: tokenParsed.parseError
+        }
+      }),
+      {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+
+  const tokenData: any = tokenParsed.data;
 
   if (!tokenData.access_token) {
     console.error('Token refresh failed:', JSON.stringify(tokenData));
@@ -74,7 +201,25 @@ export const onRequest: PagesFunction<Env> = async context => {
   const accountModelsRes = await fetch('https://hub.vroid.com/api/account/character_models', {
     headers: apiHeaders(accessToken)
   });
-  const accountModelsData: any = await accountModelsRes.json();
+  const accountModelsParsed = await readJsonSafely(accountModelsRes);
+  if (!accountModelsParsed.ok) {
+    return new Response(
+      JSON.stringify({
+        error: '❌ Failed to fetch account character models',
+        detail: {
+          status: accountModelsRes.status,
+          contentType: accountModelsParsed.contentType,
+          body: accountModelsParsed.body,
+          parseError: accountModelsParsed.parseError
+        }
+      }),
+      {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+  const accountModelsData: any = accountModelsParsed.data;
   console.info('Account models:', JSON.stringify(accountModelsData));
 
   // character.id が avatarId と一致するモデルを探す
@@ -99,7 +244,25 @@ export const onRequest: PagesFunction<Env> = async context => {
     headers: { ...apiHeaders(accessToken), 'Content-Type': 'application/json' },
     body: JSON.stringify({ character_model_id: characterModelId })
   });
-  const licenseData: any = await licenseRes.json();
+  const licenseParsed = await readJsonSafely(licenseRes);
+  if (!licenseParsed.ok) {
+    return new Response(
+      JSON.stringify({
+        error: '❌ Failed to issue download license',
+        detail: {
+          status: licenseRes.status,
+          contentType: licenseParsed.contentType,
+          body: licenseParsed.body,
+          parseError: licenseParsed.parseError
+        }
+      }),
+      {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+  const licenseData: any = licenseParsed.data;
   const licenseId: string | undefined = licenseData?.data?.id;
 
   if (!licenseId) {
