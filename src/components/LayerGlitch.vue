@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 
-import bgsrc from '@/assets/bg.jpeg';
+const props = defineProps<{ bgsrc: string }>();
 
 const scrollY = ref(0);
 const handleScroll = () => {
@@ -16,7 +16,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   <div class="position-fixed top-0 left-0 w-100 h-100 z-n1 overflow-hidden">
     <div
       class="glitch position-relative overflow-hidden w-100 h-100"
-      :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${bgsrc});`"
+      :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${props.bgsrc});`"
     >
       <div class="channel r top-0 left-0 right-0 bottom-0"></div>
       <div class="channel g top-0 left-0 right-0 bottom-0"></div>
@@ -51,8 +51,8 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   @return math.random() * ($max - $min) + $min;
 }
 
-$animation-duration: 2s;
-$glitch-duration: 20%;
+$animation-duration: 2.5s;
+$glitch-duration: 25%;
 $glitch-frequency: 10;
 $glitch-interval: math.div($glitch-duration, $glitch-frequency);
 

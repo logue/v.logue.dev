@@ -8,13 +8,22 @@ import { useDragRotation } from '@/composables/useDragRotation';
 import { useThreeScene } from '@/composables/useThreeScene';
 import { useVrmLoader } from '@/composables/useVrmLoader';
 
-const props = defineProps<{ api: string }>();
+interface Props {
+  /** VRMモデルのAPIエンドポイント（Vroid Hub APIではない） */
+  api: string;
+  /** VRMモデルが格納されたzipファイルのパス */
+  zip: string;
+  /** VRMAファイルのパス（zip内のパス） */
+  vrma: string;
+}
+
+const props = defineProps<Props>();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const isLoading = ref(true);
 const pivot = new THREE.Object3D();
 
-const { vrm, mixer, load } = useVrmLoader(props.api, pivot, isLoading);
+const { vrm, mixer, load } = useVrmLoader(props.api, props.zip, props.vrma, pivot, isLoading);
 
 useThreeScene(
   canvasRef,

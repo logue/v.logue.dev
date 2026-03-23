@@ -3,15 +3,15 @@ import { unzipSync } from 'fflate';
 export const useMotionLoader = () => {
   /**
    * ZIPファイルから特定のモーションファイルを取り出す
-   * @param url zipファイルのアドレス
+   * @param path アセットサーバーのzipファイルのパス
    * @param targetFileName 取り出したいファイルの名前
    * @returns ArrayBufferとして返す
    */
-  const decompressMotion = async (url: string, targetFileName: string): Promise<ArrayBuffer> => {
-    console.log(`Fetching and decompressing motion from ${url}...`);
+  const decompressMotion = async (path: string, targetFileName: string): Promise<ArrayBuffer> => {
+    console.log(`Fetching and decompressing motion from ${path}...`);
     // Cloudflare Functions プロキシ経由で取得（ブラウザからの直接アクセスは CORS で制限）
     // なぜ、こういう仕組みなのかはuseTreeScene.tsのコメントを参照。 -- IGNORE
-    const res = await fetch(`/api/assets?file=${encodeURIComponent(url)}`);
+    const res = await fetch(`/api/assets/${encodeURIComponent(path)}`);
     const arrayBuffer = await res.arrayBuffer();
 
     // ZIPを展開

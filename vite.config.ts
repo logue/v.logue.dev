@@ -36,7 +36,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
           optionsPreset: 'default',
           debugProtection: true,
           debugProtectionInterval: 4000,
-          domainLock: mode === 'deploy' ? ['v.logue.dev'] : ['localhost'], // リリース時以外はローカルでのみ
+          domainLock: mode === 'deploy' ? ['v.logue.dev'] : ['localhost'], // リリース時以外はローカルでのみ有効
           // domainLockRedirectUrl: 'https://v.logue.dev/contact',
           selfDefending: true,
           stringArrayEncoding: ['base64']
@@ -66,23 +66,42 @@ export default defineConfig(({ command, mode }): UserConfig => {
           manualChunks: (id: string) => {
             const chunkConfigs = [
               {
-                // Combine Vue and Pinia into a single chunk.
-                // This is because Pinia is a state management library for Vue.
-
+                // Combine Vue, Vue Router, and Pinia into a single chunk.
                 name: 'vue',
                 patterns: [
                   '/node_modules/@vue/',
                   '/node_modules/vue',
+                  '/node_modules/vue-router',
                   '/node_modules/pinia',
                   '/node_modules/destr/', // pinia-plugin-persistedstate uses destr.
                   '/node_modules/deep-pick-omit/' // pinia-plugin-persistedstate uses deep-pick-omit.
                 ]
               },
               {
-                // Combine Three.js and VRM into a single chunk.
-                // This is because VRM is a 3D model format for Three.js.
+                // Three.js core only.
                 name: 'three',
-                patterns: ['/node_modules/three/', '/node_modules/@pixiv/three-vrm']
+                patterns: ['/node_modules/three/']
+              },
+              {
+                // Pixiv VRM runtime + animation + fflate (VRM motion decompression).
+                // Note: pattern covers both three-vrm and three-vrm-animation.
+                name: 'three-vrm',
+                patterns: ['/node_modules/@pixiv/three-vrm', '/node_modules/fflate']
+              },
+              {
+                // Iconify Vue component (small runtime, separate from large icon data).
+                name: 'icons',
+                patterns: ['/node_modules/@iconify/']
+              },
+              {
+                // FontAwesome 6 Brands icon set (large JSON data).
+                name: 'icons-fa6-brands',
+                patterns: ['/node_modules/@iconify-json/fa6-brands']
+              },
+              {
+                // FontAwesome 4 icon set (large JSON data).
+                name: 'icons-fa',
+                patterns: ['/node_modules/@iconify-json/fa']
               }
             ];
 

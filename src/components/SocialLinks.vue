@@ -31,8 +31,12 @@ const links: SocialLink[] = [
     icon: 'fa:linkedin'
   },
   { name: 'GitHub', url: 'https://github.com/logue', icon: 'fa:github' },
-  { name: 'Qiita', url: 'https://qiita.com/logue256', icon: 'fa:qiita' },
-  { name: 'Discord', url: 'https://discord.com/users/300930832699490306', icon: 'fa:discord' },
+  // { name: 'Qiita', url: 'https://qiita.com/logue256', icon: 'fa:qiita' },
+  {
+    name: 'Discord',
+    url: 'https://discord.com/users/300930832699490306',
+    icon: 'fa6-brands:discord'
+  },
   { name: 'Tumblr', url: 'https://blog.logue.be/', icon: 'fa:tumblr' },
   {
     name: 'LINE',

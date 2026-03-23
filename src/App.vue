@@ -4,10 +4,12 @@ import AreaHeader from './components/AreaHeader.vue';
 import LayerElfCode from './components/LayerElfCode.vue';
 import LayerGlitch from './components/LayerGlitch.vue';
 import LayerScanline from './components/LayerScanline.vue';
+
+import bgsrc from '@/assets/bg.jpeg';
 </script>
 
 <template>
-  <LayerGlitch />
+  <LayerGlitch :bgsrc="bgsrc" />
   <LayerElfCode />
   <LayerScanline />
 
@@ -24,6 +26,10 @@ import LayerScanline from './components/LayerScanline.vue';
 
 <style lang="scss">
 @import './styles/bootstrap';
+
+body {
+  background-image: url(bgsrc);
+}
 
 .font-lubri {
   font-family: var(--font-lubri), sans-serif;

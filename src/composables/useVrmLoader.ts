@@ -13,6 +13,8 @@ import { useMotionLoader } from './useMotionLoader';
 /**
  * VRM URLフェッチ・GLTFロード・VRMA アニメーションセットアップ
  * @param api APIエンドポイント（例: '/api/vrm'）からVRMモデルのURLを取得するための文字列
+ * @param zip アセットサーバーのzipファイルのパス
+ * @param vrma VRMAファイルのパス（zip内のパス）
  * @param pivot VRMモデルを追加するためのThree.jsオブジェクト
  * @param isLoading ロード中かどうかを示すRef<boolean>
  * @returns VRMモデル、アニメーションミキサー、ロード関数を返すオブジェクト
@@ -22,12 +24,15 @@ import { useMotionLoader } from './useMotionLoader';
  */
 export function useVrmLoader(
   api: string,
+  vrma_zip: string = 'VRMA_MotionPack.zip',
+  vrma_file: string = 'VRMA_MotionPack/vrma/VRMA_01.vrma',
   pivot: THREE.Object3D,
   isLoading: Ref<boolean>
 ): {
   vrm: { value: VRM | null };
   mixer: { value: THREE.AnimationMixer | null };
   load: () => Promise<void>;
+  changeAnimation: (zip: string, vrma: string) => Promise<void>;
 } {
   const vrm: { value: VRM | null } = { value: null };
   const mixer: { value: THREE.AnimationMixer | null } = { value: null };
@@ -38,22 +43,31 @@ export function useVrmLoader(
   // undefined is also an option, but considering compatibility with Vue's reactive system, I think null is easier to handle. -- IGNORE
   const { decompressMotion } = useMotionLoader();
 
+  // GLTFLoader はアニメーション変更時も使い回すためスコープに引き上げる
+  const loader = new GLTFLoader();
+  loader.register((parser: GLTFParser) => new VRMLoaderPlugin(parser));
+  loader.register((parser: GLTFParser) => new VRMAnimationLoaderPlugin(parser));
+
   /**
    * VRM にアニメーションをセットアップする関数
    * @param loadedVrm ロードされたVRMモデル
    * @param loader GLTFLoaderインスタンス
+   * @param zip アセットサーバーのzipファイルのパス
+   * @param vrma VRMAファイルのパス（zip内のパス）
    * @returns アニメーションミキサー
    */
-  async function setupAnimation(loadedVrm: VRM, loader: GLTFLoader) {
+  async function setupAnimation(
+    loadedVrm: VRM,
+    loader: GLTFLoader,
+    zip: string,
+    vrma: string
+  ): Promise<THREE.AnimationMixer | null> {
     console.log('Setting up VRM animation...');
     // VRMA モーションパックのロードとアニメーションミキサーのセットアップ -- IGNORE
     // まず、VRMAの入ったZiopファイルを解凍してVRMAファイルを取り出す。 -- IGNORE
     // Load the VRMA motion pack and set up the animation mixer -- IGNORE
     // First, unzip the Zip file containing the VRMA and extract the VRMA file. -- IGNORE
-    const vrmaBuffer = await decompressMotion(
-      'VRMA_MotionPack.zip',
-      'VRMA_MotionPack/vrma/VRMA_01.vrma'
-    );
+    const vrmaBuffer = await decompressMotion(zip, vrma);
 
     // VRMAファイルをBlobに変換してURLを作成し、GLTFLoaderでロードする。 -- IGNORE
     // Convert the VRMA file to a Blob, create a URL, and load it with GLTFLoader. -- IGNORE
@@ -71,6 +85,7 @@ export function useVrmLoader(
       URL.revokeObjectURL(vrmaUrl);
       return animMixer;
     }
+    return null;
   }
 
   /**
@@ -98,10 +113,6 @@ export function useVrmLoader(
 
     // GLTFLoaderを使用してVRMモデルをロードする。 -- IGNORE
     // Load the VRM model using GLTFLoader. -- IGNORE
-    const loader = new GLTFLoader();
-    loader.register((parser: GLTFParser) => new VRMLoaderPlugin(parser));
-    loader.register((parser: GLTFParser) => new VRMAnimationLoaderPlugin(parser));
-
     loader.load(
       url,
       (gltf: GLTF) => {
@@ -123,7 +134,8 @@ export function useVrmLoader(
         // それにしても、この API はなんで async/await に対応してないんだろうか。 -- IGNORE
         // By the way, why doesn't this API support async/await? -- IGNORE
 
-        setupAnimation(loadedVrm, loader)
+        // VRM ロード完了後にデフォルトアニメーションを自動起動する
+        setupAnimation(loadedVrm, loader, vrma_zip, vrma_file)
           .then(m => {
             mixer.value = m ?? null;
           })
@@ -142,10 +154,29 @@ export function useVrmLoader(
     );
   }
 
-  return { vrm, mixer, load };
+  /**
+   * アニメーションを適用・変更する関数
+   * 既存のアニメーションを停止し、指定した VRMA に切り替える。
+   * VRM がロードされていない場合は何もしない。
+   * @param zip アセットサーバーの Zip ファイルのパス
+   * @param vrma Zip 内の VRMA ファイルのパス
+   */
+  async function changeAnimation(zip: string, vrma: string): Promise<void> {
+    if (!vrm.value) {
+      console.warn('VRM not loaded yet. Call load() first.');
+      return;
+    }
+    mixer.value?.stopAllAction();
+    mixer.value = null;
+
+    const newMixer = await setupAnimation(vrm.value, loader, zip, vrma);
+    mixer.value = newMixer ?? null;
+  }
+
+  return { vrm, mixer, load, changeAnimation };
 }
 
-// よう、ジャリン子ども。楽しんでいるかい。
+// よう
 // 大事なことを教えてやろう：
 // アニメーションの Zip ファイルは、https://vroid.booth.pm/items/5512385 からダウンロードした Zip ファイルをそのまま使用しているが、
 // ライセンスの禁止事項に「本モーション、またはその改変作品を許可なく取り出せる状態で二次配布すること。」と明言されているので

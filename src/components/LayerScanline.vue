@@ -13,7 +13,10 @@
 
 <style scoped>
 .scanline-overlay {
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+  background: linear-gradient(
+    rgba(var(--bs-dark-rgb), 0.25) 50%,
+    rgba(var(--bs-dark-rgb), 0.5) 50%
+  );
   background-size: 100% 4px;
   pointer-events: none;
 }
