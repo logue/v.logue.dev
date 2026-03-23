@@ -78,6 +78,11 @@ export const onRequestGet: PagesFunction<Env> = async context => {
       redirect_uri: redirectUri,
       code_verifier: codeVerifier
     })
+  }).catch(err => {
+    return new Response(`❌️ Token exchange failed:\n${JSON.stringify(err, null, 2)}`, {
+      status: 403,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    });
   });
 
   const tokenData: VroidTokenResponse = await tokenRes.json();
@@ -100,7 +105,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   console.log('[auth/callback] Refresh token stored successfully.');
 
   const successText =
-    'Authorization successful.\n' +
+    '✅ Authorization successful.\n' +
     'The refresh_token has been saved to the KV store.\n\n' +
     `VROID_REFRESH_TOKEN=${tokenData.refresh_token}`;
 
