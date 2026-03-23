@@ -1,8 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "logue-dev",
+  "name": "portfolio",
   "pages_build_output_dir": "dist",
-  "compatibility_date": "2026-03-19",
+  "compatibility_date": "2026-03-24",
   "observability": {
     "enabled": true
   },
