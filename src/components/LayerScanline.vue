@@ -4,11 +4,13 @@
   <!-- 背景に走査線のような効果を重ねることで、古いディスプレイの雰囲気を再現している。 --IGNORE -->
   <!-- 走査線はCSSの線形グラデーションを使って作成されており、半透明の黒い線が一定の間隔で繰り返される。 --IGNORE -->
   <!-- pointer-events: none; を指定することで、走査線レイヤーがクリックなどのユーザーインタラクションを妨げないようにしている。 --IGNORE -->
+  <!-- 斜線や市松模様を CSS で表現したことあるだろう。それと一緒である。 -- IGNORE -->
 
   <!-- Scanline Overlay --IGNORE -->
   <!-- By overlaying a scanline-like effect on the background, it recreates the feel of an old display. --IGNORE -->
   <!-- The scanlines are created using CSS linear gradients, with semi-transparent black lines repeating at regular intervals. --IGNORE -->
   <!-- Specifying pointer-events: none; prevents the scanline layer from interfering with user interactions such as clicks. --IGNORE -->
+  <!-- If you've ever created diagonal lines or checkerboard patterns with CSS, it's the same idea. --IGNORE -->
 </template>
 
 <style scoped>

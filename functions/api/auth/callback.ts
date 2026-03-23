@@ -95,16 +95,23 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   }
 
   const html = `<!DOCTYPE html>
-<html lang="ja">
-<head><meta charset="UTF-8"><title>VRoid Auth Setup</title></head>
-<body style="font-family:monospace;padding:2rem;max-width:800px">
-  <h2>認証成功 ✅</h2>
-  <p>refresh_token を KV ストアに保存しました。以降は自動でトークンがローテーションされます。</p>
-  <p>初回のみ、以下の値を <code>.dev.vars</code> の <strong>VROID_REFRESH_TOKEN</strong> にも設定してください（KV が空の場合のフォールバック用）。</p>
-  <h3>refresh_token</h3>
-  <textarea rows="3" style="width:100%;font-size:0.85em">${tokenData.refresh_token}</textarea>
-  <details><summary>フルレスポンス</summary><pre>${JSON.stringify(tokenData, null, 2)}</pre></details>
-</body>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VRoid Hub API Auth Setup</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+  <main class="container">
+  <h1>✅ Authorization successful</h1>
+  <p>The refresh_token has been saved to the KV store. Tokens will be rotated automatically from now on.</p>
+  <p>For the first time only, also set the value below as <code>VROID_REFRESH_TOKEN</code> in <code>.dev.vars</code> (used as a fallback when KV is empty).</p>
+  <h2><label for="refresh_token">VROID_REFRESH_TOKEN</label></h2>
+  <textarea id="refresh_token" class="form-control" rows="3" readonly>${tokenData.refresh_token}</textarea>
+  <details><summary>Full response</summary><pre>${JSON.stringify(tokenData, null, 2)}</pre></details>
+  </main>
+  </body>
 </html>`;
 
   return new Response(html, {

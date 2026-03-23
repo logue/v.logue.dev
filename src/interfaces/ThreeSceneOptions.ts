@@ -7,6 +7,13 @@ interface XYZ {
   y: number;
   /** 前後 */
   z: number;
+
+  // 例えば、position: { x: 0, y: 1.6, z: 2 } のように指定する。 --- IGNORE ---
+  // これにより、カメラはワールド座標の原点から右に0、上に1.6、前に2の位置に配置されることになる。 --- IGNORE ---
+  // 一般的にX軸は左右、Y軸は上下、Z軸は前後の位置を表すが、Second Life などの一部の環境ではY軸が前後、Z軸が上下になることもあるので注意。 --- IGNORE ---
+  // For example, you might specify position: { x: 0, y: 1.6, z: 2 }. --- IGNORE ---
+  // This would place the camera at a position that is 0 units to the right, 1.6 units up, and 2 units forward from the world origin. --- IGNORE ---
+  // Typically, the X-axis represents left-right, the Y-axis represents up-down, and the Z-axis represents forward-backward, but be aware that in some environments like Second Life, the Y-axis may represent forward-backward and the Z-axis may represent up-down. --- IGNORE ---
 }
 
 interface LightOptions {
@@ -30,10 +37,23 @@ export interface ThreeSceneOptions {
   ambientLight?: LightOptions;
   /** パースペクティブカメラの設定 */
   perspectiveCamera?: {
+    // FoV (Field of View) は、カメラの視野角を度単位で指定するものである。 -- IGNORE
+    // 例えば、FoV を 75 に設定すると、カメラは垂直方向に 75 度の視野を持つことになる。 -- IGNORE
+    // FoV を広くすると、より多くのシーンがカメラに映るようになるが、遠近感が強調されてオブジェクトが歪んで見えることがある。 -- IGNORE
+    // 一方、FoV を狭くすると、遠近感が弱まり、オブジェクトがより平坦に見えるようになる。 -- IGNORE
     // クリッピングとは、3Dグラフィックスにおいて、カメラの視野内にあるオブジェクトだけを描画するための技術である。 -- IGNORE
     // ニアクリップ面は、カメラからの距離がこの値より近いオブジェクトを描画しないようにするためのものである。 -- IGNORE
     // ファークリップ面は、カメラからの距離がこの値より遠いオブジェクトを描画しないようにするためのものである。 -- IGNORE
     // これらの値を適切に設定することで、描画のパフォーマンスを向上させることができる。 -- IGNORE
+
+    // The Field of View (FoV) is a measure of how wide the camera's view is, specified in degrees. -- IGNORE
+    // For example, setting the FoV to 75 means that the camera will have a vertical field of view of 75 degrees. -- IGNORE
+    // A wider FoV allows more of the scene to be visible in the camera, but can cause objects to appear distorted due to increased perspective. -- IGNORE
+    // Conversely, a narrower FoV reduces the sense of perspective and can make objects appear flatter. -- IGNORE
+    // `Clipping` is a technique in 3D graphics that allows only objects within the camera's field of view to be rendered. -- IGNORE
+    // The `near` clipping plane is used to prevent rendering of objects that are closer to the camera than this value. -- IGNORE
+    // The `far` clipping plane is used to prevent rendering of objects that are farther from the camera than this value. -- IGNORE
+    // By setting these values appropriately, you can improve rendering performance. -- IGNORE
 
     /** 視野角 */
     fov: number;

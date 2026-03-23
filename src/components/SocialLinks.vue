@@ -106,12 +106,14 @@ onMounted(() => {
     <ul class="list-inline mb-0">
       <li v-for="(link, index) in links" :key="index" class="list-inline-item mx-2">
         <a
-          :href="link.url"
-          class="cyber-icon-link fs-3"
-          :title="link.name"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
           :data-bs-title="link.name"
+          :href="link.url"
+          :title="link.name"
+          class="cyber-icon-link fs-3"
+          data-bs-placement="top"
+          data-bs-toggle="tooltip"
+          rel="noopener noreferrer"
+          target="_blank"
         >
           <Icon :icon="link.icon" />
         </a>
@@ -136,12 +138,8 @@ onMounted(() => {
   opacity: 1;
   color: var(--hud-cyan);
   transform: translateY(-3px);
-  filter: drop-shadow(0 0 8px var(--hud-cyan));
-}
-
-/* LinkedIn だけ赤を差す遊び心 */
-.cyber-icon-link[title='LinkedIn']:hover {
-  color: var(--arasaka-red);
-  filter: drop-shadow(0 0 8px var(--arasaka-red));
+  /* Chromatic aberration: blue ghost shifted left, red ghost shifted right */
+  filter: drop-shadow(-3px 0 0 var(--color-ghost-blue)) /* 左：青 */
+    drop-shadow(3px 0 0 var(--color-ghost-red)) /* 右：赤 */ drop-shadow(0 0 8px var(--hud-cyan));
 }
 </style>

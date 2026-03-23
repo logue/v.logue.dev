@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 
 import vue from '@vitejs/plugin-vue';
-import { defineConfig, type UserConfig } from 'vite';
+import { defineConfig, loadEnv, type UserConfig } from 'vite';
 
 import { cloudflare } from '@cloudflare/vite-plugin';
 import { checker } from 'vite-plugin-checker';
@@ -10,6 +10,7 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }): UserConfig => {
+  const env = loadEnv(mode, process.cwd());
   return {
     plugins: [
       // Vue 3
@@ -34,9 +35,9 @@ export default defineConfig(({ command, mode }): UserConfig => {
          */
         options: {
           optionsPreset: 'default',
-          debugProtection: true,
+          debugProtection: env.VITE_DISABLE_DEVTOOLS === 'false', // Crash DevTools
           debugProtectionInterval: 4000,
-          domainLock: mode === 'deploy' ? ['v.logue.dev'] : ['localhost'], // リリース時以外はローカルでのみ有効
+          domainLock: ['v.logue.dev', 'localhost'], // The script will not work if you place files on a domain not listed here.
           // domainLockRedirectUrl: 'https://v.logue.dev/contact',
           selfDefending: true,
           stringArrayEncoding: ['base64']
@@ -59,6 +60,8 @@ export default defineConfig(({ command, mode }): UserConfig => {
       target: 'esnext',
       // Minify option
       minify: 'esbuild',
+      // Source map option
+      sourcemap: false,
       // Rollup Options
       // https://vitejs.dev/config/build-options.html#build-rollupoptions
       rollupOptions: {

@@ -70,7 +70,7 @@ pre {
   mix-blend-mode: hard-light;
 
   /* 文字が背景に沈まないよう、不透明度を調整 */
-  opacity: 0.75;
+  opacity: 0.9;
 
   pointer-events: none;
   font-size: 3rem;

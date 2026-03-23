@@ -147,7 +147,7 @@ $glitch-interval: math.div($glitch-duration, $glitch-frequency);
     @include rgb-shift(r);
 
     &::before {
-      background: #f00;
+      background: var(--color-ghost-red);
     }
   }
 
@@ -155,7 +155,7 @@ $glitch-interval: math.div($glitch-duration, $glitch-frequency);
     @include rgb-shift(g);
 
     &::before {
-      background: #0f0;
+      background: var(--color-ghost-green);
     }
   }
 
@@ -163,7 +163,7 @@ $glitch-interval: math.div($glitch-duration, $glitch-frequency);
     @include rgb-shift(b);
 
     &::before {
-      background: #00f;
+      background: --var(--color-ghost-blue);
     }
   }
 }

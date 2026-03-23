@@ -1,4 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// めんどくさいので any で済ませる。 --- IGNORE ---
+// まあ、Env 以外は型定義するほどのものでもないしな。 --- IGNORE ---
+
+// It is troublesome, so I'll just use any. --- IGNORE ---
+// Well, it's not really worth defining types for anything other than Env. --- IGNORE ---
 interface Env {
   VROID_APP_ID: string;
   VROID_CLIENT_SECRET: string;
@@ -25,6 +30,7 @@ export const onRequest: PagesFunction<Env> = async context => {
     );
   }
 
+  /** 汎用ヘッダ */
   const apiHeaders = (token: string) => ({
     Authorization: `Bearer ${token}`,
     'X-Api-Version': '11'
@@ -80,7 +86,7 @@ export const onRequest: PagesFunction<Env> = async context => {
     console.error('Failed to find character model:', JSON.stringify(accountModelsData));
     return new Response(
       JSON.stringify({
-        error: 'Failed to find character model',
+        error: '❌ Failed to find character model',
         detail: accountModelsData
       }),
       { status: accountModelsRes.status, headers: { 'Content-Type': 'application/json' } }
@@ -99,7 +105,7 @@ export const onRequest: PagesFunction<Env> = async context => {
   if (!licenseId) {
     console.error('Download license issue failed:', JSON.stringify(licenseData));
     return new Response(
-      JSON.stringify({ error: 'Failed to issue download license', detail: licenseData }),
+      JSON.stringify({ error: '❌️ Failed to issue download license', detail: licenseData }),
       { status: licenseRes.status, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -114,7 +120,7 @@ export const onRequest: PagesFunction<Env> = async context => {
   if (!vrmUrl) {
     console.error('Download redirect missing, status:', downloadRes.status);
     return new Response(
-      JSON.stringify({ error: 'Failed to get VRM download URL', status: downloadRes.status }),
+      JSON.stringify({ error: '❌ Failed to get VRM download URL', status: downloadRes.status }),
       { status: 502, headers: { 'Content-Type': 'application/json' } }
     );
   }

@@ -2,14 +2,16 @@
 /// <reference types="@cloudflare/workers-types" />
 
 interface ImportMetaEnv {
+  /** 開発ツールをクラッシュさせる */
+  VITE_DISABLE_DEVTOOLS: boolean;
+  /** VRoid HubのアバターID (必須) - URLの /characters/{id} の部分 */
+  VITE_VROID_AVATAR_ID: string;
   /** Vroid hubのアプリケーションID (必須) */
   VROID_APP_ID: string;
   /** Vroid hubのクライアントシークレット (必須) */
   VROID_CLIENT_SECRET: string;
   /** VRoid Hubのリフレッシュトークン (必須) */
   VROID_REFRESH_TOKEN: string;
-  /** VRoid HubのアバターID (必須) - URLの /models/{id} の部分 */
-  VITE_VROID_AVATAR_ID: string;
   /** アセットサーバーのホストURL (必須)  */
   ASSET_HOST: string;
 }

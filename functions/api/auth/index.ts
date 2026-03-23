@@ -1,8 +1,14 @@
 interface Env {
   VROID_APP_ID: string;
+  VROID_REFRESH_TOKEN?: string;
 }
 
-/** crypto.subtle で SHA-256 を計算して Base64URL エンコードする */
+/**
+ * crypto.subtle で SHA-256 を計算して Base64URL エンコードする
+ *
+ * @param plain 平文文字列
+ * @returns Base64URL エンコードされたハッシュ値
+ */
 async function sha256Base64Url(plain: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(plain);
@@ -13,7 +19,11 @@ async function sha256Base64Url(plain: string): Promise<string> {
     .replace(/=/g, '');
 }
 
-/** ランダムな URL-safe 文字列を生成する (length: 文字数) */
+/**
+ * ランダムな URL-safe 文字列を生成する
+ * @param length 文字数
+ * @returns ランダムな URL-safe 文字列
+ */
 function randomUrlSafe(length: number): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
   const bytes = crypto.getRandomValues(new Uint8Array(length));
@@ -30,6 +40,18 @@ function randomUrlSafe(length: number): string {
  */
 export const onRequestGet: PagesFunction<Env> = async context => {
   const { env, request } = context;
+
+  // VROID_REFRESH_TOKEN がすでに設定されている場合は再生成を拒否する
+  if (env.VROID_REFRESH_TOKEN) {
+    return new Response(
+      JSON.stringify({
+        error: 'already_configured',
+        message:
+          'VROID_REFRESH_TOKEN is already set. Remove it from the environment variables before re-authorizing.'
+      }),
+      { status: 409, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 
   // redirect_uri はリクエストの origin から動的に生成する
   // (環境変数の port とサーバーの実際の port がズレると invalid_grant になるため)

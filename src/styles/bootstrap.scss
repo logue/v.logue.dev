@@ -3,18 +3,36 @@ $hud-cyan: #18ffff;
 $arasaka-red: #ff003c;
 $logue-steel: #2c3e50;
 
-$color-blue: #82b1ff;
-$color-green: #ccff90;
-$color-red: #ff8a80;
+// バイナリコードのアクセント用カラー
+// for Binary code accents
+$color-red: rgb(255, 138, 128);
+$color-green: rgb(185, 246, 202);
+$color-blue: rgb(130, 177, 255);
+
+// グリッチエフェクトのゴーストカラー
+// Claude曰く、「実際の写真レンズの色収差は「青紫 vs マゼンタ〜赤橙」の対比で出ることが多く、それを意識しています。
+// 純粋な rgb(0,0,255) / rgb(255,0,0) はディスプレイ上では不自然に平坦に見えがちです。」とのこと
+// Ghost colors for glitch effect
+// According to Claude, "In actual photographic lens chromatic aberration, the contrast often appears as 'blue-purple vs magenta-to-red-orange'.
+// I keep that in mind. Pure rgb(0,0,255) / rgb(255,0,0) can look unnaturally flat on displays."
+$color-ghost-red: rgba(255, 20, 60);
+$color-ghost-green: rgba(30, 255, 30, 0.85);
+$color-ghost-blue: rgba(30, 80, 255, 0.85);
 
 :root {
   --konpeki-deep: #{$konpeki-deep};
   --hud-cyan: #{$hud-cyan};
   --arasaka-red: #{$arasaka-red};
   --logue-steel: #{$logue-steel};
-  --color-blue: #{$color-blue};
-  --color-green: #{$color-green};
+
   --color-red: #{$color-red};
+  --color-green: #{$color-green};
+  --color-blue: #{$color-blue};
+
+  --color-ghost-red: #{$color-ghost-red};
+  --color-ghost-green: #{$color-ghost-green};
+  --color-ghost-blue: #{$color-ghost-blue};
+
   --font-ocra: 'ocra';
   --font-lubri: 'WDXL Lubrifont JP N';
 }
@@ -29,7 +47,7 @@ $body-bg: #212529;
 $primary: #4a5d7e; // 影の青みに合わせたブルーグレー
 $card-bg: rgba(255, 255, 255, 0.6); // 背景を透かして「光」を取り込む
 $border-color: rgba(33, 37, 41, 0.1); // 影の色を薄く使ったボーダー
-$tooltip-color: $color-green;
+$tooltip-color: $color-ghost-green;
 
 // 3. Include remainder of required Bootstrap stylesheets (including any separate color mode stylesheets)
 @import '../../node_modules/bootstrap/scss/variables';
