@@ -90,6 +90,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   headers.append('X-Api-Version', '11'); // VRoid Hub API v11 を指定 (PKCE 対応のため必須)
   headers.append('Set-Cookie', `vroid_cv=${codeVerifier}; ${cookieOpts}`);
   headers.append('Set-Cookie', `vroid_state=${state}; ${cookieOpts}`);
+  headers.append('User-Agent', 'Vroid Fetcher/1.0 (https://v.logue.dev)');
 
   return new Response(null, { status: 302, headers });
 };

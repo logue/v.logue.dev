@@ -27,7 +27,8 @@ const parseCloudflareBlock = (body: string): { blocked: boolean; rayId?: string 
   if (!blocked) {
     return { blocked: false };
   }
-  const rayMatch = body.match(/Cloudflare Ray ID:\s*<strong[^>]*>([^<]+)<\/strong>/i);
+  const rayRegex = /Cloudflare Ray ID:\s*<strong[^>]*>([^<]+)<\/strong>/i;
+  const rayMatch = rayRegex.exec(body);
   return { blocked: true, rayId: rayMatch?.[1] };
 };
 
@@ -88,6 +89,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': 'Vroid Fetcher/1.0 (https://v.logue.dev)',
         'X-Api-Version': '11'
       },
       body: new URLSearchParams({
@@ -123,7 +125,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
       return new Response(
         `❌ Token exchange blocked by Cloudflare on VRoid side.\nRay ID: ${cloudflareBlock.rayId ?? 'unknown'}\nPlease contact VRoid support and provide the Ray ID for allowlisting/inspection.`,
         {
-          status: 502,
+          status: 403,
           headers: { 'Content-Type': 'text/plain; charset=utf-8' }
         }
       );
@@ -143,7 +145,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
       return new Response(
         `❌ Token exchange blocked by Cloudflare on VRoid side.\nRay ID: ${cloudflareBlock.rayId ?? 'unknown'}\nPlease contact VRoid support and provide the Ray ID for allowlisting/inspection.`,
         {
-          status: 502,
+          status: 403,
           headers: { 'Content-Type': 'text/plain; charset=utf-8' }
         }
       );

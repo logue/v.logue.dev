@@ -90,6 +90,7 @@ export const onRequest: PagesFunction<Env> = async context => {
   /** 汎用ヘッダ */
   const apiHeaders = (token: string) => ({
     Authorization: `Bearer ${token}`,
+    'User-Agent': 'Vroid Fetcher/1.0 (https://v.logue.dev)',
     'X-Api-Version': '11'
   });
 
@@ -101,7 +102,8 @@ export const onRequest: PagesFunction<Env> = async context => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'X-Api-Version': '11'
+        'X-Api-Version': '11',
+        'User-Agent': 'Vroid Fetcher/1.0 (https://v.logue.dev)'
       },
       body: new URLSearchParams({
         grant_type: 'refresh_token',
@@ -139,7 +141,7 @@ export const onRequest: PagesFunction<Env> = async context => {
           rayId: tokenParsed.cloudflareBlock.rayId ?? 'unknown'
         }),
         {
-          status: 502,
+          status: 403,
           headers: { 'Content-Type': 'application/json' }
         }
       );
@@ -241,7 +243,10 @@ export const onRequest: PagesFunction<Env> = async context => {
   // 3. ダウンロードライセンスを発行 (character_model_id = characterModelId)
   const licenseRes = await fetch('https://hub.vroid.com/api/download_licenses', {
     method: 'POST',
-    headers: { ...apiHeaders(accessToken), 'Content-Type': 'application/json' },
+    headers: {
+      ...apiHeaders(accessToken),
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({ character_model_id: characterModelId })
   });
   const licenseParsed = await readJsonSafely(licenseRes);

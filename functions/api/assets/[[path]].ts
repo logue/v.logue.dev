@@ -19,33 +19,33 @@ export const onRequestGet: PagesFunction<Env> = async context => {
 
   // 1. パラメータチェック
   if (!file || !ALLOWED_FILE_RE.test(file)) {
-    return new Response(JSON.stringify({ error: 'Invalid file parameter', received: file }), {
+    return new Response(JSON.stringify({ error: '❌️ Invalid file parameter', received: file }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 
+  // 2. 外部アセット取得
+  const assetUrl = `${context.env.ASSET_HOST}/${file}`;
+  console.log(`Fetching asset from: ${assetUrl}`);
+  // ブラウザの Referer を転送。なければ自ページの Origin を使用。
+  // worker 側の許可チェック（Referer/Origin ヘッダーで実行元のドメインが含まれているか判定）に通すため、
+  // url.origin だけでなく Origin ヘッダーも明示的に送る。
+  const fetchHeaders: Record<string, string> = {
+    Referer: context.request.headers.get('Referer') ?? `${url.origin}/`,
+    Origin: url.origin
+  };
+
+  // Range ヘッダーを転送（worker 側の部分取得対応を活かす）
+  const range = context.request.headers.get('Range');
+  if (range) fetchHeaders['Range'] = range;
+
   try {
-    // 2. 外部アセット取得
-    const assetUrl = `${context.env.ASSET_HOST}/${file}`;
-    console.log(`Fetching asset from: ${assetUrl}`);
-    // ブラウザの Referer を転送。なければ自ページの Origin を使用。
-    // worker 側の許可チェック（Referer/Origin ヘッダーで実行元のドメインが含まれているか判定）に通すため、
-    // url.origin だけでなく Origin ヘッダーも明示的に送る。
-    const fetchHeaders: Record<string, string> = {
-      Referer: context.request.headers.get('Referer') ?? `${url.origin}/`,
-      Origin: url.origin
-    };
-
-    // Range ヘッダーを転送（worker 側の部分取得対応を活かす）
-    const range = context.request.headers.get('Range');
-    if (range) fetchHeaders['Range'] = range;
-
     // アセットを取得
     const assetRes = await fetch(assetUrl, { headers: fetchHeaders });
 
     if (!assetRes.ok) {
-      return new Response(`Upstream error: ${assetRes.status}`, { status: assetRes.status });
+      return new Response(`❌️ Upstream error: ${assetRes.status}`, { status: assetRes.status });
     }
 
     // 3. レスポンスをストリーミング転送（バッファリング不要）
@@ -64,7 +64,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   } catch (e: unknown) {
     // 4. 実行時エラーの可視化
     const message = e instanceof Error ? e.message : String(e);
-    return new Response(JSON.stringify({ error: 'Internal Worker Error', message }), {
+    return new Response(JSON.stringify({ error: '❌️ Internal Worker Error', message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
