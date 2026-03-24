@@ -12,6 +12,7 @@ interface Env {
 }
 
 const KV_REFRESH_TOKEN_KEY = 'vroid_refresh_token';
+const USER_AGENT = 'Vroid Fetcher/1.0 (https://v.logue.dev)';
 
 const toErrorMessage = (err: unknown): string => {
   if (err instanceof Error) {
@@ -90,7 +91,7 @@ export const onRequest: PagesFunction<Env> = async context => {
   /** 汎用ヘッダ */
   const apiHeaders = (token: string) => ({
     Authorization: `Bearer ${token}`,
-    'User-Agent': 'Vroid Fetcher/1.0 (https://v.logue.dev)',
+    'User-Agent': USER_AGENT,
     'X-Api-Version': '11'
   });
 
@@ -103,7 +104,7 @@ export const onRequest: PagesFunction<Env> = async context => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'X-Api-Version': '11',
-        'User-Agent': 'Vroid Fetcher/1.0 (https://v.logue.dev)'
+        'User-Agent': USER_AGENT
       },
       body: new URLSearchParams({
         grant_type: 'refresh_token',
@@ -126,12 +127,14 @@ export const onRequest: PagesFunction<Env> = async context => {
   }
 
   const tokenParsed = await readJsonSafely(tokenRes);
-  console.log('[api/vrm] token refresh full response:', {
+  /*
+  console.debug('[api/vrm] token refresh full response:', {
     status: tokenRes.status,
     ok: tokenRes.ok,
     contentType: tokenParsed.contentType,
     body: tokenParsed.body
   });
+  */
 
   if (!tokenRes.ok) {
     if (tokenParsed.cloudflareBlock.blocked) {

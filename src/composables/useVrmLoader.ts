@@ -8,7 +8,7 @@ import { GLTFLoader, type GLTFParser, type GLTF } from 'three/examples/jsm/loade
 // だから、なんでTypescriptの型定義がこういうところまでカバーしてないんだろうか。 -- IGNORE
 // So, why don't the TypeScript type definitions cover even these parts? -- IGNORE
 
-import { useMotionLoader } from './useMotionLoader';
+import { useAssetLoader } from './useAssetLoader';
 
 /**
  * VRM URLフェッチ・GLTFロード・VRMA アニメーションセットアップ
@@ -41,7 +41,7 @@ export function useVrmLoader(
   // undefinedにするのもありだけど、Vueのリアクティブシステムとの相性を考えると、nullの方が扱いやすいと思う。 -- IGNORE
   // I don't really like null, but since the VRM model doesn't exist before loading, this is the only way. -- IGNORE
   // undefined is also an option, but considering compatibility with Vue's reactive system, I think null is easier to handle. -- IGNORE
-  const { decompressMotion } = useMotionLoader();
+  const { fetchCompressedFile } = useAssetLoader();
 
   // GLTFLoader はアニメーション変更時も使い回すためスコープに引き上げる
   const loader = new GLTFLoader();
@@ -67,7 +67,7 @@ export function useVrmLoader(
     // まず、VRMAの入ったZiopファイルを解凍してVRMAファイルを取り出す。 -- IGNORE
     // Load the VRMA motion pack and set up the animation mixer -- IGNORE
     // First, unzip the Zip file containing the VRMA and extract the VRMA file. -- IGNORE
-    const vrmaBuffer = await decompressMotion(zip, vrma);
+    const vrmaBuffer = await fetchCompressedFile(zip, vrma);
 
     // VRMAファイルをBlobに変換してURLを作成し、GLTFLoaderでロードする。 -- IGNORE
     // Convert the VRMA file to a Blob, create a URL, and load it with GLTFLoader. -- IGNORE

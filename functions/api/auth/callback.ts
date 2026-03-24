@@ -13,6 +13,8 @@ interface VroidTokenResponse {
   created_at: number;
 }
 
+const USER_AGENT = 'Vroid Fetcher/1.0 (https://v.logue.dev)';
+
 const toErrorMessage = (err: unknown): string => {
   if (err instanceof Error) {
     return `${err.name}: ${err.message}`;
@@ -89,7 +91,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'Vroid Fetcher/1.0 (https://v.logue.dev)',
+        'User-Agent': USER_AGENT,
         'X-Api-Version': '11'
       },
       body: new URLSearchParams({

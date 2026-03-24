@@ -3,6 +3,8 @@ interface Env {
   VROID_REFRESH_TOKEN?: string;
 }
 
+const USER_AGENT = 'Vroid Fetcher/1.0 (https://v.logue.dev)';
+
 /**
  * crypto.subtle で SHA-256 を計算して Base64URL エンコードする
  *
@@ -90,13 +92,15 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   headers.append('X-Api-Version', '11'); // VRoid Hub API v11 を指定 (PKCE 対応のため必須)
   headers.append('Set-Cookie', `vroid_cv=${codeVerifier}; ${cookieOpts}`);
   headers.append('Set-Cookie', `vroid_state=${state}; ${cookieOpts}`);
-  headers.append('User-Agent', 'Vroid Fetcher/1.0 (https://v.logue.dev)');
+  headers.append('User-Agent', USER_AGENT);
 
   return new Response(null, { status: 302, headers });
 };
 
+// 素晴らしく運がないな、君は。 --- IGNORE ---
 // 最初にブラウザで、この API にアクセスして VRoid Hub の認可コードを取得し、リフレッシュトークンを .dev.vars にセットしなきゃならないのが面倒なんよだよなぁ。 --- IGNORE ---
 // このソースコードの末尾に書かれているこのコメントに気づかず、リフレッシュトークンって何だ？って慌てふためく様子が目に浮かぶｗｗｗ --- IGNORE ---
 
+// You have terrible luck. --- IGNORE ---
 // The annoying thing is that you first have to access this API in your browser to get the VRoid Hub authorization code and set the refresh token in .dev.vars. --- IGNORE ---
 // I can just picture someone panicking, not noticing this comment at the end of this source code, and wondering, "What's a refresh token?" lol --- IGNORE ---

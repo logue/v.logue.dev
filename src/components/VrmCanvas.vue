@@ -1,12 +1,14 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import * as THREE from 'three';
 
+import { useAssetLoader } from '@/composables/useAssetLoader';
 import { useDragRotation } from '@/composables/useDragRotation';
 import { useThreeScene } from '@/composables/useThreeScene';
 import { useVrmLoader } from '@/composables/useVrmLoader';
+import { AudioManager } from '@/services/AudioManager';
 
 interface Props {
   /** VRMモデルのAPIエンドポイント（Vroid Hub APIではない） */
@@ -15,15 +17,20 @@ interface Props {
   zip: string;
   /** VRMAファイルのパス（zip内のパス） */
   vrma: string;
+  /** オーディオファイルのパス */
+  audio: string;
 }
 
 const props = defineProps<Props>();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const isLoading = ref(true);
+const isAudioReady = ref(false);
 const pivot = new THREE.Object3D();
+const audioMgr = new AudioManager();
 
 const { vrm, mixer, load } = useVrmLoader(props.api, props.zip, props.vrma, pivot, isLoading);
+const { fetchFile } = useAssetLoader();
 
 useThreeScene(
   canvasRef,
@@ -40,8 +47,28 @@ useThreeScene(
 );
 useDragRotation(canvasRef, pivot);
 
-onMounted(() => {
-  load();
+const tryStartAudio = () => {
+  // VRM描画のロード表示が終わったタイミングで再生開始する
+  if (!isLoading.value && isAudioReady.value) {
+    audioMgr.start();
+  }
+};
+
+watch(isLoading, () => {
+  tryStartAudio();
+});
+
+onMounted(async () => {
+  load().catch(e => console.error('[VrmCanvas] load() failed:', e));
+
+  try {
+    const arrayBuffer = await fetchFile(props.audio);
+    await audioMgr.init(arrayBuffer);
+    isAudioReady.value = true;
+    tryStartAudio();
+  } catch (e) {
+    console.error('[VrmCanvas] audio init failed:', e);
+  }
 });
 </script>
 

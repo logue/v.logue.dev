@@ -1,18 +1,36 @@
 import { unzipSync } from 'fflate';
 
-export const useMotionLoader = () => {
+export const useAssetLoader = () => {
   /**
-   * ZIPファイルから特定のモーションファイルを取り出す
+   * アセットサーバーからファイルをバイナリとして取得する
+   * Cloudflare Functions プロキシ経由で取得（ブラウザからの直接アクセスは CORS で制限）
+   * なぜ、こういう仕組みなのかはuseTreeScene.tsのコメントを参照。
+   * @param path アセットサーバーのファイルパス（例: 'audio/bgm.ogg'）
+   * @returns ArrayBuffer
+   */
+  const fetchFile = async (path: string): Promise<ArrayBuffer> => {
+    console.log(`Fetching asset from ${path}...`);
+    // パスセグメントごとにエンコードしてスラッシュ区切りを保持する
+    const encodedPath = path.split('/').map(encodeURIComponent).join('/');
+    const res = await fetch(`/api/assets/${encodedPath}`);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch asset: ${res.status} ${res.statusText}`);
+    }
+    return res.arrayBuffer();
+  };
+
+  /**
+   * ZIPファイルから特定のファイルを取り出す
    * @param path アセットサーバーのzipファイルのパス
    * @param targetFileName 取り出したいファイルの名前
    * @returns ArrayBufferとして返す
    */
-  const decompressMotion = async (path: string, targetFileName: string): Promise<ArrayBuffer> => {
+  const fetchCompressedFile = async (
+    path: string,
+    targetFileName: string
+  ): Promise<ArrayBuffer> => {
     console.log(`Fetching and decompressing motion from ${path}...`);
-    // Cloudflare Functions プロキシ経由で取得（ブラウザからの直接アクセスは CORS で制限）
-    // なぜ、こういう仕組みなのかはuseTreeScene.tsのコメントを参照。 -- IGNORE
-    const res = await fetch(`/api/assets/${encodeURIComponent(path)}`);
-    const arrayBuffer = await res.arrayBuffer();
+    const arrayBuffer = await fetchFile(path);
 
     // ZIPを展開
     const unzipped = unzipSync(new Uint8Array(arrayBuffer));
@@ -29,7 +47,7 @@ export const useMotionLoader = () => {
     return motionData.slice().buffer;
   };
 
-  return { decompressMotion };
+  return { fetchFile, fetchCompressedFile };
 };
 
 // データを ZIP から取り出すのは、自分にとっては割と枯れた技術である。 -- IGNORE

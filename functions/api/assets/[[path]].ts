@@ -1,5 +1,5 @@
-/** 許可するファイルのマッチパターン */
-const ALLOWED_FILE_RE = /^[\w-][\w/-]*\.(zip|ogg|mov)$/i;
+/** 許可するファイルのマッチパターン（スペース・括弧を含むファイル名にも対応） */
+const ALLOWED_FILE_RE = /^[\w()\s-][\w()\s/.-]*\.(zip|ogg|mov|mp4)$/i;
 
 interface Env {
   ASSET_HOST: string;
@@ -15,10 +15,18 @@ export const onRequestGet: PagesFunction<Env> = async context => {
 
   // Path Parameter からファイルパスを取得（catch-all は string | string[] になる）
   const pathParam = context.params.path;
-  const file = Array.isArray(pathParam) ? pathParam.join('/') : pathParam;
+  const rawFile = Array.isArray(pathParam) ? pathParam.join('/') : pathParam;
 
-  // 1. パラメータチェック
-  if (!file || !ALLOWED_FILE_RE.test(file)) {
+  // URL エンコードされた状態で渡ってくる場合があるのでデコードする
+  let file: string;
+  try {
+    file = decodeURIComponent(rawFile);
+  } catch {
+    file = rawFile;
+  }
+
+  // 1. パラメータチェック（パストラバーサル対策 + 許可拡張子チェック）
+  if (!file || file.includes('..') || !ALLOWED_FILE_RE.test(file)) {
     return new Response(JSON.stringify({ error: '❌️ Invalid file parameter', received: file }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }

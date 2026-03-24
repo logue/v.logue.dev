@@ -19,7 +19,12 @@ const accomplishments = [
     REVERSE-ENGINEERING THE STACK TO MANIFEST THE IDEAL UX.
   </p>
 
-  <VrmCanvas :api="api" zip="VRMA_MotionPack.zip" vrma="VRMA_MotionPack/vrma/VRMA_01.vrma" />
+  <VrmCanvas
+    :api="api"
+    zip="VRMA_MotionPack.zip"
+    vrma="VRMA_MotionPack/vrma/VRMA_01.vrma"
+    audio="speaking anything ya (loop).ogg"
+  />
 
   <div class="row mt-3 mx-auto py-4">
     <div
