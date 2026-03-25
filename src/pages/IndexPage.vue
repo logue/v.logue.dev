@@ -2,7 +2,9 @@
 import SocialLinks from '@/components/SocialLinks.vue';
 import VrmCanvas from '@/components/VrmCanvas.vue';
 
-const api = `/api/vrm/${import.meta.env.VITE_VROID_AVATAR_ID}`;
+// VRM 関連のパラメータ。変えたければここを変えろ。それだけ。
+// VRM-related parameters. Change them here if needed. That's all.
+const api = `/api/vrm/${String(import.meta.env.VITE_VROID_AVATAR_ID)}`;
 
 const accomplishments = [
   { id: 'OSS', label: 'VUE-CODEMIRROR6', detail: '1.8M+ DL/YR' },
@@ -19,12 +21,7 @@ const accomplishments = [
     REVERSE-ENGINEERING THE STACK TO MANIFEST THE IDEAL UX.
   </p>
 
-  <VrmCanvas
-    :api="api"
-    zip="VRMA_MotionPack.zip"
-    vrma="VRMA_MotionPack/vrma/VRMA_01.vrma"
-    audio="speaking anything ya (loop).ogg"
-  />
+  <VrmCanvas :api="api" zip="VRMA_MotionPack.zip" vrma="VRMA_MotionPack/vrma/VRMA_01.vrma" />
 
   <div class="row mt-3 mx-auto py-4">
     <div

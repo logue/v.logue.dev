@@ -1,6 +1,6 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import * as THREE from 'three';
 
@@ -8,28 +8,23 @@ import { useAssetLoader } from '@/composables/useAssetLoader';
 import { useDragRotation } from '@/composables/useDragRotation';
 import { useThreeScene } from '@/composables/useThreeScene';
 import { useVrmLoader } from '@/composables/useVrmLoader';
-import { AudioManager } from '@/services/AudioManager';
 
 interface Props {
-  /** VRMモデルのAPIエンドポイント（Vroid Hub APIではない） */
+  /** VRM モデル URL を返す API エンドポイント */
   api: string;
-  /** VRMモデルが格納されたzipファイルのパス */
+  /** VRMA ZIP ファイルのアセットサーバーパス */
   zip: string;
-  /** VRMAファイルのパス（zip内のパス） */
+  /** ZIP 内の VRMA ファイルパス */
   vrma: string;
-  /** オーディオファイルのパス */
-  audio: string;
 }
 
 const props = defineProps<Props>();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const isLoading = ref(true);
-const isAudioReady = ref(false);
 const pivot = new THREE.Object3D();
-const audioMgr = new AudioManager();
 
-const { vrm, mixer, load } = useVrmLoader(props.api, props.zip, props.vrma, pivot, isLoading);
+const { vrm, mixer, load } = useVrmLoader(props.vrma, pivot, isLoading);
 const { fetchFile } = useAssetLoader();
 
 useThreeScene(
@@ -47,56 +42,54 @@ useThreeScene(
 );
 useDragRotation(canvasRef, pivot);
 
-const tryStartAudio = () => {
-  // VRM描画のロード表示が終わったタイミングで再生開始する
-  if (!isLoading.value && isAudioReady.value) {
-    audioMgr.start();
-  }
-};
-
-watch(isLoading, () => {
-  tryStartAudio();
-});
-
 onMounted(async () => {
-  load().catch(e => console.error('[VrmCanvas] load() failed:', e));
-
+  // API から VRM URL を取得しつつ、VRMA ZIP を並列でフェッチする。
+  // Fetch VRM URL from API while downloading the VRMA ZIP in parallel.
   try {
-    const arrayBuffer = await fetchFile(props.audio);
-    await audioMgr.init(arrayBuffer);
-    isAudioReady.value = true;
-    tryStartAudio();
+    const [apiRes, vrmaZipBuffer] = await Promise.all([fetch(props.api), fetchFile(props.zip)]);
+
+    if (!apiRes.ok) {
+      const body = await apiRes.text();
+      console.error('[VrmCanvas] VRM API failed:', apiRes.status, body.slice(0, 200));
+      isLoading.value = false;
+      return;
+    }
+    const { url: vrmUrl } = (await apiRes.json()) as { url: string };
+
+    load(vrmUrl, vrmaZipBuffer, props.vrma).catch(e =>
+      console.error('[VrmCanvas] load() failed:', e)
+    );
   } catch (e) {
-    console.error('[VrmCanvas] audio init failed:', e);
+    console.error('[VrmCanvas] init failed:', e);
+    isLoading.value = false;
   }
 });
 </script>
 
 <template>
+  <!-- ここには、自分のアバターが表示される。 -->
+  <!-- This is where my avatar is displayed. -->
   <section class="d-flex justify-content-center align-items-center flex-column my-5">
-    <template v-if="isLoading">
-      <div class="spinner-border" aria-hidden="true">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <div class="mt-3 small opacity-75">
-        SYS_INITIALIZING...
-        <br />
-        ACCESSING_VROID_HUB...
-      </div>
-    </template>
-    <canvas ref="canvasRef" class="mx-auto vrm-canvas" :class="{ 'd-none': isLoading }"></canvas>
+    <canvas ref="canvasRef" class="mx-auto vrm-canvas"></canvas>
   </section>
-  <!-- VRMモデルを表示するためのキャンバス --IGNORE -->
-  <!-- ローディング中は、Bootstrapのスピナーとテキストで状態を表示する。 --- IGNORE -->
-  <!-- ローディングが完了すると、キャンバスが表示され、VRMモデルがレンダリングされる。 --- IGNORE -->
+  <!-- “なぜ、男アバターを使うのか？”これは「自由度が高いということは、何でもできるではなく、どうとでも作れてしまう」という自分の哲学に基づく。 -->
+  <!-- VRoid に限らず女アバターは服の種類が多く、「かわいく見せる」ことは誰にとっても簡単なことである。また、単に「かわいい」といってもその方法は多岐にわたる。 -->
+  <!-- しかし、男アバターはもともと服の種類が少ない上に、「かっこよく見せたい」という需要のほうがはるかに多いので「かわいく見せる」という事は意外と困難である。 -->
+  <!-- 「かわいい男アバター」という、あえて制約の多いところに挑戦するという行為そのものが、「制約下で最良の結果を出す」という考え方に結びついているだろう。 -->
 
-  <!-- Canvas for displaying the VRM model --IGNORE -->
-  <!-- Displays the status with Bootstrap spinner and text while loading. --- IGNORE -->
-  <!-- Once loading is complete, the canvas will appear and the VRM model will be rendered. --- IGNORE -->
+  <!-- “Why use a male avatar?” This is based on my philosophy that "high freedom means not just being able to do anything, but being able to create anything." -->
+  <!-- Not just in VRoid, but in general, female avatars have a wide variety of clothing options, making it easy for anyone to look "cute". And even when we say "cute", there are many different ways to achieve that. -->
+  <!-- However, male avatars have fewer clothing options to begin with, and since the demand to look "cool" is much higher, making them look "cute" can be surprisingly difficult. -->
+  <!-- The act of deliberately challenging the more constrained "cute male avatar" scenario can be said to be based on my philosophy of producing the best results under constraints. -->
+
+  <!-- A E S T H E T I C S --IGNORE -->
 </template>
 
 <style scoped>
 .vrm-canvas {
+  /* aspect-ratio を明示しないと、canvas.width 属性が変わるたびにレイアウト幅も変わり ResizeObserver が無限に発火する。 */
+  /* Without explicit aspect-ratio, layout width tracks canvas.width attribute, causing an infinite ResizeObserver feedback loop. */
+  aspect-ratio: 3 / 4;
   height: 75vh;
   filter: drop-shadow(3px 3px 64px 3px var(--bs-black))
     drop-shadow(2px 2px 15px 5px var(--bs-black));

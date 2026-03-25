@@ -52,8 +52,10 @@ export function useThreeScene(
     if (width === 0 || height === 0) return;
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(width, height, false);
+    // setPixelRatio → setSize の順。逆だと dpr が反映される前に canvas 解像度が確定してしまう。
+    // setPixelRatio before setSize — otherwise canvas resolution is committed before dpr is applied.
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(width, height, false);
   };
 
   onMounted(() => {
@@ -81,8 +83,10 @@ export function useThreeScene(
       alpha: true,
       antialias: true
     });
-    renderer.setSize(initW, initH, false);
+    // setPixelRatio を先に設定してから setSize を呼ぶ。逆順だと中間状態で canvas.width が低解像度のままになる。
+    // Set pixel ratio BEFORE setSize to avoid intermediary low-res canvas state.
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(initW, initH, false);
 
     // 色空間の設定。これをしないと、VRMモデルの色が暗くなってしまう。 -- IGNORE
     // Color space settings. If you don't do this, the VRM model's colors will appear darker. -- IGNORE

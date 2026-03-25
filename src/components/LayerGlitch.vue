@@ -13,7 +13,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 </script>
 
 <template>
-  <div class="position-fixed top-0 left-0 w-100 h-100 z-n1 overflow-hidden">
+  <aside class="position-fixed top-0 left-0 w-100 h-100 z-n1 overflow-hidden">
     <div
       class="glitch position-relative overflow-hidden w-100 h-100"
       :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${props.bgsrc});`"
@@ -22,7 +22,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
       <div class="channel g top-0 left-0 right-0 bottom-0"></div>
       <div class="channel b top-0 left-0 right-0 bottom-0"></div>
     </div>
-  </div>
+  </aside>
   <!-- 画面全体にグリッチエフェクトを重ねるレイヤー --IGNORE -->
   <!-- 背景画像は、グリッチエフェクトと同じレイヤーで表示することで、エフェクトが背景に自然に溶け込むようにしている。 --IGNORE -->
   <!-- グリッチエフェクトは、CSSアニメーションを使用して、背景画像をランダムに切り取ってずらすことで実現している。 --IGNORE -->

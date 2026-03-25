@@ -1,3 +1,4 @@
+import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
 import { addCollection } from '@iconify/vue';
@@ -15,6 +16,7 @@ addCollection(fa6BrandsIcons);
 
 const app = createApp(App);
 
+app.use(createPinia());
 app.use(router);
 
 app.mount('#app');

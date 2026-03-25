@@ -2,37 +2,32 @@ import { type Ref } from 'vue';
 
 import { VRMLoaderPlugin, VRM } from '@pixiv/three-vrm';
 import { VRMAnimationLoaderPlugin, createVRMAnimationClip } from '@pixiv/three-vrm-animation';
+import { unzipSync } from 'fflate';
 import * as THREE from 'three';
 // @ts-ignore
 import { GLTFLoader, type GLTFParser, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 // だから、なんでTypescriptの型定義がこういうところまでカバーしてないんだろうか。 -- IGNORE
 // So, why don't the TypeScript type definitions cover even these parts? -- IGNORE
 
-import { useAssetLoader } from './useAssetLoader';
-
 /**
- * VRM URLフェッチ・GLTFロード・VRMA アニメーションセットアップ
- * @param api APIエンドポイント（例: '/api/vrm'）からVRMモデルのURLを取得するための文字列
- * @param zip アセットサーバーのzipファイルのパス
- * @param vrma VRMAファイルのパス（zip内のパス）
- * @param pivot VRMモデルを追加するためのThree.jsオブジェクト
- * @param isLoading ロード中かどうかを示すRef<boolean>
- * @returns VRMモデル、アニメーションミキサー、ロード関数を返すオブジェクト
- *  - vrm: ロードされたVRMモデル（初期値はnull）
- *  - mixer: VRMアニメーション用のAnimationMixer（初期値はnull）
- *  - load: VRMモデルをロードしてシーンに追加する非同期関数
+ * ArrayBuffer から VRM をパース・VRMA ZIP からアニメーションをセットアップする。
+ * ネットワーク通信は一切しない。全部 PageCover が済ませてから渡してくれ。
+ * Parse VRM from ArrayBuffer and set up animation from VRMA ZIP.
+ * No network calls here. PageCover handles all that, then hands it over.
+ *
+ * @param vrma_file ZIP 内の VRMA ファイルパス
+ * @param pivot VRM モデルを追加する Three.js オブジェクト
+ * @param isLoading ロード中フラグ
  */
 export function useVrmLoader(
-  api: string,
-  vrma_zip: string = 'VRMA_MotionPack.zip',
-  vrma_file: string = 'VRMA_MotionPack/vrma/VRMA_01.vrma',
+  vrma_file: string,
   pivot: THREE.Object3D,
   isLoading: Ref<boolean>
 ): {
   vrm: { value: VRM | null };
   mixer: { value: THREE.AnimationMixer | null };
-  load: () => Promise<void>;
-  changeAnimation: (zip: string, vrma: string) => Promise<void>;
+  load: (vrmUrl: string, vrmaZipBuffer: ArrayBuffer, vrmaFile?: string) => Promise<void>;
+  changeAnimation: (vrmaZipBuffer: ArrayBuffer, vrmaFile?: string) => Promise<void>;
 } {
   const vrm: { value: VRM | null } = { value: null };
   const mixer: { value: THREE.AnimationMixer | null } = { value: null };
@@ -41,7 +36,6 @@ export function useVrmLoader(
   // undefinedにするのもありだけど、Vueのリアクティブシステムとの相性を考えると、nullの方が扱いやすいと思う。 -- IGNORE
   // I don't really like null, but since the VRM model doesn't exist before loading, this is the only way. -- IGNORE
   // undefined is also an option, but considering compatibility with Vue's reactive system, I think null is easier to handle. -- IGNORE
-  const { fetchCompressedFile } = useAssetLoader();
 
   // GLTFLoader はアニメーション変更時も使い回すためスコープに引き上げる
   const loader = new GLTFLoader();
@@ -49,32 +43,41 @@ export function useVrmLoader(
   loader.register((parser: GLTFParser) => new VRMAnimationLoaderPlugin(parser));
 
   /**
-   * VRM にアニメーションをセットアップする関数
-   * @param loadedVrm ロードされたVRMモデル
-   * @param loader GLTFLoaderインスタンス
-   * @param zip アセットサーバーのzipファイルのパス
-   * @param vrma VRMAファイルのパス（zip内のパス）
-   * @returns アニメーションミキサー
+   * ZIP バッファから VRMA を取り出してアニメーションをセットアップする。
+   * ネットワーク不要。バッファだけ渡せばいい。
+   * Extracts VRMA from ZIP buffer and sets up animation. No network needed. Just hand over the buffer.
+   *
+   * @param loadedVrm ロード済み VRM モデル
+   * @param loader GLTFLoader インスタンス
+   * @param vrmaZipBuffer VRMA ZIP の ArrayBuffer
+   * @param vrmaFileName ZIP 内のターゲットファイルパス
    */
   async function setupAnimation(
     loadedVrm: VRM,
     loader: GLTFLoader,
-    zip: string,
-    vrma: string
+    vrmaZipBuffer: ArrayBuffer,
+    vrmaFileName: string
   ): Promise<THREE.AnimationMixer | null> {
     console.log('Setting up VRM animation...');
-    // VRMA モーションパックのロードとアニメーションミキサーのセットアップ -- IGNORE
-    // まず、VRMAの入ったZiopファイルを解凍してVRMAファイルを取り出す。 -- IGNORE
-    // Load the VRMA motion pack and set up the animation mixer -- IGNORE
-    // First, unzip the Zip file containing the VRMA and extract the VRMA file. -- IGNORE
-    const vrmaBuffer = await fetchCompressedFile(zip, vrma);
+    // ZIP をメモリ内で展開して VRMA を取り出す。fetchは不要。 -- IGNORE
+    // Decompress ZIP in memory and extract VRMA. No fetch needed. -- IGNORE
+    const unzipped = unzipSync(new Uint8Array(vrmaZipBuffer));
+
+    if (!Object.hasOwn(unzipped, vrmaFileName)) {
+      throw new Error(`File ${vrmaFileName} not found in ZIP`);
+    }
+    // eslint-disable-next-line security/detect-object-injection
+    const motionData: Uint8Array | undefined = unzipped[vrmaFileName];
+    if (!motionData) throw new Error(`File ${vrmaFileName} not found in ZIP`);
+
+    const vrmaBuffer = motionData.slice().buffer;
 
     // VRMAファイルをBlobに変換してURLを作成し、GLTFLoaderでロードする。 -- IGNORE
     // Convert the VRMA file to a Blob, create a URL, and load it with GLTFLoader. -- IGNORE
     const vrmaBlob = new Blob([vrmaBuffer], { type: 'application/octet-stream' });
     const vrmaUrl = URL.createObjectURL(vrmaBlob);
 
-    const vrmaGltf = await loader.loadAsync(vrmaUrl);
+    const vrmaGltf = (await loader.loadAsync(vrmaUrl)) as GLTF;
     console.log('VRMA loaded and parsed:', vrmaGltf);
 
     const vrmAnimations = vrmaGltf.userData.vrmAnimations;
@@ -89,79 +92,62 @@ export function useVrmLoader(
   }
 
   /**
-   * VRMモデルをロードしてシーンに追加する関数
-   * @returns
+   * VRM URL を GLTFLoader に渡してモデルをロードする。
+   * loadAsync を使えばコールバック地獄とはおさらばできる。文明の進歩に感謝しろ。
+   * Loads the VRM model by passing the URL to GLTFLoader.
+   * Using loadAsync means we can say goodbye to callback hell. Thank civilization.
+   *
+   * @param vrmUrl VRM ファイルのダウンロード URL
+   * @param vrmaZipBuffer VRMA ZIP の ArrayBuffer
+   * @param vrmaFile ZIP 内の VRMA ファイルパス（省略時はコンストラクタの vrma_file を使う）
    */
-  async function load() {
-    let url: string;
+  async function load(
+    vrmUrl: string,
+    vrmaZipBuffer: ArrayBuffer,
+    vrmaFile?: string
+  ): Promise<void> {
+    let gltf: GLTF;
     try {
-      const res = await fetch(api);
-      if (!res.ok) {
-        const body = await res.text();
-        console.error('Failed to fetch VRM URL:', res.status, body);
-        isLoading.value = false;
-        return;
-      }
-      const data: { url: string } = await res.json();
-      url = data.url;
-      console.log('VRM_URL_RECEIVED:', url);
+      gltf = (await loader.loadAsync(vrmUrl)) as GLTF;
     } catch (e) {
-      console.error('fetch /api/vrm threw an exception:', e);
+      console.error('[useVrmLoader] loadAsync failed:', e);
       isLoading.value = false;
       return;
     }
 
-    // GLTFLoaderを使用してVRMモデルをロードする。 -- IGNORE
-    // Load the VRM model using GLTFLoader. -- IGNORE
-    loader.load(
-      url,
-      (gltf: GLTF) => {
-        // ロードが完了されたらコールバックが呼ばれるので、VRMモデルをシーンに追加してアニメーションをセットアップする。 -- IGNORE
-        // When loading is complete, the callback is called, so add the VRM model to the scene and set up the animation. -- IGNORE
-        const loadedVrm: VRM = gltf.userData.vrm;
-        // 知ってた？ VRM モデルは glTF のサブセットで、中身は JSON なんだぜ。 -- IGNORE
-        // もっとも、画像などのバイナリデータ BSON ではなくどちらかというと DDS に近いが。 -- IGNORE
-        // Did you know? The VRM model is a subset of glTF, and its contents are JSON. -- IGNORE
-        // However, binary data such as images is closer to DDS rather than BSON. -- IGNORE
+    // 知ってた？ VRM モデルは glTF のサブセットで、中身は JSON なんだぜ。 -- IGNORE
+    // Did you know? The VRM model is a subset of glTF, and its contents are JSON. -- IGNORE
+    const loadedVrm: VRM = gltf.userData.vrm;
+    if (!loadedVrm) {
+      console.error('VRM not found in gltf.userData.vrm');
+      isLoading.value = false;
+      return;
+    }
 
-        if (!loadedVrm) {
-          console.error('VRM not found in gltf.userData.vrm');
-          return;
-        }
-        pivot.add(loadedVrm.scene);
-        vrm.value = loadedVrm;
+    pivot.add(loadedVrm.scene);
+    vrm.value = loadedVrm;
 
-        // それにしても、この API はなんで async/await に対応してないんだろうか。 -- IGNORE
-        // By the way, why doesn't this API support async/await? -- IGNORE
+    // VRM ロード完了後にデフォルトアニメーションを自動起動する
+    setupAnimation(loadedVrm, loader, vrmaZipBuffer, vrmaFile ?? vrma_file)
+      .then(m => {
+        mixer.value = m ?? null;
+      })
+      .catch(console.error);
 
-        // VRM ロード完了後にデフォルトアニメーションを自動起動する
-        setupAnimation(loadedVrm, loader, vrma_zip, vrma_file)
-          .then(m => {
-            mixer.value = m ?? null;
-          })
-          .catch(console.error);
-
-        isLoading.value = false;
-        console.log('ELF_LOADED');
-      },
-      (progress: ProgressEvent) =>
-        // ま、進捗APIはあるだけマシだと思うことにしよう。 -- IGNORE
-        // 問題は、セキュリティの都合上、それをUIに反映させる仕組みがないことなんだよな。 -- IGNORE
-        // Well, let's just be grateful that there is a progress API. -- IGNORE
-        // The problem is that, for security reasons, there is no mechanism to reflect it in the UI. -- IGNORE
-        console.log(`Loading VRM: ${Math.round((progress.loaded / progress.total) * 100)}%`),
-      (error: unknown) => console.error('GLTFLoader error:', error)
-    );
+    isLoading.value = false;
+    console.log('ELF_LOADED');
   }
 
   /**
-   * アニメーションを適用・変更する関数
-   * 既存のアニメーションを停止し、指定した VRMA に切り替える。
-   * VRM がロードされていない場合は何もしない。
-   * @param zip アセットサーバーの Zip ファイルのパス
-   * @param vrma Zip 内の VRMA ファイルのパス
+   * アニメーションを切り替える。既存のアクションを止めて新しい VRMA に差し替える。
+   * VRM がロードされていなければ何もしない（当たり前だ）。
+   * Switches animation. Stops existing actions and replaces with new VRMA.
+   * Does nothing if VRM isn't loaded yet (obviously).
+   *
+   * @param vrmaZipBuffer 新しい VRMA が入った ZIP の ArrayBuffer
+   * @param vrmaFile ZIP 内のパス（省略時はコンストラクタの vrma_file を使う）
    */
-  async function changeAnimation(zip: string, vrma: string): Promise<void> {
+  async function changeAnimation(vrmaZipBuffer: ArrayBuffer, vrmaFile?: string): Promise<void> {
     if (!vrm.value) {
       console.warn('VRM not loaded yet. Call load() first.');
       return;
@@ -169,7 +155,7 @@ export function useVrmLoader(
     mixer.value?.stopAllAction();
     mixer.value = null;
 
-    const newMixer = await setupAnimation(vrm.value, loader, zip, vrma);
+    const newMixer = await setupAnimation(vrm.value, loader, vrmaZipBuffer, vrmaFile ?? vrma_file);
     mixer.value = newMixer ?? null;
   }
 
