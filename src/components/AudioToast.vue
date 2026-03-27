@@ -35,7 +35,7 @@ async function togglePlayback() {
       <div class="audio-toast-content">
         <div class="audio-toast-header d-flex align-items-center" style="color: var(--arasaka-red)">
           <Icon icon="fa:music" class="me-2" />
-          <strong class="me-auto">NOW PLAYING</strong>
+          <strong class="me-auto">{{ appStore.isAudioPlaying ? 'NOW PLAYING' : 'PAUSED' }}</strong>
         </div>
         <div class="audio-toast-body overflow-hidden text-truncate">speaking anything ya</div>
       </div>

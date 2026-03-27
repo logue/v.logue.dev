@@ -73,39 +73,35 @@ const handleAccess = () => {
     <div class="container position-relative text-center">
       <!-- 読み込み中の描写 -->
       <!-- Loading depiction -->
-      <div v-if="isLoading || !ready" class="display-6">
-        <span class="blink">SYSTEM_SYNCHRONIZING...</span>
-      </div>
+      <div v-if="isLoading || !ready" class="display-6 blink">SYSTEM_SYNCHRONIZING...</div>
 
       <div v-else class="action-zone">
         <div class="display-6 mb-4 philosophy">
-          <blockquote class="mb-3" lang="ja">
+          <p class="mb-3" lang="ja">
             何でもできるということは、
-            <strong>自由度が高い</strong>
-            ではなく、
-            <wbr />
-            <strong>どうとでもなってしまう</strong>
-            ということである。
-          </blockquote>
-          <blockquote lang="en">
-            Being able to do anything doesn't mean
-            <strong>high freedom</strong>
-            ,
+            <em>自由度が高い</em>
+            という事ではなく、
             <br />
-            but rather that it can become
-            <strong>anything</strong>
+            <em>どうとでもなってしまう</em>
+            ということである。
+          </p>
+          <p lang="en">
+            Having everything at your disposal isn't
+            <em>freedom</em>
             .
-          </blockquote>
-          <!-- ちなみに、この哲学的な引用は、マラソンルビコンを思い起こさせる白と灰色のメッセージで表示される。 --- IGNORE -->
+            <br />
+            It is the inevitability of becoming just...
+            <em>anything</em>
+            .
+          </p>
+          <!-- ちなみに、この哲学的な引用は、マラソンルビコンを思い起こさせる、白と灰色のメッセージで表示される。 --- IGNORE -->
           <!-- By the way, this philosophical quote is displayed as a white and gray message reminiscent of the Marathon Rubicon. --- IGNORE -->
         </div>
         <!-- ここで、ユーザーは ACCESS する。 -->
-
         <!-- どうせ見えないから、アニメーション中もシステムが起動している感を出すために、背景にグリッドを重ねる。 -->
         <!-- The user grants ACCESS here. -->
-        <!-- The animation is like tearing apart horizontally. -->
-        <!-- Since it's invisible anyway, overlay a grid on the background to give a sense that the system is booting up even during the animation. -->
-        <button class="access-button btn btn-outline-success" @click="handleAccess">
+        <!-- Since it's invisible anyway, layering a grid in the background to give a sense of the system being active even during the animation. -->
+        <button class="access-button btn btn-outline-success btn-lg" @click="handleAccess">
           [ ACCESS ]
         </button>
       </div>
@@ -165,9 +161,8 @@ const handleAccess = () => {
     font-family: 'Courier New', Courier, monospace;
     transition: opacity 0.4s ease;
 
-    blockquote {
-      font-style: italic;
-
+    p {
+      color: var(--bs-gray-500);
       &[lang='ja'] {
         &::before {
           content: '「';
@@ -176,7 +171,6 @@ const handleAccess = () => {
           content: '」';
         }
       }
-
       &[lang='en'] {
         &::before {
           content: '“';
@@ -184,6 +178,9 @@ const handleAccess = () => {
         &::after {
           content: '”';
         }
+      }
+      em {
+        color: var(--bs-white);
       }
     }
   }

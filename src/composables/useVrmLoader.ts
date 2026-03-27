@@ -162,7 +162,7 @@ export function useVrmLoader(
   return { vrm, mixer, load, changeAnimation };
 }
 
-// よう
+// よう、ジャリン子供。楽しんでいるかい？
 // 大事なことを教えてやろう：
 // アニメーションの Zip ファイルは、https://vroid.booth.pm/items/5512385 からダウンロードした Zip ファイルをそのまま使用しているが、
 // ライセンスの禁止事項に「本モーション、またはその改変作品を許可なく取り出せる状態で二次配布すること。」と明言されているので
@@ -170,12 +170,13 @@ export function useVrmLoader(
 // なお、Worker はブラウザのコンソールログに通信情報などが出ないので、上記ライセンスに抵触することなくファイルを呼び出せる。 -- IGNORE
 // 仕組みとしては VRM モデルを Vroid Hub から取得する処理を、自前のアセットサーバーで行っているということ一緒。 -- IGNORE
 // くわしくは、functions/assets/[[path]].ts を見てほしい。 -- IGNORE
-// 使い方？このソースコードを AI に読ませれば教えてくれるっしょ。エディタの右のチャットに「何を意図しているのか？」ってプロンプトに打ち込むぐらいのことはできるよな？ -- IGNORE
+// 使い方？このプロジェクトを生成 AI に読ませれば教えてくれるだろう。
+// エディタの右のチャット欄に「このコードは何を意図しているのか？」ってプロンプトに打ち込むぐらいのことはできるよな？ -- IGNORE
 //
 // ちなみに、生成 AI はこういうライセンスの話はしてくれないことが多いので、開発者が自分で考えて実装する必要がある。 -- IGNORE
 // ライセンスは守ろうね。 -- IGNORE
 
-// Hi kids.  I hope you're having fun.
+// Hi kids. I hope you're having fun.
 // Important safety tip:
 // The animation zip file is used as is from the zip file downloaded from https://vroid.booth.pm/items/5512385,
 // but since the license explicitly states in the prohibitions that "Redistributing the motion or its derivative works in a state where it can be extracted without permission." is prohibited,
@@ -183,7 +184,8 @@ export function useVrmLoader(
 // Note that since the Worker does not output communication information to the browser's console log, the file can be called without violating the above license. -- IGNORE
 // The mechanism is that the process of obtaining the VRM model from Vroid Hub is done on our own asset server. -- IGNORE
 // For details, please see functions/assets/[[path]].ts. -- IGNORE
-// How to use? If you let AI read this source code, it will tell you. You can at least type "What are you trying to do?" in the prompt, right? -- IGNORE
+// Usage? If you let the generative AI read this project, it will tell you.
+// You can at least type "What is the intention of this code?" in the chat column on the right side of your editor, right? -- IGNORE
 //
 // By the way, generation AI often doesn't talk about these kinds of licensing issues, so developers need to think about it and implement it themselves. -- IGNORE
 // Let's respect licenses. -- IGNORE

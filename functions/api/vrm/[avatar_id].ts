@@ -304,7 +304,7 @@ export const onRequest: PagesFunction<Env> = async context => {
 
 // 君に対しては誠実になろう：ここには VRM ファイルにアクセスするためのコードがあった。
 // しかし、私は正直者なので、VRM ファイルを抹消し、VRoid Hub API を呼び出してデータを取得する実装に変更した。 --- IGNORE ---
-// 時々良心が痛むよ。 --- IGNORE ---
+// 真実とは、時に痛みを伴うものでもあるのさ。 --- IGNORE ---
 
 // I'll be honest with you: There used to be code here that directly accessed the VRM file.
 // But since I'm being honest, I refactored it to call the VRoid Hub API to fetch the data instead of directly accessing the VRM file. --- IGNORE ---

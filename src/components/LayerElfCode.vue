@@ -14,9 +14,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 </script>
 
 <template>
-  <aside>
+  <aside class="position-fixed overflow-hidden top-0 left-0 w-100 z-n1">
     <pre
-      class="position-fixed overflow-hidden top-0 left-0 w-100 pa-3 z-n1"
+      class="m-3"
       :style="{ transform: `translateY(${offsetY}px)` }"
     ><span style="color: var(--color-green)">7f 45 4c 46</span> 02 01 01 00  <span style="color: var(--color-blue)">//</span> <span style="color:var(--color-green)">.ELF</span>....
 00 00 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ........
@@ -56,29 +56,28 @@ d0 15 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ......
   </aside>
 </template>
 
-<style scoped>
-pre {
-  /* gray-500 (#adb5bd) は hard-light で背景を明るくするのに絶妙な輝度 */
+<style scoped lang="scss">
+aside {
+  // gray-500 (#adb5bd) は hard-light で背景を明るくするのに絶妙な輝度である。 --- IGNORE ---
+  // gray-500 (#adb5bd) has a perfect brightness for hard-light to brighten the background. --- IGNORE ---
   color: var(--bs-gray-500);
 
-  /* 多重シャドウで光の広がりを作る */
-  /*
-  text-shadow:
-    0 0 5px #fffde7,
-    0 0 10px rgba(255, 253, 231, 0.8),
-    0 0 20px rgba(255, 253, 231, 0.5);
-  filter: brightness(1.5) saturate(1.2);
-  */
-
-  /* ブレンドモードを有効化 */
+  // ブレンドモードを hard-light にすることで、背景に応じて文字が明るくなったり暗くなったりするようにしてみた。 --- IGNORE ---
+  // With the hard-light blend mode, the text will become brighter or darker depending on the background. --- IGNORE ---
   mix-blend-mode: hard-light;
 
-  /* 文字が背景に沈まないよう、不透明度を調整 */
-  opacity: 0.9;
-
+  // マウス操作で文字をドラッグできないようにするための CSS プロパティ。 --- IGNORE ---
+  // 使いにくくなるしね。 --- IGNORE ---
+  // The CSS property to prevent text from being draggable with mouse operations. --- IGNORE ---
+  // It can be annoying to accidentally drag the text around. --- IGNORE ---
   pointer-events: none;
-  font-size: 3rem;
-  font-family: var(--font-ocra), monospace;
-  line-height: 1.1;
+
+  pre {
+    // OCRA フォントは、昔のコンピュータのターミナルを思わせる、レトロでサイバーパンクな雰囲気を出すために選んだ。 --- IGNORE ---
+    // The OCRA font was chosen to give a retro, cyberpunk vibe reminiscent of old computer terminals. --- IGNORE ---
+    font-family: var(--font-ocra), monospace;
+    font-size: 3rem;
+    line-height: 1.1;
+  }
 }
 </style>

@@ -18,7 +18,13 @@ interface SocialLink {
 }
 
 const links: SocialLink[] = [
-  { name: 'X', url: 'https://x.com/logue256', icon: 'fa:twitter' },
+  {
+    // 悲しいことに青い鳥はもういないのだ。 --- IGNORE ---
+    // Unfortunately, the blue bird is no more. --- IGNORE ---
+    name: 'X',
+    url: 'https://x.com/logue256',
+    icon: 'fa6-brands:x-twitter'
+  },
   {
     name: 'Facebook',
     url: 'https://facebook.com/logue256',
@@ -61,6 +67,11 @@ const links: SocialLink[] = [
     icon: 'fa6-brands:rust'
   },
   {
+    name: 'Packagist',
+    url: 'https://packagist.org/users/logue',
+    icon: 'fa6-brands:php'
+  },
+  {
     name: 'Docker Hub',
     url: 'https://hub.docker.com/u/logue',
     icon: 'fa6-brands:docker'
@@ -96,6 +107,13 @@ const links: SocialLink[] = [
     url: 'https://account.xbox.com/ja-jp/Profile?Gamertag=Logue256',
     icon: 'fa6-brands:xbox'
   }
+  /*
+  {
+    name: 'Ko-fi',
+    url: 'https://ko-fi.com/logue256',
+    icon: 'fa6-brands:ko-fi'
+  }
+    */
 ];
 
 onMounted(() => {

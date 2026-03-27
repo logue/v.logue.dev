@@ -61,6 +61,8 @@ const onAccess = () => {
     <AreaHeader />
     <main class="flex-grow-1 container py-5">
       <RouterView />
+      <!-- ここに本文が入る -->
+      <!-- The main content goes here -->
     </main>
     <AreaFooter />
   </div>

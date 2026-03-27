@@ -55,13 +55,14 @@ pnpm types             # Wrangler 型生成
 
 ### GLSL シェーダー
 
-`src/shader/*.glsl` を Vite の asset import で直接取り込む。`vertexShader.glsl` はパススルー、`flagmentShader.glsl` がグリッチ・ノイズ・デジタル色エフェクトを実装 (ファイル名に typo あり — `fragment` → `flagment` — 既存のインポートと合わせること)。
+`src/shader/*.glsl` を Vite の asset import で直接取り込む。`vertexShader.glsl` はパススルー、`fragmentShader.glsl` がグリッチ・ノイズ・デジタル色エフェクトを実装。シェーダーコードはコメントで説明するが、あえて皮肉やシニカルなトーンを交えることもある。
 
 ### Cloudflare Functions
 
 - `functions/api/assets/[[path]].ts` — パストラバーサル防止用の正規表現 `ALLOWED_FILE_RE` を維持すること。新拡張子を追加する場合は許可リストを更新。
 - `functions/api/vrm/[avatar_id].ts` — OAuth トークンリフレッシュロジックは `TOKEN_STORE` KV に依存。レスポンスを `response.json()` で直接パースせず、先にテキストを読み込んでから `JSON.parse` すること (HTML エラーページ対策)。
 - 環境変数: `VROID_APP_ID`, `VROID_CLIENT_SECRET`, `VROID_REFRESH_TOKEN` (wrangler secret で管理)。
+- `VROID_AVATAR_ID` は、拡張子（.vrm）を含んでいるときはアセットサーバー、含まないときは VRoid Hub API を呼び出す実装になっている。現在、VRoid Hub API 側の問題で、IPv6アドレスからのリクエストでアクセスできないので、暫定処置としてアセットサーバー経由で VRM ファイルを取得する実装にしている。将来的に VRoid Hub API が IPv6 に対応したら、直接 API を呼び出す実装に戻す予定。
 
 ### スタイル
 
