@@ -3,8 +3,9 @@ import { onMounted, onUnmounted, ref } from 'vue';
 
 const offsetY = ref(0);
 
-/** 力付くでパララックス・スクロール */
 function onScroll() {
+  // 力付くでパララックス・スクロール
+  // By force, parallax scroll
   offsetY.value = -window.scrollY * 0.25;
 }
 

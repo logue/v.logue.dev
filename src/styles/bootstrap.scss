@@ -2,6 +2,7 @@ $konpeki-deep: #001524;
 $hud-cyan: #18ffff;
 $arasaka-red: #ff003c;
 $logue-steel: #2c3e50;
+$grid-green-rgb: 30, 255, 30;
 
 // バイナリコードのアクセント用カラー
 // for Binary code accents
@@ -24,6 +25,7 @@ $color-ghost-blue: rgba(30, 80, 255, 0.85);
   --hud-cyan: #{$hud-cyan};
   --arasaka-red: #{$arasaka-red};
   --logue-steel: #{$logue-steel};
+  --grid-green-rgb: #{$grid-green-rgb};
 
   --color-red: #{$color-red};
   --color-green: #{$color-green};
@@ -35,6 +37,12 @@ $color-ghost-blue: rgba(30, 80, 255, 0.85);
 
   --font-ocra: 'ocra';
   --font-lubri: 'WDXL Lubrifont JP N';
+}
+
+// なんで、このクラスがbootstrapにないのか？ --IGNORE--
+// Why doesn't this class exist in Bootstrap? --IGNORE--
+.inset-0 {
+  inset: 0;
 }
 
 // 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
@@ -71,6 +79,8 @@ $tooltip-color: $color-ghost-green;
 @import '../../node_modules/bootstrap/scss/tooltip';
 @import '../../node_modules/bootstrap/scss/spinners';
 @import '../../node_modules/bootstrap/scss/navbar';
+@import '../../node_modules/bootstrap/scss/card';
+@import '../../node_modules/bootstrap/scss/buttons';
 // ...
 
 // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`

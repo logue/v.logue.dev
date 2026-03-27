@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import SocialLinks from '@/components/SocialLinks.vue';
 import VrmCanvas from '@/components/VrmCanvas.vue';
+import { useAppStore } from '@/stores/useAppStore';
 
 // VRM 関連のパラメータ。変えたければここを変えろ。それだけ。
 // VRM-related parameters. Change them here if needed. That's all.
-const api = `/api/vrm/${String(import.meta.env.VITE_VROID_AVATAR_ID)}`;
+const vrm = String(import.meta.env.VITE_VROID_AVATAR_ID);
+const store = useAppStore();
+
+const onVrmReady = () => {
+  // App 側へイベントを投げるのをやめて、ストア経由で状態共有する。
+  // No more bubbling to App; share readiness through store instead.
+  store.setVrmReady(true);
+};
 
 const accomplishments = [
   { id: 'OSS', label: 'VUE-CODEMIRROR6', detail: '1.8M+ DL/YR' },
@@ -14,35 +22,78 @@ const accomplishments = [
 </script>
 
 <template>
-  <h1 class="display-1 mb-4 text-center glitch-text font-lubri">LOGUE.DEV</h1>
-  <p class="lead mb-3 text-center">
-    EXPERIENCE-DRIVEN INVERSION:
-    <br />
-    REVERSE-ENGINEERING THE STACK TO MANIFEST THE IDEAL UX.
-  </p>
-
-  <VrmCanvas :api="api" zip="VRMA_MotionPack.zip" vrma="VRMA_MotionPack/vrma/VRMA_01.vrma" />
-
-  <div class="row mt-3 mx-auto py-4">
-    <div
-      v-for="item in accomplishments"
-      :key="item.id"
-      class="col card border-start border-info border-2"
-    >
-      <div class="card-header font-lubri opacity-50">[{{ item.id }}]</div>
-      <div class="card-body">
-        <div class="fw-bold">{{ item.label }}</div>
-        <div class="small opacity-75">{{ item.detail }}</div>
-      </div>
-    </div>
+  <div class="mb-2 text-center">
+    <h1 class="glitch-text display-1 font-lubri">LOGUE.DEV</h1>
+    <p class="lead">
+      EXPERIENCE-DRIVEN INVERSION:
+      <br />
+      REVERSE-ENGINEERING THE STACK TO MANIFEST THE IDEAL UX.
+    </p>
+    <!-- 普通のサイトとタイトルとリード文 -->
+    <!-- Just a normal site title and lead text -->
   </div>
 
-  <SocialLinks />
+  <section class="d-flex justify-content-center align-items-center flex-column my-5">
+    <!-- A E S T H E T I C S --IGNORE -->
+    <VrmCanvas
+      :vrm="vrm"
+      zip="VRMA_MotionPack.zip"
+      vrma="VRMA_MotionPack/vrma/VRMA_01.vrma"
+      @ready="onVrmReady"
+    />
+    <!-- “なぜ、男アバターを使うのか？”これは「自由度が高いということは、何でもできるではなく、どうとでも作れてしまう」という自分の哲学に基づく。 --- IGNORE  -->
+    <!-- VRoid に限らず女アバターは服の種類が多く、「かわいく見せる」ことは誰にとっても簡単なことである。また、単に「かわいい」といってもその方法は多岐にわたる。  --- IGNORE -->
+    <!-- しかし、男アバターはもともと服の種類が少ない上に、「かっこよく見せたい」という需要のほうがはるかに多いので「かわいく見せる」という事は意外と困難である。 --- IGNORE -->
+    <!-- 「かわいい男アバター」という、あえて制約の多いところに挑戦するという行為そのものが、「制約下で最良の結果を出す」という考え方に結びついているだろう。  --- IGNORE -->
+    <!-- ちなみに、髪の毛が青いのは、MacOS 7の頃のMacのアイコンの画面由来。-->
+    <!-- MacOS 7 の亡霊を、Material Design の器に閉じ込めた。ガンマ値の差は、埋まらない歴史の溝だ。-->
+
+    <!-- “Why use a male avatar?” This is based on my philosophy that "high freedom means not just being able to do anything, but being able to create anything."  --- IGNORE -->
+    <!-- Not just in VRoid, but in general, female avatars have a wide variety of clothing options, making it easy for anyone to look "cute". And even when we say "cute", there are many different ways to achieve that.  --- IGNORE -->
+    <!-- However, male avatars have fewer clothing options to begin with, and since the demand to look "cool" is much higher, making them look "cute" can be surprisingly difficult.  --- IGNORE -->
+    <!-- The act of deliberately challenging the more constrained "cute male avatar" scenario can be said to be based on my philosophy of producing the best results under constraints.  --- IGNORE -->
+    <!-- By the way, the reason the hair is blue is inspired by the Mac icon screen from the days of MacOS 7.  --- IGNORE -->
+    <!-- I trapped the ghost of MacOS 7 in a Material Design vessel. The difference in gamma values is an unbridgeable chasm of history.  --- IGNORE -->
+  </section>
+
+  <section class="row mt-3 mx-auto py-2">
+    <div v-for="item in accomplishments" :key="item.id" class="col ma-3">
+      <div class="card">
+        <div class="card-header font-lubri opacity-50">[{{ item.id }}]</div>
+        <div class="card-body">
+          <div class="fw-bold">{{ item.label }}</div>
+          <div class="small opacity-75">{{ item.detail }}</div>
+        </div>
+      </div>
+    </div>
+    <!-- ここは、いわゆる「実績」を表示するセクション。  --- IGNORE -->
+    <!-- 後で拡張しやすくしているが、多分別コンポーネントにしたほうがいいだろう。  --- IGNORE -->
+    <!-- This is a section that displays so-called "accomplishments".  --- IGNORE -->
+    <!-- It's designed to be easily extendable later, but it might be better to make it a separate component.  --- IGNORE -->
+  </section>
+
+  <nav aria-label="External Links" class="mt-5 mx-auto text-center">
+    <SocialLinks />
+    <!-- 各種SNSなどへのリンクを表示するセクション。  --- IGNORE -->
+    <!-- 全部クリックして確認するようなもの好きな人は、たぶんいないだろうけどね。 --- IGNORE -->
+    <!-- This is a section that displays links to various social media platforms.  --- IGNORE -->
+    <!-- Probably not many people would be interested in clicking and checking them all out, though. --- IGNORE -->
+  </nav>
+
   <!-- どうでもいいけど、bootstrap のクラス名の順番も tailwind みたく、 linter で整形できるようにしてほしいね。 --- IGNORE -->
   <!-- This is irrelevant, but I wish Bootstrap's class names could be formatted with a linter, like Tailwind's. --- IGNORE -->
 </template>
 
 <style scoped>
+.card {
+  /* 無駄な改造 */
+  /* Unnecessary modifications */
+  border: none;
+  border-left: 0.25rem solid var(--hud-cyan);
+  border-radius: 0;
+  background-color: transparent;
+}
+
 .glitch-text:hover {
   animation: glitch-anim 0.3s infinite;
   color: var(--arasaka-red);

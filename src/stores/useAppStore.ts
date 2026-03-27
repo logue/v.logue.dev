@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
 import { AudioManager } from '@/services/AudioManager';
 
@@ -11,6 +12,7 @@ export const useAppStore = defineStore('app', () => {
   // AudioManager is used as a singleton. Saying it again.
   const audioMgr = new AudioManager();
   let audioInitialized = false;
+  const vrmReady = ref(false);
 
   /**
    * バックグラウンドでオーディオを準備だけしておく。まだ鳴らさない。
@@ -37,5 +39,13 @@ export const useAppStore = defineStore('app', () => {
     audioMgr.start();
   }
 
-  return { audioMgr, initAudio, startAudio };
+  /**
+   * VRM の準備状態を更新する。真偽値ひとつに人生を託す設計。
+   * Update VRM readiness state. Entire flow hanging on one boolean, as usual.
+   */
+  function setVrmReady(ready: boolean) {
+    vrmReady.value = ready;
+  }
+
+  return { audioMgr, initAudio, startAudio, vrmReady, setVrmReady };
 });

@@ -17,10 +17,16 @@ const store = useAppStore();
 // Cover visibility flag. Obviously true at first. Too obvious to comment on, yet here we are.
 const coverVisible = ref(true);
 
-const onLoaded = async (audio: ArrayBuffer) => {
+// オーディオとVRM両方の準備状況をトラッキング。
+// オーディオロード完了フラグ。
+// Audio loaded flag.
+const audioReady = ref(false);
+
+const onAudioLoaded = async (audio: ArrayBuffer) => {
   // オーディオだけ受け取る。VRM はもう VrmCanvas が自分でやってる。
   // Only receiving audio. VRM is already handling itself in VrmCanvas.
   await store.initAudio(audio);
+  audioReady.value = true;
 };
 
 const onAccess = () => {
@@ -32,18 +38,23 @@ const onAccess = () => {
 </script>
 
 <template>
-  <!-- 全ページ共通のカバー。ここで ACCESS してもらう。 -->
-  <!-- App-wide cover. The user grants ACCESS here. -->
   <PageCover
     v-if="coverVisible"
     audio="speaking anything ya (loop).ogg"
-    @loaded="onLoaded"
+    :ready="audioReady && store.vrmReady"
+    @loaded="onAudioLoaded"
     @access="onAccess"
   />
+  <!-- 全ページ共通のカバー。ここで ACCESS してもらう。 -->
+  <!-- オーディオと VRM 両方の準備完了まで ACCESS ボタンは無効化される。 -->
+  <!-- App-wide cover. The user grants ACCESS here. -->
+  <!-- ACCESS button is disabled until both audio and VRM are ready. -->
 
   <LayerGlitch :bgsrc="bgsrc" />
   <LayerElfCode />
   <LayerScanline />
+  <!-- 実はスタイルシートじゃなくレイヤー --IGNORE -->
+  <!-- Actually, it's a layer, not a stylesheet --IGNORE -->
 
   <div class="d-flex flex-column min-vh-100 z-1">
     <AreaHeader />
@@ -52,8 +63,6 @@ const onAccess = () => {
     </main>
     <AreaFooter />
   </div>
-  <!-- 実はスタイルシートじゃなくレイヤー --IGNORE -->
-  <!-- Actually, it's a layer, not a stylesheet --IGNORE -->
 </template>
 
 <style lang="scss">

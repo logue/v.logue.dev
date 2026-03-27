@@ -102,24 +102,22 @@ onMounted(() => {
 
 <template>
   <!-- eslint-disable vuejs-accessibility/anchor-has-content -->
-  <nav aria-label="External Links" class="mt-5 mx-auto text-center">
-    <ul class="list-inline mb-0">
-      <li v-for="(link, index) in links" :key="index" class="list-inline-item mx-2">
-        <a
-          :data-bs-title="link.name"
-          :href="link.url"
-          :title="link.name"
-          class="cyber-icon-link fs-3"
-          data-bs-placement="top"
-          data-bs-toggle="tooltip"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <Icon :icon="link.icon" />
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <ul class="list-inline mb-0">
+    <li v-for="(link, index) in links" :key="index" class="list-inline-item mx-2">
+      <a
+        :data-bs-title="link.name"
+        :href="link.url"
+        :title="link.name"
+        class="cyber-icon-link fs-3"
+        data-bs-placement="top"
+        data-bs-toggle="tooltip"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <Icon :icon="link.icon" />
+      </a>
+    </li>
+  </ul>
   <!-- ここでは、Font Awesomeのアイコンを使用して、各ソーシャルメディアのロゴを表示している。 --- IGNORE -->
   <!-- アイコンは、Bootstrapのツールチップと組み合わせて、ユーザーがアイコンにカーソルを合わせたときに、ツールチップが表示されるようになっている。 --- IGNORE -->
 
@@ -139,7 +137,8 @@ onMounted(() => {
   color: var(--hud-cyan);
   transform: translateY(-3px);
   /* Chromatic aberration: blue ghost shifted left, red ghost shifted right */
-  filter: drop-shadow(-3px 0 0 var(--color-ghost-blue)) /* 左：青 */
-    drop-shadow(3px 0 0 var(--color-ghost-red)) /* 右：赤 */ drop-shadow(0 0 8px var(--hud-cyan));
+  filter: drop-shadow(-0.5rem 0 0.05rem var(--color-ghost-blue)) /* 左：青 */
+    drop-shadow(0.5rem 0 0.05rem var(--color-ghost-red)) /* 右：赤 */
+    drop-shadow(0 0 8px var(--hud-cyan));
 }
 </style>
