@@ -26,3 +26,13 @@ interface ImportMeta {
 interface PagesFunction<T> {
   (context: { env: T; request: Request }): Promise<Response>;
 }
+
+declare module '*.glsl' {
+  const source: string;
+  export default source;
+}
+
+declare module '*.glsl?raw' {
+  const source: string;
+  export default source;
+}

@@ -150,6 +150,9 @@ importers:
       vite-plugin-checker:
         specifier: ^0.12.0
         version: 0.12.0(eslint@10.1.0(jiti@2.6.1))(optionator@0.9.4)(oxlint@1.57.0)(stylelint@17.6.0(typescript@6.0.2))(typescript@6.0.2)(vite@8.0.3(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1)(sass-embedded@1.98.0)(sass@1.98.0)(yaml@2.8.3))(vue-tsc@3.2.6(typescript@6.0.2))
+      vite-plugin-glsl:
+        specifier: ^1.5.6
+        version: 1.5.6(esbuild@0.27.3)(vite@8.0.3(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1)(sass-embedded@1.98.0)(sass@1.98.0)(yaml@2.8.3))
       vite-plugin-javascript-obfuscator:
         specifier: ^3.1.0
         version: 3.1.0
@@ -3890,6 +3893,19 @@ packages:
       vti:
         optional: true
       vue-tsc:
+        optional: true
+
+  vite-plugin-glsl@1.5.6:
+    resolution: {integrity: sha512-h3RfTiaI4cC8hICFZk5TBAAxmIuM0b/qkdrjYpqPtaL8bcxNEoEFXXdlISPGmDQ09eP0aJC8V2/BgTmPXspC8w==}
+    engines: {node: '>= 20.17.0', npm: '>= 10.8.3'}
+    peerDependencies:
+      '@rollup/pluginutils': ^5.x
+      esbuild: '>= 0.25'
+      vite: '>= 3.x'
+    peerDependenciesMeta:
+      '@rollup/pluginutils':
+        optional: true
+      esbuild:
         optional: true
 
   vite-plugin-inspect@11.3.3:
@@ -7824,6 +7840,12 @@ snapshots:
       stylelint: 17.6.0(typescript@6.0.2)
       typescript: 6.0.2
       vue-tsc: 3.2.6(typescript@6.0.2)
+
+  vite-plugin-glsl@1.5.6(esbuild@0.27.3)(vite@8.0.3(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1)(sass-embedded@1.98.0)(sass@1.98.0)(yaml@2.8.3)):
+    dependencies:
+      vite: 8.0.3(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1)(sass-embedded@1.98.0)(sass@1.98.0)(yaml@2.8.3)
+    optionalDependencies:
+      esbuild: 0.27.3
 
   vite-plugin-inspect@11.3.3(vite@8.0.3(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1)(sass-embedded@1.98.0)(sass@1.98.0)(yaml@2.8.3)):
     dependencies:

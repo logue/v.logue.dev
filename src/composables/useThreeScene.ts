@@ -2,8 +2,15 @@ import { onMounted, onUnmounted, type Ref } from 'vue';
 
 import { VRM } from '@pixiv/three-vrm';
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 import type { ThreeSceneOptions } from '@/interfaces/ThreeSceneOptions';
+
+import fragmentShader from '@/shader/fragmentShader.glsl';
+import vertexShader from '@/shader/vertexShader.glsl';
 
 /**
  * Three.js シーン・カメラ・レンダラー・アニメーションループ・リサイズ対応
@@ -18,6 +25,7 @@ export function useThreeScene(
   pivot: THREE.Object3D,
   getVrm: () => VRM | null,
   getMixer: () => THREE.AnimationMixer | null,
+  getBeatIntensity: () => number,
   options: ThreeSceneOptions = {}
 ) {
   const {
@@ -37,6 +45,12 @@ export function useThreeScene(
   let prevTime = performance.now();
   /** カメラ */
   let camera: THREE.PerspectiveCamera;
+  /** ポストプロセス用コンポーザー */
+  let composer: EffectComposer;
+  /** グリッチシェーダーパス */
+  let glitchPass: ShaderPass | undefined;
+  /** ビート強度の減衰バッファ */
+  let smoothedIntensity = 0;
   /** キャンバスサイズ監視 */
   let resizeObserver: ResizeObserver;
 
@@ -56,6 +70,12 @@ export function useThreeScene(
     // setPixelRatio before setSize — otherwise canvas resolution is committed before dpr is applied.
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(width, height, false);
+    composer?.setPixelRatio(window.devicePixelRatio);
+    composer?.setSize(width, height);
+    if (glitchPass) {
+      const resolution = glitchPass.uniforms.uResolution?.value as THREE.Vector2 | undefined;
+      resolution?.set(width, height);
+    }
   };
 
   onMounted(() => {
@@ -83,6 +103,7 @@ export function useThreeScene(
       alpha: true,
       antialias: true
     });
+
     // setPixelRatio を先に設定してから setSize を呼ぶ。逆順だと中間状態で canvas.width が低解像度のままになる。
     // Set pixel ratio BEFORE setSize to avoid intermediary low-res canvas state.
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -91,6 +112,9 @@ export function useThreeScene(
     // 色空間の設定。これをしないと、VRMモデルの色が暗くなってしまう。 -- IGNORE
     // Color space settings. If you don't do this, the VRM model's colors will appear darker. -- IGNORE
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    // 背景を透明(0)でクリア
+    renderer.setClearColor(0x000000, 0);
 
     /** シーンの設定 */
     const scene = new THREE.Scene();
@@ -110,6 +134,32 @@ export function useThreeScene(
 
     scene.add(pivot);
 
+    // RenderTarget を作成して Composer に渡す
+    const renderTarget = new THREE.WebGLRenderTarget(initW, initH, {
+      format: THREE.RGBAFormat, // Alpha を保持
+      stencilBuffer: false
+    });
+    composer = new EffectComposer(renderer, renderTarget);
+    composer.addPass(new RenderPass(scene, camera));
+
+    // グリッチをシェーダーで実装する。 -- IGNORE
+    // Implementing glitch with shaders. -- IGNORE
+    glitchPass = new ShaderPass({
+      uniforms: {
+        tDiffuse: { value: null },
+        uTime: { value: 0 },
+        uIntensity: { value: 0 },
+        uResolution: { value: new THREE.Vector2(initW, initH) }
+      },
+      vertexShader,
+      fragmentShader
+    });
+    composer.addPass(glitchPass);
+
+    // 色空間変換を明示しないと、ポストプロセス経由で色が簡単に迷子になる。
+    // Without an explicit output pass, post-processing can quietly bypass expected color conversion.
+    composer.addPass(new OutputPass());
+
     /** アニメーションループ */
     const update = () => {
       frameId = requestAnimationFrame(update);
@@ -122,10 +172,19 @@ export function useThreeScene(
       const delta = (now - prevTime) / 1000;
       prevTime = now;
 
+      const beat = getBeatIntensity();
+      const attack = Math.min(1, beat * 2.2);
+      smoothedIntensity = Math.max(attack, smoothedIntensity * 0.94);
+      const shaderIntensity = Math.min(1, Math.pow(smoothedIntensity, 0.65));
+      if (glitchPass) {
+        glitchPass.uniforms.uIntensity!.value = shaderIntensity;
+        glitchPass.uniforms.uTime!.value = now * 0.001;
+      }
+
       /** アニメーションの更新 */
       getMixer()?.update(delta);
       getVrm()?.update(delta);
-      renderer.render(scene, camera);
+      composer.render();
     };
     update();
 
@@ -150,6 +209,7 @@ export function useThreeScene(
     // アンマウント時はリソースをクリーンアップする。 -- IGNORE
     cancelAnimationFrame(frameId);
     resizeObserver?.disconnect();
+    composer?.dispose();
     renderer?.dispose();
   });
 }

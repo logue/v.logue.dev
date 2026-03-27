@@ -8,6 +8,7 @@ import { useAssetLoader } from '@/composables/useAssetLoader';
 import { useDragRotation } from '@/composables/useDragRotation';
 import { useThreeScene } from '@/composables/useThreeScene';
 import { useVrmLoader } from '@/composables/useVrmLoader';
+import { useAppStore } from '@/stores/useAppStore';
 
 interface Props {
   /** VRM ファイルのパスもしくはID */
@@ -44,12 +45,14 @@ const vrmFileUrl = computed<string>(() => {
 
 const { vrm, mixer, load } = useVrmLoader(props.vrma, pivot, isLoading);
 const { fetchFile } = useAssetLoader();
+const store = useAppStore();
 
 useThreeScene(
   canvasRef,
   pivot,
   () => vrm.value,
   () => mixer.value,
+  () => store.audioMgr.getBeatIntensity(),
   {
     position: { x: 0, y: 0.5, z: 7 },
     ambientLight: { color: 0xf8f9fa, intensity: 1.2 },

@@ -7,6 +7,7 @@ import { cloudflare } from '@cloudflare/vite-plugin';
 import { checker } from 'vite-plugin-checker';
 import obfuscatorPlugin from 'vite-plugin-javascript-obfuscator';
 import vueDevTools from 'vite-plugin-vue-devtools';
+import glsl from 'vite-plugin-glsl';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }): UserConfig => {
@@ -23,6 +24,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
       // Cloudflare Workers (dev only: provides miniflare bindings via vite dev server)
       // Excluded during build to avoid adding Workers Assets config that conflicts with Pages projects.
       ...(command === 'serve' ? [cloudflare()] : []),
+      glsl(),
       obfuscatorPlugin({
         include: ['src/**/*.ts', 'src/**/*.vue'],
         exclude: [/node_modules/, /polyfill/],
