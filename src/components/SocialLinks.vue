@@ -4,6 +4,10 @@ import { onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 import { Tooltip } from 'bootstrap';
 
+import { useAppStore } from '@/stores/useAppStore';
+
+const appStore = useAppStore();
+
 interface SocialLink {
   /** ツールチップの内容 */
   name: string;
@@ -113,6 +117,7 @@ onMounted(() => {
         data-bs-toggle="tooltip"
         rel="noopener noreferrer"
         target="_blank"
+        @click="appStore.pauseAudio"
       >
         <Icon :icon="link.icon" />
       </a>

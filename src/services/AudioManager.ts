@@ -5,6 +5,7 @@ export class AudioManager {
   private readonly analyser: AnalyserNode;
   private hasStarted = false;
   private pendingStart = false;
+  private isPlayingState = false;
 
   constructor() {
     this.ctx = new AudioContext();
@@ -36,6 +37,7 @@ export class AudioManager {
           this.source.start(0);
           this.hasStarted = true;
           this.pendingStart = false;
+          this.isPlayingState = true;
         }
       } catch (e) {
         console.warn('❌️ AudioContext unlock failed:', e);
@@ -77,9 +79,45 @@ export class AudioManager {
       this.source.start(0);
       this.hasStarted = true;
       this.pendingStart = false;
+      this.isPlayingState = true;
     }
 
     // ユーザー操作前は autoplay 制限で拒否されるため、gesture 後の unlock 処理に委ねる
+  }
+
+  /**
+   * 再生を一時停止する
+   */
+  public async pause() {
+    if (!this.source || !this.isPlayingState) return;
+
+    try {
+      await this.ctx.suspend();
+      this.isPlayingState = false;
+    } catch (e) {
+      console.warn('❌️ AudioContext pause failed:', e);
+    }
+  }
+
+  /**
+   * 一時停止から再開する
+   */
+  public async resume() {
+    if (!this.source || this.isPlayingState) return;
+
+    try {
+      await this.ctx.resume();
+      this.isPlayingState = true;
+    } catch (e) {
+      console.warn('❌️ AudioContext resume failed:', e);
+    }
+  }
+
+  /**
+   * 再生中かどうかを取得する
+   */
+  public get isPlaying() {
+    return this.isPlayingState;
   }
 
   /**

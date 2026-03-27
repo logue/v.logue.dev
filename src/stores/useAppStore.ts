@@ -13,6 +13,7 @@ export const useAppStore = defineStore('app', () => {
   const audioMgr = new AudioManager();
   let audioInitialized = false;
   const vrmReady = ref(false);
+  const isAudioPlaying = ref(false);
 
   /**
    * バックグラウンドでオーディオを準備だけしておく。まだ鳴らさない。
@@ -37,6 +38,25 @@ export const useAppStore = defineStore('app', () => {
   function startAudio() {
     if (!audioInitialized) return;
     audioMgr.start();
+    isAudioPlaying.value = audioMgr.isPlaying;
+  }
+
+  /**
+   * オーディオを一時停止する
+   * Pause audio playback.
+   */
+  async function pauseAudio() {
+    await audioMgr.pause();
+    isAudioPlaying.value = audioMgr.isPlaying;
+  }
+
+  /**
+   * 一時停止したオーディオを再開する
+   * Resume paused audio playback.
+   */
+  async function resumeAudio() {
+    await audioMgr.resume();
+    isAudioPlaying.value = audioMgr.isPlaying;
   }
 
   /**
@@ -47,5 +67,14 @@ export const useAppStore = defineStore('app', () => {
     vrmReady.value = ready;
   }
 
-  return { audioMgr, initAudio, startAudio, vrmReady, setVrmReady };
+  return {
+    audioMgr,
+    initAudio,
+    startAudio,
+    pauseAudio,
+    resumeAudio,
+    vrmReady,
+    setVrmReady,
+    isAudioPlaying
+  };
 });

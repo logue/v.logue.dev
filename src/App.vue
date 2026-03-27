@@ -3,6 +3,7 @@ import { ref } from 'vue';
 
 import AreaFooter from './components/AreaFooter.vue';
 import AreaHeader from './components/AreaHeader.vue';
+import AudioToast from './components/AudioToast.vue';
 import LayerElfCode from './components/LayerElfCode.vue';
 import LayerGlitch from './components/LayerGlitch.vue';
 import LayerScanline from './components/LayerScanline.vue';
@@ -63,6 +64,8 @@ const onAccess = () => {
     </main>
     <AreaFooter />
   </div>
+
+  <AudioToast />
 </template>
 
 <style lang="scss">

@@ -81,6 +81,7 @@ $tooltip-color: $color-ghost-green;
 @import '../../node_modules/bootstrap/scss/navbar';
 @import '../../node_modules/bootstrap/scss/card';
 @import '../../node_modules/bootstrap/scss/buttons';
+@import '../../node_modules/bootstrap/scss/toasts';
 // ...
 
 // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`

@@ -40,7 +40,7 @@ const vrmFileUrl = computed<string>(() => {
   // as a temporary measure, if the extension is included, change the implementation to fetch from the asset server.
   // <https://discord.com/channels/1137920866156544040/1137920867091877908/1486259418805964942>
   const vrm = props.vrm;
-  return vrm.endsWith('.vrm') ? `/api/asset/${vrm}` : `/api/vrm/${vrm}`;
+  return vrm.endsWith('.vrm') ? `/api/assets/${vrm}` : `/api/vrm/${vrm}`;
 });
 
 const { vrm, mixer, load } = useVrmLoader(props.vrma, pivot, isLoading);
