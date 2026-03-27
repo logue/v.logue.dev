@@ -12,6 +12,8 @@ import type { ThreeSceneOptions } from '@/interfaces/ThreeSceneOptions';
 import fragmentShader from '@/shader/fragmentShader.glsl';
 import vertexShader from '@/shader/vertexShader.glsl';
 
+console.log('[useThreeScene] Imported shaders:', { fragmentShader, vertexShader });
+
 /**
  * Three.js シーン・カメラ・レンダラー・アニメーションループ・リサイズ対応
  * @param canvasRef 対象のcanvasタグ
@@ -86,6 +88,16 @@ export function useThreeScene(
     const initW = canvas.clientWidth || window.innerWidth;
     const initH = canvas.clientHeight || window.innerHeight;
 
+    console.log('[useThreeScene] Canvas mounted:', {
+      canvasRef: canvas,
+      clientWidth: canvas.clientWidth,
+      clientHeight: canvas.clientHeight,
+      initW,
+      initH,
+      offsetParent: canvas.offsetParent,
+      computedStyle: window.getComputedStyle(canvas)
+    });
+
     // カメラの設定
     camera = new THREE.PerspectiveCamera(
       perspectiveCamera.fov,
@@ -144,6 +156,12 @@ export function useThreeScene(
 
     // グリッチをシェーダーで実装する。 -- IGNORE
     // Implementing glitch with shaders. -- IGNORE
+    console.log('[useThreeScene] Creating ShaderPass with:', {
+      vsLength: vertexShader.length,
+      fsLength: fragmentShader.length,
+      vsPreview: vertexShader.substring(0, 50),
+      fsPreview: fragmentShader.substring(0, 50)
+    });
     glitchPass = new ShaderPass({
       uniforms: {
         tDiffuse: { value: null },
@@ -154,6 +172,7 @@ export function useThreeScene(
       vertexShader,
       fragmentShader
     });
+    console.log('[useThreeScene] ShaderPass created:', glitchPass);
     composer.addPass(glitchPass);
 
     // 色空間変換を明示しないと、ポストプロセス経由で色が簡単に迷子になる。
@@ -161,8 +180,23 @@ export function useThreeScene(
     composer.addPass(new OutputPass());
 
     /** アニメーションループ */
+    let frameCount = 0;
     const update = () => {
       frameId = requestAnimationFrame(update);
+      frameCount++;
+
+      // Debug log every 60 frames to avoid spam
+      if (frameCount % 60 === 0) {
+        const vrm = getVrm();
+        const mixer = getMixer();
+        console.log('[useThreeScene] Render loop:', {
+          frameCount,
+          vrmLoaded: vrm !== null,
+          mixerActive: mixer !== null,
+          canvasSize: { width: renderer.domElement.width, height: renderer.domElement.height }
+        });
+      }
+
       /** 現在時刻 */
       const now = performance.now();
       // performance.now() は結構精度が高いぞ。 -- IGNORE

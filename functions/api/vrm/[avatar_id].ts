@@ -225,7 +225,7 @@ export const onRequest: PagesFunction<Env> = async context => {
     );
   }
   const accountModelsData: any = accountModelsParsed.data;
-  console.info('Account models:', JSON.stringify(accountModelsData));
+  // console.info('Account models:', JSON.stringify(accountModelsData));
 
   // character.id が avatarId と一致するモデルを探す
   const models: any[] = accountModelsData?.data ?? [];

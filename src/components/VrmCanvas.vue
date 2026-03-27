@@ -79,7 +79,25 @@ onMounted(async () => {
       emit('ready');
       return;
     }
-    const { url: vrmUrl } = (await apiRes.json()) as { url: string };
+
+    // Check if the response is JSON (VRoid Hub API) or binary (asset server)
+    const contentType = apiRes.headers.get('Content-Type') ?? '';
+    console.log('[VrmCanvas] Response content-type:', contentType);
+
+    let vrmUrl: string;
+    if (contentType.includes('application/json')) {
+      // VRoid Hub API から JSON レスポンスを取得する場合
+      // Getting JSON response from VRoid Hub API
+      const { url: apiUrl } = (await apiRes.json()) as { url: string };
+      vrmUrl = apiUrl;
+      console.log('[VrmCanvas] Using VRoid Hub URL:', vrmUrl);
+    } else {
+      // アセットサーバーから直接 VRM バイナリを取得する場合
+      // Using binary VRM from asset server directly
+      const vrmBlob = await apiRes.blob();
+      vrmUrl = URL.createObjectURL(vrmBlob);
+      console.log('[VrmCanvas] Using asset server blob URL:', vrmUrl);
+    }
 
     load(vrmUrl, vrmaZipBuffer, props.vrma)
       .then(() => {

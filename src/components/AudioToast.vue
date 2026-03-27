@@ -55,6 +55,7 @@ async function togglePlayback() {
 .audio-toast {
   z-index: 1011;
   gap: 0.5rem;
+  height: 3rem;
   width: 3rem;
   border-radius: 999px;
   border: 1px solid rgba(var(--bs-light-rgb), 0.25);
