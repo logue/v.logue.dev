@@ -1,5 +1,5 @@
 /** 許可するファイルのマッチパターン（スペース・括弧を含むファイル名にも対応） */
-const ALLOWED_FILE_RE = /^[\w()\s-][\w()\s/.-]*\.(zip|ogg|mov|mp4)$/i;
+const ALLOWED_FILE_RE = /^[\w()\s-][\w()\s/.-]*\.(zip|ogg|mov|mp4|vrm)$/i;
 
 interface Env {
   ASSET_HOST: string;
