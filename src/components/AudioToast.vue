@@ -37,14 +37,26 @@ async function togglePlayback() {
           <Icon icon="fa:music" class="me-2" />
           <strong class="me-auto">{{ appStore.isAudioPlaying ? 'NOW PLAYING' : 'PAUSED' }}</strong>
         </div>
-        <div class="audio-toast-body overflow-hidden text-truncate">speaking anything ya</div>
+        <div class="audio-toast-body overflow-hidden text-truncate">
+          speaking anything ya
+          <!-- 曲名がハードコーディングされているのは、自分が作曲者だからなのだ。-->
+          <!-- The song title is hardcoded because I'm the composer. -->
+          <!--eslint-disable-next-line vuejs-accessibility/anchor-has-content -->
+          <a
+            href="https://soundcloud.com/logue256/speaking-anything-ya?si=cb6db961df2e4082a40f42d70480be73&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="ms-2"
+            style="color: var(--bs-orange)"
+          >
+            <Icon icon="fa:soundcloud" class="ms-1" />
+          </a>
+        </div>
       </div>
     </section>
   </div>
   <!-- 音楽が再生されっぱなしなのは問題なので、再生/一時停止制御を実装。AudioManager の isPlaying で状態を追跡。 -->
-  <!-- 曲名がハードコーディングされているのは、自分が作曲者だからなのだ。-->
   <!-- Since having music play indefinitely can be an issue, I've implemented play/pause controls. The AudioManager's isPlaying tracks the state. -->
-  <!-- The song title is hardcoded because I'm the composer. -->
 </template>
 
 <style scoped lang="scss">
