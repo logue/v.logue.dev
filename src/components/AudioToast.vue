@@ -43,11 +43,10 @@ async function togglePlayback() {
           <!-- The song title is hardcoded because I'm the composer. -->
           <!--eslint-disable-next-line vuejs-accessibility/anchor-has-content -->
           <a
-            href="https://soundcloud.com/logue256/speaking-anything-ya?si=cb6db961df2e4082a40f42d70480be73&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
+            href="https://soundcloud.com/logue256/sets/bgm?si=5a4a228532a24e8c8ad96140f3d120b2&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
             target="_blank"
             rel="noopener noreferrer"
-            class="ms-2"
-            style="color: var(--bs-orange)"
+            class="ms-2 soundcloud-link"
             @click="appStore.pauseAudio()"
           >
             <Icon icon="fa:soundcloud" class="ms-1" />
@@ -115,6 +114,22 @@ async function togglePlayback() {
 .audio-toast-body {
   color: var(--bs-light);
   white-space: nowrap;
+}
+
+.soundcloud-link {
+  color: var(--bs-orange);
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 1;
+    color: var(--hud-cyan);
+    transform: translateY(-3px);
+    /* Chromatic aberration: blue ghost shifted left, red ghost shifted right */
+    filter: drop-shadow(-0.5rem 0 0.05rem var(--color-ghost-blue)) /* 左：青 */
+      drop-shadow(0.5rem 0 0.05rem var(--color-ghost-red)) /* 右：赤 */
+      drop-shadow(0 0 8px var(--hud-cyan));
+  }
 }
 
 @media (hover: none) {
