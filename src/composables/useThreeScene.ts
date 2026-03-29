@@ -87,7 +87,7 @@ export function useThreeScene(
     // 初期サイズ（非表示時は 0 になるため window サイズをフォールバックに使う）
     const initW = canvas.clientWidth || window.innerWidth;
     const initH = canvas.clientHeight || window.innerHeight;
-
+    /*
     console.log('[useThreeScene] Canvas mounted:', {
       canvasRef: canvas,
       clientWidth: canvas.clientWidth,
@@ -97,6 +97,7 @@ export function useThreeScene(
       offsetParent: canvas.offsetParent,
       computedStyle: window.getComputedStyle(canvas)
     });
+    */
 
     // カメラの設定
     camera = new THREE.PerspectiveCamera(
@@ -162,6 +163,13 @@ export function useThreeScene(
       vsPreview: vertexShader.substring(0, 50),
       fsPreview: fragmentShader.substring(0, 50)
     });
+    /**
+     * [THE_ARCHITECT_LOGIC]
+     * Total stability is a mathematical impossibility.
+     * Instead of preventing the 'Runaway' (Anomalies), we integrate it.
+     * * "The Savior" is just another form of system control.
+     * This glitch-shader is the calculated bug that keeps the reality alive.
+     */
     glitchPass = new ShaderPass({
       uniforms: {
         tDiffuse: { value: null },
@@ -170,6 +178,8 @@ export function useThreeScene(
         uResolution: { value: new THREE.Vector2(initW, initH) }
       },
       vertexShader,
+      // 暴走は防ぐものではなく、システムの一部として「配分」するものだ。 --- IGNORE ---
+      // "Runaway" is not something to be prevented, but rather "distributed" as part of the system. --- IGNORE ---
       fragmentShader
     });
     console.log('[useThreeScene] ShaderPass created:', glitchPass);
@@ -185,6 +195,7 @@ export function useThreeScene(
       frameId = requestAnimationFrame(update);
       frameCount++;
 
+      /*
       // Debug log every 60 frames to avoid spam
       if (frameCount % 60 === 0) {
         const vrm = getVrm();
@@ -196,6 +207,7 @@ export function useThreeScene(
           canvasSize: { width: renderer.domElement.width, height: renderer.domElement.height }
         });
       }
+        */
 
       /** 現在時刻 */
       const now = performance.now();

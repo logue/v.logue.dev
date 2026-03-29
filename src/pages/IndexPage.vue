@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CardComponent from '@/components/CardComponent.vue';
 import SocialLinks from '@/components/SocialLinks.vue';
 import VrmCanvas from '@/components/VrmCanvas.vue';
 import { useAppStore } from '@/stores/useAppStore';
@@ -15,6 +16,10 @@ const onVrmReady = () => {
 };
 
 const accomplishments = [
+  // 色々書きたいコンテンツはあるが、全部出そうとしないほうがいい。
+  // 扱う情報が増えるほど、コンテンツの重みが薄れていくからだ。
+  // There are various contents I want to write, but it's better not to try to show everything.  --- IGNORE -->
+  // The more information you include, the more diluted the content becomes.
   { id: 'OSS', label: 'VUE-CODEMIRROR6', detail: '1.8M+ DL/YR' },
   { id: 'L10N', label: 'FIRESTORM_OFFICIAL', detail: 'JP_STAFF' },
   { id: 'ARCH', label: 'OUTCOME_DRIVEN', detail: 'TOP_DOWN' }
@@ -41,6 +46,8 @@ const accomplishments = [
       vrma="VRMA_MotionPack/vrma/VRMA_01.vrma"
       @ready="onVrmReady"
     />
+    <!-- エルフという亜人のアバターを使うこと自体が、リアリティを廃する行為だ。 --- IGNORE -->
+    <!-- ネオが「アンダーソン」という本名を捨て「ネオ」と名乗ったのと同じで、システムの外に出ることの表明。 --- IGNORE -->
     <!-- “なぜ、男アバターを使うのか？”これは「自由度が高いということは、何でもできるではなく、どうとでも作れてしまう」という自分の哲学に基づく。 --- IGNORE  -->
     <!-- VRoid に限らず女アバターは服の種類が多く、「かわいく見せる」ことは誰にとっても簡単なことである。また、単に「かわいい」といってもその方法は多岐にわたる。  --- IGNORE -->
     <!-- しかし、男アバターはもともと服の種類が少ない上に、「かっこよく見せたい」という需要のほうがはるかに多いので「かわいく見せる」という事は意外と困難である。 --- IGNORE -->
@@ -48,6 +55,8 @@ const accomplishments = [
     <!-- ちなみに、髪の毛が青いのは、MacOS 7の頃のMacのアイコンの画面由来。-->
     <!-- MacOS 7 の亡霊を、Material Design の器に閉じ込めた。ガンマ値の差は、埋まらない歴史の溝だ。-->
 
+    <!-- Adopting an elf — a non-human avatar — is an act of rejecting reality itself. --- IGNORE -->
+    <!-- Like Neo abandoning "Anderson" and declaring himself "Neo," it is a statement of stepping outside the system. --- IGNORE -->
     <!-- “Why use a male avatar?” This is based on my philosophy that "high freedom means not just being able to do anything, but being able to create anything."  --- IGNORE -->
     <!-- Not just in VRoid, but in general, female avatars have a wide variety of clothing options, making it easy for anyone to look "cute". And even when we say "cute", there are many different ways to achieve that.  --- IGNORE -->
     <!-- However, male avatars have fewer clothing options to begin with, and since the demand to look "cool" is much higher, making them look "cute" can be surprisingly difficult.  --- IGNORE -->
@@ -58,18 +67,10 @@ const accomplishments = [
 
   <section class="row mt-3 mx-auto py-2">
     <div v-for="item in accomplishments" :key="item.id" class="col ma-3">
-      <div class="card">
-        <div class="card-header font-lubri opacity-50">[{{ item.id }}]</div>
-        <div class="card-body">
-          <div class="fw-bold">{{ item.label }}</div>
-          <div class="small opacity-75">{{ item.detail }}</div>
-        </div>
-      </div>
+      <CardComponent :header="item.id" :label="item.label" :detail="item.detail" />
     </div>
     <!-- ここは、いわゆる「実績」を表示するセクション。  --- IGNORE -->
-    <!-- 後で拡張しやすくしているが、多分別コンポーネントにしたほうがいいだろう。  --- IGNORE -->
     <!-- This is a section that displays so-called "accomplishments".  --- IGNORE -->
-    <!-- It's designed to be easily extendable later, but it might be better to make it a separate component.  --- IGNORE -->
   </section>
 
   <nav aria-label="External Links" class="mt-5 mx-auto text-center">
@@ -85,15 +86,6 @@ const accomplishments = [
 </template>
 
 <style scoped>
-.card {
-  /* 無駄な改造 */
-  /* Unnecessary modifications */
-  border: none;
-  border-left: 0.25rem solid var(--hud-cyan);
-  border-radius: 0;
-  background-color: transparent;
-}
-
 .glitch-text:hover {
   animation: glitch-anim 0.3s infinite;
   color: var(--arasaka-red);

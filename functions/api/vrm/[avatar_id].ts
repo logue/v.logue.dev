@@ -71,6 +71,19 @@ const readJsonSafely = async (res: Response) => {
   }
 };
 
+/**
+ * VRoid Hub API を呼び出して、avatar_id に対応するキャラクターモデルの VRM ダウンロードURLを返す。
+ * 1. KV に保存された refresh_token（なければ env var）で access_token を取得
+ * 2. ログインユーザーのキャラクターモデル一覧を取得し、avatarId に対応するモデルIDを得る
+ * 3. ダウンロードライセンスを発行 (character_model_id = characterModelId)
+ * 4. ダウンロードライセンスから S3 presigned URL を取得 (302 リダイレクト)
+ * 5. フロント(Vue)に S3 presigned URL を返す。（現在は未使用）
+ *
+ * Note: VRoid Hub API uses a token rotation mechanism, so the refresh token is updated with each use. The new refresh token is stored in KV for subsequent requests.
+ *
+ * @param context
+ * @returns
+ */
 export const onRequest: PagesFunction<Env> = async context => {
   const { env } = context;
 

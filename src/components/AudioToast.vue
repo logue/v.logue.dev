@@ -48,6 +48,7 @@ async function togglePlayback() {
             rel="noopener noreferrer"
             class="ms-2"
             style="color: var(--bs-orange)"
+            @click="appStore.pauseAudio()"
           >
             <Icon icon="fa:soundcloud" class="ms-1" />
           </a>

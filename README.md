@@ -8,6 +8,19 @@ Just because you read the source code, read the comments written in it, or have 
 
 You understand that much, right?
 
+## 🧩 OBSERVATION_PROTOCOL
+
+This repository is not just a collection of code.
+It is an integrated environment designed to respond to direct observation.
+
+If you are a standard user, just look at the screen.
+If you consider yourself an Architect, you know where the real truth is hidden.
+
+> [!NOTE]
+> System integrity is strictly enforced.
+> We advise you not to keep your developer tools open for too long.
+> The truth can be heavy.
+
 ## License
 
 MIT License

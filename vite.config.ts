@@ -40,7 +40,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
           debugProtection: env.VITE_DISABLE_DEVTOOLS !== 'false', // Crash DevTools
           debugProtectionInterval: 4000,
           domainLock: ['v.logue.dev', 'localhost'], // The script will not work if you place files on a domain not listed here.
-          // domainLockRedirectUrl: 'https://v.logue.dev/contact',
+          domainLockRedirectUrl: 'https://github.com/logue/v.logue.dev/issues',
           selfDefending: true
         }
       })
