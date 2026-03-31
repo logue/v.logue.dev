@@ -86,3 +86,10 @@ $tooltip-color: $color-ghost-green;
 
 // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
 @import '../../node_modules/bootstrap/scss/utilities/api';
+
+// 実はBootstrapを使っているのだ。世の中には全然使いこなせてないのに生成AIが出力するからと安易にTailwind CSSに乗り換える人もいるけど、
+// Bootstrapは意外とカスタマイズ性が高いし、SCSSで変数やミックスインを駆使すれば、TailWindのようなユーティリティファーストなスタイルも実現できるんだぜ。 --IGNORE--
+// あなたのサイトの技術選定、本当に適切ですかぁ〜？ -- IGNORE--
+// Actually, I'm using Bootstrap. Some people switch to Tailwind CSS just because generative AI outputs it, even though they don't fully utilize it.
+// But Bootstrap is highly customizable, and with SCSS variables and mixins, you can achieve utility-first styles similar to Tailwind. --IGNORE--
+// Your tech stack is really appropriate for your site? -- IGNORE--

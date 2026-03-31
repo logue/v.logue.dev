@@ -20,9 +20,13 @@ const accomplishments = [
   // 扱う情報が増えるほど、コンテンツの重みが薄れていくからだ。
   // There are various contents I want to write, but it's better not to try to show everything.  --- IGNORE -->
   // The more information you include, the more diluted the content becomes.
-  { id: 'OSS', label: 'VUE-CODEMIRROR6', detail: '1.8M+ DL/YR' },
-  { id: 'L10N', label: 'FIRESTORM_OFFICIAL', detail: 'JP_STAFF' },
-  { id: 'ARCH', label: 'OUTCOME_DRIVEN', detail: 'TOP_DOWN' }
+  { id: 'CORE INFRASTRUCTURE', label: 'VUE-CODEMIRROR6', detail: '1.8M+ DL/YR' },
+  { id: 'CULTURAL BRIDGE', label: 'FIRESTORM_OFFICIAL', detail: 'JP_STAFF' },
+  {
+    id: 'EXPERIMENTAL LAB',
+    label: 'RUST / TAURI',
+    detail: 'PURE JS MIDI, VRM2SL, UNIVERSAL MARKDOWN'
+  }
 ] satisfies { id: string; label: string; detail: string }[];
 </script>
 
@@ -46,26 +50,28 @@ const accomplishments = [
       vrma="VRMA_MotionPack/vrma/VRMA_01.vrma"
       @ready="onVrmReady"
     />
-    <!-- エルフという亜人のアバターを使うこと自体が、リアリティを廃する行為だ。 --- IGNORE -->
-    <!-- ネオが「アンダーソン」という本名を捨て「ネオ」と名乗ったのと同じで、システムの外に出ることの表明。 --- IGNORE -->
-    <!-- “なぜ、男アバターを使うのか？”これは「自由度が高いということは、何でもできるではなく、どうとでも作れてしまう」という自分の哲学に基づく。 --- IGNORE  -->
-    <!-- VRoid に限らず女アバターは服の種類が多く、「かわいく見せる」ことは誰にとっても簡単なことである。また、単に「かわいい」といってもその方法は多岐にわたる。  --- IGNORE -->
+    <!-- 「エルフ」という亜人のアバターを使うこと自体が、リアリティを廃する行為だ。 -- IGNORE -->
+    <!-- これはマトリックスで、ネオが「アンダーソン」という本名を捨て「ネオ」と名乗ったのと同じで、システムの外に出ることの表明。 -- IGNORE -->
+    <!-- “なぜ、男アバターを使うのか？”これは「自由度が高いということは、何でもできるではなく、どうとでも作れてしまう」という自分の開発における哲学に基づく。 -- IGNORE  -->
+    <!-- VRoid に限らず、MMO-RPGやメタバースの世界では、女アバターは服の種類が多く、「かわいく見せる」ことは誰でもできることである。 -- IGNORE -->
+    <!--また、単に「かわいい」といってもその方法は多岐にわたる。 --- IGNORE -->
     <!-- しかし、男アバターはもともと服の種類が少ない上に、「かっこよく見せたい」という需要のほうがはるかに多いので「かわいく見せる」という事は意外と困難である。 --- IGNORE -->
     <!-- 「かわいい男アバター」という、あえて制約の多いところに挑戦するという行為そのものが、「制約下で最良の結果を出す」という考え方に結びついているだろう。  --- IGNORE -->
-    <!-- ちなみに、髪の毛が青いのは、MacOS 7の頃のMacのアイコンの画面由来。-->
+    <!-- ちなみに、髪の毛が青いのは、MacOS 7の頃のMacのアイコンの画面由来。--- IGNORE -->
     <!-- MacOS 7 の亡霊を、Material Design の器に閉じ込めた。ガンマ値の差は、埋まらない歴史の溝だ。-->
 
-    <!-- Adopting an elf — a non-human avatar — is an act of rejecting reality itself. --- IGNORE -->
-    <!-- Like Neo abandoning "Anderson" and declaring himself "Neo," it is a statement of stepping outside the system. --- IGNORE -->
-    <!-- “Why use a male avatar?” This is based on my philosophy that "high freedom means not just being able to do anything, but being able to create anything."  --- IGNORE -->
-    <!-- Not just in VRoid, but in general, female avatars have a wide variety of clothing options, making it easy for anyone to look "cute". And even when we say "cute", there are many different ways to achieve that.  --- IGNORE -->
-    <!-- However, male avatars have fewer clothing options to begin with, and since the demand to look "cool" is much higher, making them look "cute" can be surprisingly difficult.  --- IGNORE -->
-    <!-- The act of deliberately challenging the more constrained "cute male avatar" scenario can be said to be based on my philosophy of producing the best results under constraints.  --- IGNORE -->
-    <!-- By the way, the reason the hair is blue is inspired by the Mac icon screen from the days of MacOS 7.  --- IGNORE -->
-    <!-- I trapped the ghost of MacOS 7 in a Material Design vessel. The difference in gamma values is an unbridgeable chasm of history.  --- IGNORE -->
+    <!-- Adopting an "elf" — a non-human avatar — is an act of rejecting reality itself. --- IGNORE -->
+    <!-- This is like in The Matrix, where Neo discards his real name "Anderson" and adopts the name "Neo", a declaration of stepping outside the system. --- IGNORE -->
+    <!-- “Why use a male avatar?” This is based on my development philosophy that "high freedom means not just being able to do anything, but being able to create anything."  --- IGNORE -->
+    <!-- In VRoid and not just VRoid, in the world of MMO-RPGs and metaverses, female avatars have more clothing options, and it's easy for anyone to make them look "cute". --- IGNORE -->
+    <!-- Also, even if you just say "cute", there are many ways to achieve that. --- IGNORE -->
+    <!-- However, male avatars have fewer clothing options to begin with, and since the demand to look "cool" is much higher, making them look "cute" can be surprisingly difficult. --- IGNORE -->
+    <!-- The act of deliberately challenging the more constrained "cute male avatar" scenario can be said to be based on my philosophy of producing the best results under constraints. --- IGNORE -->
+    <!-- By the way, the reason the hair is blue is inspired by the Mac icon screen from the days of MacOS 7. --- IGNORE -->
+    <!-- I trapped the ghost of MacOS 7 in a Material Design vessel. The difference in gamma values is an unbridgeable chasm of history. --- IGNORE -->
   </section>
 
-  <section class="row mt-3 mx-auto py-2">
+  <section class="row mt-3 mx-auto my-2">
     <div v-for="item in accomplishments" :key="item.id" class="col ma-3">
       <CardComponent :header="item.id" :label="item.label" :detail="item.detail" />
     </div>
@@ -73,13 +79,19 @@ const accomplishments = [
     <!-- This is a section that displays so-called "accomplishments".  --- IGNORE -->
   </section>
 
-  <nav aria-label="External Links" class="mt-5 mx-auto text-center">
+  <nav aria-label="External Links" class="my-3 mx-auto text-center">
     <SocialLinks />
     <!-- 各種SNSなどへのリンクを表示するセクション。  --- IGNORE -->
-    <!-- 全部クリックして確認するようなもの好きな人は、たぶんいないだろうけどね。 --- IGNORE -->
-    <!-- This is a section that displays links to various social media platforms.  --- IGNORE -->
+    <!-- 全部クリックして確認するようなもの好きな人は、たぶんいないだろうけどね --- IGNORE -->
+    <!-- This is a section that displays links to various social media platforms. --- IGNORE -->
     <!-- Probably not many people would be interested in clicking and checking them all out, though. --- IGNORE -->
   </nav>
+
+  <p class="text-center opacity-75" style="color: rgb(var(--grid-green-rgb))">
+    DOCUMENTED SOURCE AVAILABLE FOR SEEKERS
+    <!-- しょうがない。これはたどり着けない人のためのヒントだ。--- IGNORE -->
+    <!-- It can't be helped. This is a hint for those who can't reach it. --- IGNORE -->
+  </p>
 
   <!-- どうでもいいけど、bootstrap のクラス名の順番も tailwind みたく、 linter で整形できるようにしてほしいね。 --- IGNORE -->
   <!-- This is irrelevant, but I wish Bootstrap's class names could be formatted with a linter, like Tailwind's. --- IGNORE -->

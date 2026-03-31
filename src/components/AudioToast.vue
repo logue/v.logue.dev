@@ -72,6 +72,7 @@ async function togglePlayback() {
   border-radius: 999px;
   border: 1px solid rgba(var(--bs-light-rgb), 0.25);
   background: rgba(var(--bs-dark-rgb), 0.25);
+  box-shadow: 0px 5px 15px 0px rgba(var(--bs-dark-rgb), 0.35);
   backdrop-filter: blur(6px);
   transition:
     width 0.24s ease,
@@ -93,6 +94,7 @@ async function togglePlayback() {
   min-width: 3rem;
   height: 3rem;
   flex-shrink: 0;
+  box-shadow: 0px 5px 15px 0px rgba(var(--bs-dark-rgb), 0.35);
 }
 
 .audio-toast-content {

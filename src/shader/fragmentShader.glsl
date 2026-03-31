@@ -8,6 +8,8 @@ float random(vec2 c) {
   return fract(sin(dot(c.xy, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+// 色収差ノイズとブロックノイズを組み合わせたシェーダー
+// Color Shift + Block Noise Shader
 void main() {
   vec2 uv = vUv;
   float time = uTime;
