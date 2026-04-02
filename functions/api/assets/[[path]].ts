@@ -86,3 +86,5 @@ export const onRequestGet: PagesFunction<Env> = async context => {
 // Well, logically speaking, asset server information should be put in the .env file, right? --- IGNORE ---
 // Of course, that information is not written in the source code. --- IGNORE ---
 // If you understand, make sure to write env.d.ts properly. --- IGNORE ---
+
+// logue.remote.out

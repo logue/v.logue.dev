@@ -5,9 +5,9 @@ import { defineConfig, loadEnv, type UserConfig } from 'vite';
 
 import { cloudflare } from '@cloudflare/vite-plugin';
 import { checker } from 'vite-plugin-checker';
+import glsl from 'vite-plugin-glsl';
 import obfuscatorPlugin from 'vite-plugin-javascript-obfuscator';
 import vueDevTools from 'vite-plugin-vue-devtools';
-import glsl from 'vite-plugin-glsl';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }): UserConfig => {
@@ -26,6 +26,10 @@ export default defineConfig(({ command, mode }): UserConfig => {
       ...(command === 'serve' ? [cloudflare()] : []),
       glsl(),
       obfuscatorPlugin({
+        // このプラグインを使うとより強固な難読化が行われ、開発ツールをクラッシュさせることができる。 --- IGNORE ---
+        // 本来は解析を困難にするためのものだが、今回は演出として使用した。 --- IGNORE ---
+        // Using this plugin provides stronger obfuscation and can crash dev tools. --- IGNORE ---
+        // Originally intended to make analysis more difficult, but in this case used for performance. --- IGNORE ---
         include: ['src/**/*.ts', 'src/**/*.vue'],
         exclude: [/node_modules/, /polyfill/],
         apply: 'build',

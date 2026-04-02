@@ -190,24 +190,8 @@ export function useThreeScene(
     composer.addPass(new OutputPass());
 
     /** アニメーションループ */
-    let frameCount = 0;
     const update = () => {
       frameId = requestAnimationFrame(update);
-      frameCount++;
-
-      /*
-      // Debug log every 60 frames to avoid spam
-      if (frameCount % 60 === 0) {
-        const vrm = getVrm();
-        const mixer = getMixer();
-        console.log('[useThreeScene] Render loop:', {
-          frameCount,
-          vrmLoaded: vrm !== null,
-          mixerActive: mixer !== null,
-          canvasSize: { width: renderer.domElement.width, height: renderer.domElement.height }
-        });
-      }
-        */
 
       /** 現在時刻 */
       const now = performance.now();

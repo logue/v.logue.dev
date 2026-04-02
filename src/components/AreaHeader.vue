@@ -41,9 +41,10 @@ const isOpen = ref(false);
 
 <style scoped>
 .nav-link {
-  color: var(--hud-cyan);
-  opacity: 0.5;
+  color: var(--bs-light);
+  opacity: 0.75;
   transition: all 0.2s ease;
+  text-shadow: 0 0 8px var(--hud-cyan);
 }
 
 .nav-link:hover,

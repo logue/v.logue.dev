@@ -34,11 +34,10 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 const isLoading = ref(true);
 /** VRMファイルのURL。APIから取得する。 */
 const vrmFileUrl = computed<string>(() => {
-  // VRoid Hub API側の問題で、APIアクセスがIPv6接続に対応していなく、
-  // 暫定処置で拡張子が含まれる場合はアセットサーバーから取得する実装に変更。
-  // Due to an issue with the VRoid Hub API not supporting IPv6 connections,
-  // as a temporary measure, if the extension is included, change the implementation to fetch from the asset server.
-  // <https://discord.com/channels/1137920866156544040/1137920867091877908/1486259418805964942>
+  // VRMプロップが直接VRMファイルのパスを持っている場合と、VRM IDを持っている場合の両方に対応する。
+  // 詳細はfunctions/api/vrm/[avatar_id].ts を参照。 --- IGNORE ---
+  // Supports both cases where the VRM prop directly holds the path to the VRM file and where it holds a VRM ID.
+  // For details, see functions/api/vrm/[avatar_id].ts. --- IGNORE ---
   const vrm = props.vrm;
   return vrm.endsWith('.vrm') ? `/api/assets/${vrm}` : `/api/vrm/${vrm}`;
 });
@@ -56,7 +55,7 @@ useThreeScene(
   {
     position: { x: 0, y: 0.5, z: 7 },
     ambientLight: { color: 0xf8f9fa, intensity: 1.2 },
-    directionalLight: { color: 0xfffde7, intensity: 2 },
+    directionalLight: { color: 0xfffde7, intensity: 1 },
     directionalLightPosition: { x: 0, y: 1, z: 2 },
     perspectiveCamera: { fov: 15, near: 0.1, far: 20 }
   }

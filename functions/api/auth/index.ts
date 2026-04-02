@@ -104,3 +104,5 @@ export const onRequestGet: PagesFunction<Env> = async context => {
 // You have terrible luck. --- IGNORE ---
 // The annoying thing is that you first have to access this API in your browser to get the VRoid Hub authorization code and set the refresh token in .dev.vars. --- IGNORE ---
 // I can just picture someone panicking, not noticing this comment at the end of this source code, and wondering, "What's a refresh token?" lol --- IGNORE ---
+
+// logue.remote.out

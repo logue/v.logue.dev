@@ -101,7 +101,7 @@ const handleAccess = () => {
         <!-- どうせ見えないから、アニメーション中もシステムが起動している感を出すために、背景にグリッドを重ねる。 -->
         <!-- The user grants ACCESS here. -->
         <!-- Since it's invisible anyway, layering a grid in the background to give a sense of the system being active even during the animation. -->
-        <button class="access-button btn btn-outline-success btn-lg" @click="handleAccess">
+        <button class="access-button btn btn-outline-danger btn-lg" @click="handleAccess">
           [ ACCESS ]
         </button>
       </div>
@@ -190,6 +190,7 @@ const handleAccess = () => {
   }
 
   .blink {
+    color: var(--bs-yellow);
     animation: blink-animation 1s steps(2, start) infinite;
     // そういえば、昔<blink>タグってあったよね。 --- IGNORE ---
     // By the way, there used to be a <blink> tag, didn't there? --- IGNORE ---
@@ -210,8 +211,8 @@ const handleAccess = () => {
     transition: all 0.2s;
 
     &:hover {
-      background-color: rgba(var(--grid-green-rgb), 0.2);
-      box-shadow: 0 0 15px rgba(var(--grid-green-rgb), 0.8);
+      background-color: rgba(var(--arasaka-red-rgb), 0.2);
+      box-shadow: 0 0 15px rgba(var(--arasaka-red-rgb), 0.8);
     }
   }
 
@@ -231,6 +232,10 @@ const handleAccess = () => {
   }
 }
 
+// グリッドの描画が追いつかないので一番上のグリッドが正常に表示されないが、
+// これはこれで、描画が追いついていないという演出にはなるので良しとしよう。 --- IGNORE ---
+// The topmost grid doesn't render properly because it can't keep up,
+// but this in itself can be seen as an effect of the rendering not keeping up, so let's just go with it. ---- IGNORE ---
 @keyframes slide {
   0% {
     transform: translate3D(0, 0, 0);

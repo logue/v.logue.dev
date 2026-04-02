@@ -204,3 +204,5 @@ export const onRequestGet: PagesFunction<Env> = async context => {
 
 // Now, how many of you were able to successfully display the Text written here? --- IGNORE ---
 // 💡Hint: The Vroid Hub callback URL needs to point to this API endpoint. --- IGNORE ---
+
+// logue.remote.out

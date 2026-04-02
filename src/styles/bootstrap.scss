@@ -3,6 +3,7 @@ $hud-cyan: #18ffff;
 $arasaka-red: #ff003c;
 $logue-steel: #2c3e50;
 $grid-green-rgb: 30, 255, 30;
+$arasaka-red-rgb: 255, 0, 60;
 
 // バイナリコードのアクセント用カラー
 // for Binary code accents
@@ -26,6 +27,7 @@ $color-ghost-blue: rgba(30, 80, 255, 0.85);
   --arasaka-red: #{$arasaka-red};
   --logue-steel: #{$logue-steel};
   --grid-green-rgb: #{$grid-green-rgb};
+  --arasaka-red-rgb: #{$arasaka-red-rgb};
 
   --color-red: #{$color-red};
   --color-green: #{$color-green};

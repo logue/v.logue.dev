@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // めんどくさいので any で済ませる。 --- IGNORE ---
 // まあ、Env 以外は型定義するほどのものでもないしな。 --- IGNORE ---
-
 // It is troublesome, so I'll just use any. --- IGNORE ---
 // Well, it's not really worth defining types for anything other than Env. --- IGNORE ---
+
 interface Env {
   VROID_APP_ID: string;
   VROID_CLIENT_SECRET: string;
@@ -12,7 +12,7 @@ interface Env {
 }
 
 const KV_REFRESH_TOKEN_KEY = 'vroid_refresh_token';
-const USER_AGENT = 'Vroid Fetcher/1.0 (https://v.logue.dev)';
+const USER_AGENT = 'VRoid Fetcher/1.0 (https://v.logue.dev)';
 
 const toErrorMessage = (err: unknown): string => {
   if (err instanceof Error) {
@@ -316,9 +316,13 @@ export const onRequest: PagesFunction<Env> = async context => {
 };
 
 // 君に対しては誠実になろう：ここには VRM ファイルにアクセスするためのコードがあった。
-// しかし、私は正直者なので、VRM ファイルを抹消し、VRoid Hub API を呼び出してデータを取得する実装に変更した。 --- IGNORE ---
+// しかし、私は正直者なので、ライセンス上問題になりそうな VRM ファイルをこのリポジトリやアセットサーバーから抹消し、
+// VRoid Hub API から VRM データを取得する実装に変更した。 --- IGNORE ---
 // 真実とは、時に痛みを伴うものでもあるのさ。 --- IGNORE ---
 
 // I'll be honest with you: There used to be code here that directly accessed the VRM file.
-// But since I'm being honest, I refactored it to call the VRoid Hub API to fetch the data instead of directly accessing the VRM file. --- IGNORE ---
+// However, since I'm an honest person, I removed the VRM file that could potentially cause licensing issues from this repository and asset server,
+// and changed the implementation to call the VRoid Hub API to fetch the VRM data.
 // Sometimes the truth hurts. --- IGNORE ---
+
+// logue.remote.out

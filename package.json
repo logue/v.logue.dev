@@ -45,7 +45,7 @@
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.30.3",
+    "@cloudflare/vite-plugin": "^1.31.0",
     "@cloudflare/workers-types": "^4.20260402.1",
     "@iconify-json/fa": "^1.2.2",
     "@iconify-json/fa6-brands": "^1.2.6",
@@ -85,7 +85,7 @@
     "vite-plugin-javascript-obfuscator": "^3.1.0",
     "vite-plugin-vue-devtools": "^8.1.1",
     "vue-tsc": "^3.2.6",
-    "wrangler": "^4.79.0"
+    "wrangler": "^4.80.0"
   },
   "husky": {
     "hooks": {
