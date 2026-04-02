@@ -145,14 +145,18 @@ const handleAccess = () => {
   // Grid background. position/inset handled by Bootstrap utilities on the element.
   .grid-background {
     background-image:
-      linear-gradient(rgba(var(--grid-green-rgb), 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(var(--grid-green-rgb), 0.1) 1px, transparent 1px);
-    background-size: 40px 40px;
+      linear-gradient(rgba(var(--grid-green-rgb), 0.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--grid-green-rgb), 0.25) 1px, transparent 1px);
+    background-size: 3rem 3rem;
     background-color: var(--bs-dark);
     // fixed にすることで、シャッターが動いてもグリッドは「背景」に固定される。
     // By setting it to fixed, the grid stays "background" even as the shutters animate.
     background-attachment: fixed;
     pointer-events: none;
+
+    // グリッドがゆっくり動いているように見えるアニメーション。 --- IGNORE ---
+    // An animation that makes the grid appear to be moving slowly. --- IGNORE ---
+    animation: slide 1s linear infinite;
   }
 
   .container {
@@ -224,6 +228,15 @@ const handleAccess = () => {
     .container {
       opacity: 0;
     }
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translate3D(0, 0, 0);
+  }
+  100% {
+    transform: translate3D(0, 3rem, 0);
   }
 }
 </style>
