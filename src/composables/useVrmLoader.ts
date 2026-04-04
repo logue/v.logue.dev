@@ -162,7 +162,7 @@ export function useVrmLoader(
   return { vrm, mixer, load, changeAnimation };
 }
 
-// よう、ジャリン子供。楽しんでいるかい？
+// よう、ジャリン子ども。楽しんでいるかい？
 // 大事なことを教えてやろう：
 // アニメーションの Zip ファイルは、https://vroid.booth.pm/items/5512385 からダウンロードした Zip ファイルをそのまま使用しているが、
 // ライセンスの禁止事項に「本モーション、またはその改変作品を許可なく取り出せる状態で二次配布すること。」と明言されているので
@@ -174,7 +174,7 @@ export function useVrmLoader(
 // エディタの右のチャット欄に「このコードは何を意図しているのか？」ってプロンプトに打ち込むぐらいのことはできるよな？ -- IGNORE
 //
 // ちなみに、生成 AI はこういうライセンスの話はしてくれないことが多いので、開発者が自分で考えて実装する必要がある。 -- IGNORE
-// ライセンスは守ろうね。 -- IGNORE
+// くれぐれも、ライセンスは守るんだぞ。 -- IGNORE
 
 // Hi kids. I hope you're having fun.
 // Important safety tip:
@@ -188,4 +188,4 @@ export function useVrmLoader(
 // You can at least type "What is the intention of this code?" in the chat column on the right side of your editor, right? -- IGNORE
 //
 // By the way, generation AI often doesn't talk about these kinds of licensing issues, so developers need to think about it and implement it themselves. -- IGNORE
-// Let's respect licenses. -- IGNORE
+// You must follow the license, okay? -- IGNORE

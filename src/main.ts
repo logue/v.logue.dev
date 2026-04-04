@@ -16,16 +16,16 @@ import { createApp } from 'vue';
 
 import { addCollection } from '@iconify/vue';
 // Bundle Iconify icon sets for offline use
-import faIcons from '@iconify-json/fa/icons.json';
-import fa6BrandsIcons from '@iconify-json/fa6-brands/icons.json';
+import biIcons from '@iconify-json/bi/icons.json';
+import simpleIcons from '@iconify-json/simple-icons/icons.json';
 
 import App from './App.vue';
 import router from './router';
 import './styles/fonts.css';
 import './styles/bootstrap.scss';
 
-addCollection(faIcons);
-addCollection(fa6BrandsIcons);
+addCollection(biIcons);
+addCollection(simpleIcons);
 
 const app = createApp(App);
 

@@ -67,6 +67,8 @@ const onAccess = () => {
     <AreaFooter />
   </div>
 
+  <!-- オーディオトーストは全ページ共通で表示。 -->
+  <!-- Audio toast is displayed across all pages. -->
   <AudioToast />
 </template>
 
@@ -75,9 +77,5 @@ const onAccess = () => {
 
 body {
   background-image: url(bgsrc);
-}
-
-.font-lubri {
-  font-family: var(--font-lubri), sans-serif;
 }
 </style>

@@ -23,97 +23,171 @@ const links: SocialLink[] = [
     // Unfortunately, the blue bird is no more. --- IGNORE ---
     name: 'X',
     url: 'https://x.com/logue256',
-    icon: 'fa6-brands:x-twitter'
+    icon: 'simple-icons:x'
   },
   {
+    // Facebook はまだ生きてるけど、有名人や著名なサイトを騙った広告が出たあたりから使わなくなった。。 --- IGNORE ---
+    // Facebook is still alive, but I stopped using it after ads started appearing that impersonated celebrities and prominent sites... --- IGNORE ---
     name: 'Facebook',
     url: 'https://facebook.com/logue256',
-    icon: 'fa:facebook'
+    icon: 'simple-icons:facebook'
   },
   {
+    // 全く使ってないけど、念のため残してる --- IGNORE ---
+    // I don't use it at all, but I'm keeping it just in case --- IGNORE
     name: 'Instagram',
     url: 'https://instagram.com/logue256',
-    icon: 'fa:instagram'
+    icon: 'simple-icons:instagram'
   },
   {
     name: 'LinkedIn',
     url: 'https://linkedin.com/in/logue',
-    icon: 'fa:linkedin'
+    icon: 'simple-icons:linkedin'
   },
-  { name: 'GitHub', url: 'https://github.com/logue', icon: 'fa:github' },
-  // { name: 'Qiita', url: 'https://qiita.com/logue256', icon: 'fa:qiita' },
   {
-    name: 'Discord',
-    url: 'https://discord.com/users/300930832699490306',
-    icon: 'fa6-brands:discord'
+    // ここでの活動がメインになってる --- IGNORE ---
+    // This is where most of my activity happens --- IGNORE ---
+    name: 'GitHub',
+    url: 'https://github.com/logue',
+    icon: 'simple-icons:github'
   },
-  { name: 'Tumblr', url: 'https://blog.logue.be/', icon: 'fa:tumblr' },
   {
-    name: 'LINE',
-    url: 'http://line.me/ti/p/Hd8erPz_55',
-    icon: 'fa6-brands:line'
+    // あまり活動していない。 --- IGNORE ---
+    // Not very active. --- IGNORE ---
+    name: 'GitLab',
+    url: 'https://gitlab.com/logue',
+    icon: 'simple-icons:gitlab'
   },
-  { name: 'Reddit', url: 'https://reddit.com/u/logue256', icon: 'fa:reddit' },
+  /*
   {
+    name: 'Qiita',
+    url: 'https://qiita.com/logue256',
+    icon: 'simple-icons:qiita'
+  },
+  */
+  {
+    // 一時期使っていたが最近さっぱり更新してない --- IGNORE ---
+    // I used to use it for a while, but I haven't updated it at all recently
     name: 'StackOverflow',
     url: 'https://ja.stackoverflow.com/users/5461/logue',
-    icon: 'fa:stack-overflow'
+    icon: 'simple-icons:stackoverflow'
   },
-  { name: 'GitLab', url: 'https://gitlab.com/logue', icon: 'fa:gitlab' },
-  { name: 'NPM', url: 'https://www.npmjs.com/~logue', icon: 'fa6-brands:npm' },
   {
+    // 割とよく使う --- IGNORE ---
+    // I use it quite often --- IGNORE ---
+    name: 'Discord',
+    url: 'https://discord.com/users/300930832699490306',
+    icon: 'simple-icons:discord'
+  },
+  {
+    // ここもあまり更新してないけど、たまに何か書いてる --- IGNORE ---
+    // I don't update it much, but I occasionally write something --- IGNORE ---
+    name: 'Tumblr',
+    url: 'https://blog.logue.be/',
+    icon: 'simple-icons:tumblr'
+  },
+  {
+    // LINE は好きではない。 --- IGNORE ---
+    // I don't like LINE. --- IGNORE ---
+    name: 'LINE',
+    url: 'https://line.me/ti/p/Hd8erPz_55',
+    icon: 'simple-icons:line'
+  },
+  {
+    // ここもあまり更新してないけど、たまに何か書いてる --- IGNORE ---
+    // I don't update it much, but I occasionally write something --- IGNORE ---
+    name: 'Reddit',
+    url: 'https://reddit.com/u/logue256',
+    icon: 'simple-icons:reddit'
+  },
+  {
+    // しょっちゅう更新している。 --- IGNORE ---
+    // I update it frequently. --- IGNORE ---
+    name: 'NPM',
+    url: 'https://www.npmjs.com/~logue',
+    icon: 'simple-icons:npm'
+  },
+  {
+    // 多分これから使うようになると思う。 --- IGNORE ---
+    // I think I'll probably start using this from now on. --- IGNORE ---
     name: 'Crate.io',
     url: 'https://crates.io/users/logue',
-    icon: 'fa6-brands:rust'
-  },
-  {
-    name: 'Packagist',
-    url: 'https://packagist.org/users/logue',
-    icon: 'fa6-brands:php'
+    icon: 'simple-icons:rust'
   },
   {
     name: 'Docker Hub',
     url: 'https://hub.docker.com/u/logue',
-    icon: 'fa6-brands:docker'
+    icon: 'simple-icons:docker'
   },
   {
+    // PHP をあまり使わなくなったので、最近はあまり更新してない --- IGNORE ---
+    // I don't use PHP much anymore, so I haven't updated it much recently --- IGNORE ---
+    name: 'Packagist',
+    url: 'https://packagist.org/users/logue',
+    icon: 'simple-icons:packagist'
+  },
+  {
+    // 新曲のリリースはここで行っている。 --- IGNORE ---
+    // This is where I release new music. --- IGNORE ---
     name: 'SoundCloud',
     url: 'https://soundcloud.com/logue256',
-    icon: 'fa:soundcloud'
+    icon: 'simple-icons:soundcloud'
   },
   {
+    // まとまったら、こっちで発表しようかなと思ってる --- IGNORE ---
+    // Once I have something substantial, I might release it here --- IGNORE ---
     name: 'Bandcamp',
     url: 'https://logue256.bandcamp.com/',
-    icon: 'fa:bandcamp'
+    icon: 'simple-icons:bandcamp'
   },
   {
     name: 'Spotify',
     url: 'https://open.spotify.com/user/logue256',
-    icon: 'fa:spotify'
+    icon: 'simple-icons:spotify'
   },
   {
     name: 'YouTube',
     url: 'https://youtube.com/c/logue256',
-    icon: 'fa:youtube'
+    icon: 'simple-icons:youtube'
   },
-  { name: 'Twitch', url: 'https://twitch.tv/logue256', icon: 'fa:twitch' },
   {
+    // 黎明期はよくアップしていたが、最近はあまり更新してない --- IGNORE ---
+    // I used to upload a lot during the early days, but I haven't updated it much
+    name: 'Niconico',
+    url: 'https://www.nicovideo.jp/user/239946',
+    icon: 'simple-icons:niconico'
+  },
+  {
+    name: 'Twitch',
+    url: 'https://twitch.tv/logue256',
+    icon: 'simple-icons:twitch'
+  },
+  {
+    // 昔ほどゲームをやらなくなった。 --- IGNORE ---
+    // I don't play games as much as I used to. --- IGNORE ---
     name: 'Steam',
     url: 'https://steamcommunity.com/id/logue256',
-    icon: 'fa:steam'
+    icon: 'simple-icons:steam'
   },
   {
+    // WindowsがメインPCだった頃は使ってたけど、Macに移行してからはあまり使ってない --- IGNORE ---
+    // I used to use it when Windows was my main PC, but I haven't used it
     name: 'Xbox',
     url: 'https://account.xbox.com/ja-jp/Profile?Gamertag=Logue256',
-    icon: 'fa6-brands:xbox'
-  }
-  /*
+    icon: 'simple-icons:xbox'
+  },
   {
+    // ko-fiは、寄付や支援者を募るためのプラットフォームで、クリエイターがファンから直接支援を受けることができるサービス。 --- IGNORE ---
+    // Ko-fi is a platform for soliciting donations and supporters, allowing creators to receive direct support from their fans. --- IGNORE ---
     name: 'Ko-fi',
     url: 'https://ko-fi.com/logue256',
-    icon: 'fa6-brands:ko-fi'
+    icon: 'simple-icons:kofi'
+  },
+  {
+    name: 'PayPal',
+    url: 'https://paypal.me/logue256',
+    icon: 'simple-icons:paypal'
   }
-    */
 ];
 
 onMounted(() => {

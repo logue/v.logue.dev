@@ -132,11 +132,13 @@ const handleAccess = () => {
   }
 
   // 左上の三角形。
+  // Upper left triangle.
   .upper-triangle {
     clip-path: polygon(0 0, 100% 0, 0 100%);
   }
 
   // 右下の三角形。
+  // Lower right triangle.
   .lower-triangle {
     clip-path: polygon(100% 0, 100% 100%, 0 100%);
   }
@@ -161,9 +163,20 @@ const handleAccess = () => {
 
   .container {
     z-index: 2;
-    color: var(--bs-light);
     font-family: 'Courier New', Courier, monospace;
     transition: opacity 0.4s ease;
+  }
+
+  .philosophy {
+    font-family: var(--font-lubri), sans-serif;
+    color: var(--bs-gray-500);
+    text-transform: none;
+    opacity: 0.9;
+
+    // タイトルの引用符は、日本語と英語でそれぞれ適切なものを使う。 --- IGNORE ---
+    // セマンティックWebのアクセシビリティの観点から、lang属性を使い分ける。 --- IGNORE ---
+    // Use appropriate quotation marks for Japanese and English. --- IGNORE ---
+    // Use lang attributes for semantic web accessibility. --- IGNORE ---
 
     p {
       color: var(--bs-gray-500);
@@ -196,17 +209,6 @@ const handleAccess = () => {
     // By the way, there used to be a <blink> tag, didn't there? --- IGNORE ---
   }
 
-  .philosophy {
-    font-family: var(--font-lubri), sans-serif;
-    color: var(--bs-gray-500);
-    text-transform: none;
-    opacity: 0.9;
-
-    strong {
-      color: var(--bs-white);
-    }
-  }
-
   .access-button {
     transition: all 0.2s;
 
@@ -217,6 +219,7 @@ const handleAccess = () => {
   }
 
   // 発火時：三角形をそれぞれの頂点方向へ飛ばす
+  // On trigger: send the triangles flying towards their respective vertices
   &.is-opening {
     .upper-triangle {
       transform: translate(-100%, -100%);

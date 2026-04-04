@@ -2,6 +2,8 @@ import { onMounted, onUnmounted, type Ref } from 'vue';
 
 import { VRM } from '@pixiv/three-vrm';
 import * as THREE from 'three';
+// パスにexamplesが含まれているのは謎すぎる。 --- IGNORE ---
+// It's really strange that the path includes examples. --- IGNORE ---
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -9,6 +11,8 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 import type { ThreeSceneOptions } from '@/interfaces/ThreeSceneOptions';
 
+// シェーダーのインポート。 --- IGNORE ---
+// Importing shaders. --- IGNORE ---
 import fragmentShader from '@/shader/fragmentShader.glsl';
 import vertexShader from '@/shader/vertexShader.glsl';
 
@@ -38,6 +42,7 @@ export function useThreeScene(
     ambientLight = { color: 0xffffff, intensity: 0.4 },
     perspectiveCamera = { fov: 30, near: 0.1, far: 20 }
     // 色の設定がめんどくさい。なんでこの API は、HEX で指定できないのか？ -- IGNORE
+    // The color settings are a hassle. Why can't this API accept HEX values? -- IGNORE
   } = options;
   /* Three.jsのシーン、カメラ、レンダラー、アニメーションループ、リサイズ対応をセットアップするComposable関数 */
   let renderer: THREE.WebGLRenderer;
@@ -85,6 +90,7 @@ export function useThreeScene(
 
     const canvas = canvasRef.value;
     // 初期サイズ（非表示時は 0 になるため window サイズをフォールバックに使う）
+    // Initial size (falls back to window size if it's 0 when hidden)
     const initW = canvas.clientWidth || window.innerWidth;
     const initH = canvas.clientHeight || window.innerHeight;
     /*
@@ -99,16 +105,19 @@ export function useThreeScene(
     });
     */
 
-    // カメラの設定
+    // カメラの設定。 -- IGNORE
+    // The camera settings. -- IGNORE
     camera = new THREE.PerspectiveCamera(
       perspectiveCamera.fov,
       initW / initH,
       perspectiveCamera.near,
       perspectiveCamera.far
     );
-    // 位置
+    // position は、カメラの位置を指定するためのプロパティである。 -- IGNORE
+    // The position property is used to specify the position of the camera. -- IGNORE
     camera.position.set(position.x, position.y, position.z);
-    // 注視点
+    // lookAt は、カメラがどこを向くかを指定するためのメソッドである。 -- IGNORE
+    // The lookAt method is used to specify where the camera should look. -- IGNORE
     camera.lookAt(lookAt.x, lookAt.y, lookAt.z);
 
     renderer = new THREE.WebGLRenderer({
@@ -127,6 +136,7 @@ export function useThreeScene(
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     // 背景を透明(0)でクリア
+    // Clear with transparent (0) background
     renderer.setClearColor(0x000000, 0);
 
     /** シーンの設定 */
@@ -178,8 +188,8 @@ export function useThreeScene(
         uResolution: { value: new THREE.Vector2(initW, initH) }
       },
       vertexShader,
-      // 暴走は防ぐものではなく、システムの一部として「配分」するものだ。 --- IGNORE ---
-      // "Runaway" is not something to be prevented, but rather "distributed" as part of the system. --- IGNORE ---
+      // 暴走やハルシネーションは防ぐものではなく、システムの一部として「配分」するべきものである。 --- IGNORE ---
+      // "Runaway" and "Hallucination" are not something to be prevented, but should be "allocated" as part of the system. --- IGNORE ---
       fragmentShader
     });
     console.log('[useThreeScene] ShaderPass created:', glitchPass);
@@ -227,6 +237,7 @@ export function useThreeScene(
       applySize(width, height);
     });
     // オブサーバーを登録する
+    // Register the observer
     resizeObserver.observe(canvas);
 
     // 昔はsetTimeoutでリサイズをポーリングしていたが、ResizeObserverが広くサポートされるようになった今では、こちらの方が効率的である。 -- IGNORE

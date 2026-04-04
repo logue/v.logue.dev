@@ -30,17 +30,17 @@ async function togglePlayback() {
         :title="appStore.isAudioPlaying ? 'Pause' : 'Play'"
         @click="togglePlayback"
       >
-        <Icon :icon="appStore.isAudioPlaying ? 'fa:pause' : 'fa:play'" />
+        <Icon :icon="appStore.isAudioPlaying ? 'bi:pause-fill' : 'bi:play-fill'" />
       </button>
       <div class="audio-toast-content">
         <div class="audio-toast-header d-flex align-items-center" style="color: var(--arasaka-red)">
-          <Icon icon="fa:music" class="me-2" />
+          <Icon icon="bi:music-note-beamed" class="me-2" />
           <strong class="me-auto">{{ appStore.isAudioPlaying ? 'NOW PLAYING' : 'PAUSED' }}</strong>
         </div>
         <div class="audio-toast-body overflow-hidden text-truncate">
           speaking anything ya
           <!-- 曲名がハードコーディングされているのは、自分が作曲者だからなのだ。-->
-          <!-- The song title is hardcoded because I'm the composer. -->
+          <!-- The music title is hardcoded because I'm the composer. -->
           <!--eslint-disable-next-line vuejs-accessibility/anchor-has-content -->
           <a
             href="https://soundcloud.com/logue256/sets/bgm?si=5a4a228532a24e8c8ad96140f3d120b2&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
@@ -49,7 +49,7 @@ async function togglePlayback() {
             class="ms-2 soundcloud-link"
             @click="appStore.pauseAudio()"
           >
-            <Icon icon="fa:soundcloud" class="ms-1" />
+            <Icon icon="simple-icons:soundcloud" class="ms-1" />
           </a>
         </div>
       </div>

@@ -100,6 +100,8 @@ const accomplishments = [
 </template>
 
 <style scoped>
+/** タイトルのマウスホバー時のグリッチエフェクト */
+/** Glitch effect on title hover */
 .glitch-text:hover {
   animation: glitch-anim 0.3s infinite;
   color: var(--arasaka-red);

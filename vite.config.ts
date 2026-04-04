@@ -102,14 +102,14 @@ export default defineConfig(({ command, mode }): UserConfig => {
                 patterns: ['/node_modules/@iconify/']
               },
               {
-                // FontAwesome 6 Brands icon set (large JSON data).
-                name: 'icons-fa6-brands',
-                patterns: ['/node_modules/@iconify-json/fa6-brands']
+                // Bootstrap Icons icon set (large JSON data).
+                name: 'icons-bi',
+                patterns: ['/node_modules/@iconify-json/bi']
               },
               {
-                // FontAwesome 4 icon set (large JSON data).
-                name: 'icons-fa',
-                patterns: ['/node_modules/@iconify-json/fa']
+                // Simple Icons icon set (large JSON data).
+                name: 'icons-simple-icons',
+                patterns: ['/node_modules/@iconify-json/simple-icons']
               }
             ];
 
