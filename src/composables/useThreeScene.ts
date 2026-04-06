@@ -253,16 +253,18 @@ export function useThreeScene(
     composer?.dispose();
     renderer?.dispose();
   });
+
+  // カメラを外に出さないと、外からズームもリセットもできない。仕方ない。 -- IGNORE
+  // If we don't expose the camera, nobody outside can zoom or reset it. What a drag. -- IGNORE
+  return { getCamera: () => camera };
 }
 
 // こういう風に VRM の更新とアニメーションミキサーの更新を外部から呼び出せるようにしておくと、シーンのセットアップとアニメーションの管理が分離されて便利である。 -- IGNORE
-// ちなみに、生成 AI はこういう細かい設計の話はしてくれないことが多いので、開発者が自分で考えて実装したり、生成AIに指示する必要がある。 -- IGNORE
 // まぁ、再利用しやすい形にはしておいたけど、このプロジェクトでは VRM のアニメーションは一種類しか使わない予定なので、そこまで厳密に分ける必要もなかったかもしれない。 -- IGNORE
 //
-// そうだ、京都へ行こう… --- IGNORE ---
+// そうだ、京都へ行こう‥ --- IGNORE ---
 
 // Making it possible to call VRM updates and animation mixer updates externally like this is convenient because it separates scene setup and animation management. -- IGNORE
-// Incidentally, generation AI often doesn't talk about these kinds of detailed design issues, so developers need to think about it and implement it themselves, or instruct the generation AI. -- IGNORE
 // Well, I made it in a form that's easy to reuse, but since this project only plans to use one type of VRM animation, it might not have been necessary to separate them so strictly. -- IGNORE
 //
 // Click your heels and think of Kansas.. --- IGNORE ---

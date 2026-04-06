@@ -73,25 +73,33 @@ const handleAccess = () => {
     <div class="container position-relative text-center">
       <!-- 読み込み中の描写 -->
       <!-- Loading depiction -->
-      <div v-if="isLoading || !ready" class="display-6 blink">SYSTEM_SYNCHRONIZING...</div>
+      <div v-if="isLoading || !ready" class="display-6 blink glitch">SYSTEM_SYNCHRONIZING...</div>
 
       <div v-else class="action-zone">
         <div class="display-6 mb-4 philosophy">
-          <p class="mb-3" lang="ja">
+          <p
+            class="mb-3"
+            lang="ja"
+            data-text="何でもできるということは、 自由度が高い という事ではなく、¥nどうとでもなってしまう ということである。"
+          >
             何でもできるということは、
-            <em>自由度が高い</em>
+            <em class="glitch">自由度が高い</em>
             という事ではなく、
             <br />
-            <em>どうとでもなってしまう</em>
+            <em class="glitch">どうとでもなってしまう</em>
             ということである。
           </p>
-          <p lang="en">
+          <p
+            class="mb-0"
+            lang="en"
+            data-text="Having everything at your disposal isn't freedom. It is the inevitability of becoming just... anything."
+          >
             Having everything at your disposal isn't
-            <em>freedom</em>
+            <em class="glitch">freedom</em>
             .
             <br />
             It is the inevitability of becoming just...
-            <em>anything</em>
+            <em class="glitch">anything</em>
             .
           </p>
           <!-- ちなみに、この哲学的な引用は、マラソンルビコンを思い起こさせる、白と灰色のメッセージで表示される。 --- IGNORE -->
@@ -110,6 +118,8 @@ const handleAccess = () => {
 </template>
 
 <style scoped lang="scss">
+$glitch-interval: 1.5s;
+
 .page-cover {
   z-index: 1031;
   // 誰よりも前に立ちたいという、浅ましい自己主張。
@@ -180,6 +190,7 @@ const handleAccess = () => {
 
     p {
       color: var(--bs-gray-500);
+
       &[lang='ja'] {
         &::before {
           content: '「';
@@ -200,6 +211,23 @@ const handleAccess = () => {
         color: var(--bs-white);
       }
     }
+  }
+
+  .glitch {
+    position: relative;
+    display: inline-block;
+    z-index: 0;
+    // text-shadow で RGB ずれを起こす。pseudo-element の詳細度バグと戦うより素直。
+    // RGB shift via text-shadow. Saner than fighting pseudo-element specificity nightmares.
+    animation: glitch-text $glitch-interval infinite step-end;
+  }
+
+  // .blink との同居。両方がアニメーションを主張するので、両方書いてやる。
+  // Cohabitation with .blink. Both want their animation, so we list both.
+  .blink.glitch {
+    animation:
+      blink-animation 1s steps(2, start) infinite,
+      glitch-text $glitch-interval infinite step-end;
   }
 
   .blink {
@@ -245,6 +273,41 @@ const handleAccess = () => {
   }
   100% {
     transform: translate3D(0, 3rem, 0);
+  }
+}
+
+@keyframes glitch-text {
+  // 一瞬だけ壊れる。そういうキャラだから。
+  // Break for just a moment. That's the aesthetic.
+  0% {
+    opacity: 0;
+    transform: translateX(4px);
+    text-shadow: none;
+  }
+  2% {
+    opacity: 1;
+    transform: translateX(-4px);
+    text-shadow: -3px 0 var(--color-ghost-blue);
+  }
+  4% {
+    opacity: 0.5;
+    transform: none;
+    text-shadow: 3px 0 var(--color-ghost-red);
+  }
+  6% {
+    opacity: 1;
+    transform: translateX(-2px);
+    text-shadow:
+      -3px 0 var(--color-ghost-blue),
+      3px 0 var(--color-ghost-red);
+  }
+  8% {
+    transform: none;
+    text-shadow: none;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: none;
   }
 }
 </style>

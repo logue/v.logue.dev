@@ -46,7 +46,7 @@ const { vrm, mixer, load } = useVrmLoader(props.vrma, pivot, isLoading);
 const { fetchFile } = useAssetLoader();
 const store = useAppStore();
 
-useThreeScene(
+const { getCamera } = useThreeScene(
   canvasRef,
   pivot,
   () => vrm.value,
@@ -60,7 +60,7 @@ useThreeScene(
     perspectiveCamera: { fov: 15, near: 0.1, far: 20 }
   }
 );
-useDragRotation(canvasRef, pivot);
+useDragRotation(canvasRef, pivot, getCamera);
 
 onMounted(async () => {
   // API から VRM URL を取得しつつ、VRMA ZIP を並列でフェッチする。
@@ -127,7 +127,7 @@ onMounted(async () => {
 .vrm-canvas {
   /* aspect-ratio を明示しないと、canvas.width 属性が変わるたびにレイアウト幅も変わり ResizeObserver が無限に発火する。 */
   /* Without explicit aspect-ratio, layout width tracks canvas.width attribute, causing an infinite ResizeObserver feedback loop. */
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
   height: 75vh;
   filter: drop-shadow(3px 3px 64px 3px var(--bs-black))
     drop-shadow(2px 2px 15px 5px var(--bs-black));

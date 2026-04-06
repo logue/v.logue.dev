@@ -9,23 +9,24 @@ import LayerGlitch from './components/LayerGlitch.vue';
 import LayerScanline from './components/LayerScanline.vue';
 import PageCover from './components/PageCover.vue';
 
+// 画像はインポートして URL を得るスタイル。パラメータはスタイルシートでも流用。 --IGNORE
+// Images are imported to get their URLs. The parameter is also used in stylesheets. --IGNORE
 import bgsrc from '@/assets/bg.jpeg';
 import { useAppStore } from '@/stores/useAppStore';
 
 const store = useAppStore();
 
-// カバーの表示フラグ。最初は当然 true。自明すぎてコメントするのも虚しい。
-// Cover visibility flag. Obviously true at first. Too obvious to comment on, yet here we are.
+// カバーの表示フラグ。最初は当然 true。自明すぎてコメントするのも虚しい。 --IGNORE
+// Cover visibility flag. Obviously true at first. Too obvious to comment on, yet here we are. --IGNORE
 const coverVisible = ref(true);
 
-// オーディオとVRM両方の準備状況をトラッキング。
-// オーディオロード完了フラグ。
-// Audio loaded flag.
+// オーディオとVRM両方の準備状況をトラッキング。 --IGNORE
+// Audio loaded flag. Tracking the readiness of both audio and VRM. --IGNORE
 const audioReady = ref(false);
 
 const onAudioLoaded = async (audio: ArrayBuffer) => {
-  // オーディオだけ受け取る。VRM はもう VrmCanvas が自分でやってる。
-  // Only receiving audio. VRM is already handling itself in VrmCanvas.
+  // オーディオだけ受け取る。VRM はもう VrmCanvas.vue が自分でやってる。 --IGNORE
+  // Only receiving audio. VRM is already handling itself in VrmCanvas.vue. --IGNORE
   await store.initAudio(audio);
   audioReady.value = true;
 };
@@ -46,10 +47,10 @@ const onAccess = () => {
     @loaded="onAudioLoaded"
     @access="onAccess"
   />
-  <!-- 全ページ共通のカバー。ここで ACCESS してもらう。 -->
-  <!-- オーディオと VRM 両方の準備完了まで ACCESS ボタンは無効化される。 -->
-  <!-- App-wide cover. The user grants ACCESS here. -->
-  <!-- ACCESS button is disabled until both audio and VRM are ready. -->
+  <!-- 全ページ共通のカバー。ここで ACCESS してもらう。 --IGNORE -->
+  <!-- オーディオと VRM 両方の準備完了まで ACCESS ボタンは無効化される。 --IGNORE-->
+  <!-- App-wide cover. The user grants ACCESS here. --IGNORE -->
+  <!-- ACCESS button is disabled until both audio and VRM are ready.  --IGNORE -->
 
   <LayerGlitch :bgsrc="bgsrc" />
   <LayerElfCode />
@@ -61,14 +62,14 @@ const onAccess = () => {
     <AreaHeader />
     <main class="flex-grow-1 container py-5">
       <RouterView />
-      <!-- ここに本文が入る -->
-      <!-- The main content goes here -->
+      <!-- ここに本文が入る。Vue使った事がある人間なら自明の理だよな？ --IGNORE -->
+      <!-- The main content goes here. If you've used Vue before, this is self-explanatory, right? --IGNORE -->
     </main>
     <AreaFooter />
   </div>
 
-  <!-- オーディオトーストは全ページ共通で表示。 -->
-  <!-- Audio toast is displayed across all pages. -->
+  <!-- オーディオトーストは全ページ共通で表示。 --IGNORE -->
+  <!-- Audio toast is displayed across all pages. --IGNORE -->
   <AudioToast />
 </template>
 
