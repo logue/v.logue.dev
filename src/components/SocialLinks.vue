@@ -176,6 +176,46 @@ const links: SocialLink[] = [
     url: 'https://account.xbox.com/ja-jp/Profile?Gamertag=Logue256',
     icon: 'simple-icons:xbox'
   },
+  /*
+  // アイコンがない。 --- IGNORE ---
+  // No icon available. --- IGNORE ---
+  {
+    name: 'Second Life',
+    url: 'https://my.secondlife.com/ja/logue.takacs',
+    icon: 'simple-icons:secondlife'
+  },
+  {
+    name: 'Cluster',
+    url: 'https://cluster.mu/u/logue',
+    icon: 'simple-icons:cluster'
+  },
+  {
+    name: 'VRoid Hub',
+    url: 'https://hub.vroid.com/users/2052816',
+    icon: 'simple-icons:vroid'
+  },
+  {
+    // まだアカウントは作ってないけど、VRChatもそのうち追加しようと思ってる --- IGNORE ---
+    // I haven't created an account for it yet, but I plan to add VRChat eventually --- IGNORE ---
+    name: 'VRChat',
+    url: 'https://vrchat.com/home/user?id=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    icon: 'simple-icons:vrchat'
+  },
+  */
+  {
+    // ここもあまり更新してないけど、たまに何か書いてる --- IGNORE ---
+    // I don't update it much, but I occasionally write something --- IGNORE ---
+    name: 'Pixiv',
+    url: 'https://www.pixiv.net/users/256',
+    icon: 'simple-icons:pixiv'
+  },
+  {
+    // アカウントがあるだけ --- IGNORE ---
+    // Just have an account --- IGNORE ---
+    name: 'DeviantArt',
+    url: 'https://www.deviantart.com/logue256',
+    icon: 'simple-icons:deviantart'
+  },
   {
     // ko-fiは、寄付や支援者を募るためのプラットフォームで、クリエイターがファンから直接支援を受けることができるサービス。 --- IGNORE ---
     // Ko-fi is a platform for soliciting donations and supporters, allowing creators to receive direct support from their fans. --- IGNORE ---
@@ -215,10 +255,10 @@ onMounted(() => {
       </a>
     </li>
   </ul>
-  <!-- ここでは、Font Awesomeのアイコンを使用して、各ソーシャルメディアのロゴを表示している。 --- IGNORE -->
+  <!-- ここでは、Simple Iconsのアイコンを使用して、各ソーシャルメディアのロゴを表示している。 --- IGNORE -->
   <!-- アイコンは、Bootstrapのツールチップと組み合わせて、ユーザーがアイコンにカーソルを合わせたときに、ツールチップが表示されるようになっている。 --- IGNORE -->
 
-  <!-- Font Awesome icons are used here to display the logos of various social media platforms. --- IGNORE -->
+  <!-- Simple Icons are used here to display the logos of various social media platforms. --- IGNORE -->
   <!-- The icons are combined with Bootstrap tooltips so that tooltips appear when the user hovers over the icons. --- IGNORE -->
 </template>
 

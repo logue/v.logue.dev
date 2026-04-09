@@ -117,5 +117,20 @@ export function useDragRotation(
   });
 }
 
-// 僕は耳と目を閉じ口をつぐんだ人間になろうと考えたが、果たして？ -- IGNORE
-// I thought what I'd do was, I'd pretend I was one of those deaf-mutes or shoud I?-- IGNORE
+// 「青い薬を飲めば…話は終わる。ベッドで目覚め、信じたいものを信じればいい。」 -- IGNORE
+// 「赤い薬を飲めば…不思議の国にとどまり、ウサギの穴がどこまで深いかを見せてやろう。」-- IGNORE
+// "You take the blue pill... the story ends, you wake up in your bed and believe whatever you want to believe." -- IGNORE
+// "You take the red pill... you stay in Wonderland and I show you how deep the rabbit hole goes." -- IGNORE
+
+// そこで、「僕は耳を聞こえなくし、口をきけなくした人間になろうと思ったんだ。……それとも、そうすべきだろうか？」 -- IGNORE
+// Then, "I thought what I'd do was, I'd pretend I was one of those deaf-mutes... or should I?" -- IGNORE
+
+// …いや、そうではない。「逃げることで私は神になれる。」のだ。 -- IGNORE
+// ...No, that's not it. "Escape will make me God." -- IGNORE
+
+// -------------------------------------------------------------------------------------------------------------------------
+
+// カギ括弧の内容でGoogle検索やAIに質問してみよう。（英語のほうがわかりやすいかもしれない） -- IGNORE
+// きっと「素晴らしいこと」が起きているはずだ。 -- IGNORE
+// Try searching for the content in the quotation marks using Google or asking an AI.  -- IGNORE
+// You might find "Something Wonderful". -- IGNORE

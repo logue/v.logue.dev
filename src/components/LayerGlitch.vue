@@ -4,6 +4,12 @@ import { onMounted, onUnmounted, ref } from 'vue';
 const props = defineProps<{ bgsrc: string }>();
 
 const scrollY = ref(0);
+/**
+ * 脳筋実装。スクロールイベントをリッスンして、スクロール量をリアルタイムで更新する。
+ * もっとも、この場合の「脳筋」は本来の意味とは逆だが。
+ * A musclehead implementation. Listen to scroll events and update the scroll amount in real time.
+ * In this case, "musclehead" is actually the opposite of its original meaning.
+ */
 const handleScroll = () => {
   scrollY.value = window.scrollY;
 };
@@ -97,15 +103,13 @@ $glitch-interval: math.div($glitch-duration, $glitch-frequency);
   animation: glitch-#{$name} $animation-duration linear infinite alternate both;
 }
 
-.slice {
+.slice,
+.glitch {
   background-size: cover;
   background-position: center;
 }
 
 .glitch {
-  background-position: center;
-  background-size: cover;
-
   &::before,
   &::after,
   .channel {
@@ -168,3 +172,7 @@ $glitch-interval: math.div($glitch-duration, $glitch-frequency);
   }
 }
 </style>
+<!-- ここまでスタイルシートを書き込むと、もはやCSSフレームワーク使う意味ないよね。 --- IGNORE -->
+<!-- グリッチエフェクトは、CSSフレームワークのユーティリティクラスだけでは実装が難しいほど特殊なものだからね。 --- IGNORE -->
+<!-- At this point, writing the stylesheet like this kind of defeats the purpose of using a CSS framework, doesn't it? --- IGNORE -->
+<!-- Well, the glitch effect is so special that it's difficult to implement it using only utility classes from a CSS framework. --- IGNORE -->
