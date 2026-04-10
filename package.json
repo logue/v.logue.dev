@@ -44,14 +44,14 @@
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.31.1",
-    "@cloudflare/workers-types": "^4.20260409.1",
+    "@cloudflare/vite-plugin": "^1.31.2",
+    "@cloudflare/workers-types": "^4.20260410.1",
     "@iconify-json/bi": "^1.2.7",
     "@iconify-json/simple-icons": "^1.2.77",
     "@iconify/vue": "^5.0.0",
     "@tsconfig/node-lts": "^24.0.0",
     "@types/bootstrap": "^5.2.10",
-    "@types/node": "^25.5.2",
+    "@types/node": "^25.6.0",
     "@types/three": "^0.183.1",
     "@vitejs/plugin-vue": "^6.0.5",
     "@vue/eslint-config-prettier": "^10.2.0",
@@ -69,7 +69,7 @@
     "lint-staged": "^16.4.0",
     "npm-run-all2": "^8.0.4",
     "oxlint": "^1.59.0",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.2",
     "rimraf": "^6.1.3",
     "sass-embedded": "^1.99.0",
     "stylelint": "^17.6.0",
@@ -85,7 +85,7 @@
     "vite-plugin-javascript-obfuscator": "^3.1.0",
     "vite-plugin-vue-devtools": "^8.1.1",
     "vue-tsc": "^3.2.6",
-    "wrangler": "^4.81.0"
+    "wrangler": "^4.81.1"
   },
   "husky": {
     "hooks": {

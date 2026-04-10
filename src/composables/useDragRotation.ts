@@ -116,6 +116,8 @@ export function useDragRotation(
     globalThis.removeEventListener('keydown', onKeyDown);
   });
 }
+// 「金田！何が見える……？」 -- IGNORE
+// "Kaneda! What do you see?" -- IGNORE
 
 // 「青い薬を飲めば…話は終わる。ベッドで目覚め、信じたいものを信じればいい。」 -- IGNORE
 // 「赤い薬を飲めば…不思議の国にとどまり、ウサギの穴がどこまで深いかを見せてやろう。」-- IGNORE
@@ -130,7 +132,7 @@ export function useDragRotation(
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-// カギ括弧の内容でGoogle検索やAIに質問してみよう。（英語のほうがわかりやすいかもしれない） -- IGNORE
-// きっと「素晴らしいこと」が起きているはずだ。 -- IGNORE
-// Try searching for the content in the quotation marks using Google or asking an AI.  -- IGNORE
-// You might find "Something Wonderful". -- IGNORE
+// カギ括弧の内容でGoogle検索やAIに尋ねてみろ。英語のメッセージの方が味が濃いぞ。
+// きっと「Something Wonderful」が待っているはずだ。
+// Try searching for the content in the quotation marks.
+// You might find "Something Wonderful". - Bowman (2010)
