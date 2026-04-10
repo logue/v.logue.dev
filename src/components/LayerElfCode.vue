@@ -6,7 +6,7 @@ const offsetY = ref(0);
 function onScroll() {
   // 力付くでパララックス・スクロール
   // By force, parallax scroll
-  offsetY.value = -window.scrollY * 0.25;
+  offsetY.value = -window.scrollY * 0.1;
 }
 
 onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }));
@@ -14,9 +14,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 </script>
 
 <template>
-  <aside class="position-fixed overflow-hidden top-0 left-0 w-100 z-n1">
+  <aside class="position-fixed top-0 left-0 w-100 z-n1">
     <pre
-      class="m-3"
+      class="m-3 overflow-hidden"
       :style="{ transform: `translateY(${offsetY}px)` }"
     ><span style="color: var(--color-green)">7f 45 4c 46</span> 02 01 01 00  <span style="color: var(--color-blue)">//</span> <span style="color:var(--color-green)">.ELF</span>....
 00 00 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ........

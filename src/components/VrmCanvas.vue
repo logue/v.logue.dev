@@ -11,28 +11,28 @@ import { useVrmLoader } from '@/composables/useVrmLoader';
 import { useAppStore } from '@/stores/useAppStore';
 
 interface Props {
-  /** VRM ファイルのパスもしくはID */
+  /** VRM ファイルのパスもしくはID / VRM file path or ID */
   vrm: string;
-  /** VRMA ZIP ファイルのパス */
+  /** VRMA ZIP ファイルのパス / VRMA ZIP file path */
   zip: string;
-  /** ZIP 内の VRMA ファイルパス */
+  /** ZIP 内の VRMA ファイルパス / VRMA file path inside the ZIP */
   vrma: string;
 }
 
-/** 3Dオブジェクトのピボット */
+/** 3Dオブジェクトのピボット / Pivot of the 3D object */
 const pivot = new THREE.Object3D();
-/** プロップ */
+/** プロップ / Props */
 const props = defineProps<Props>();
-/** 親方向バインディング */
+/** 親方向バインディング / Parent direction binding */
 const emit = defineEmits<{
   ready: [];
 }>();
 
-/** VRMを表示するキャンバスの参照 */
+/** VRMを表示するキャンバスの参照 / Reference to the canvas displaying the VRM */
 const canvasRef = ref<HTMLCanvasElement | null>(null);
-/** VRMのロード状態。ロード完了まではローディング表示をするために使う。 */
+/** VRMのロード状態。ロード完了まではローディング表示をするために使う。 / VRM loading state. Used to display loading until the load is complete. */
 const isLoading = ref(true);
-/** VRMファイルのURL。APIから取得する。 */
+/** VRMファイルのURL。APIから取得する。 / VRM file URL. Obtained from the API. */
 const vrmFileUrl = computed<string>(() => {
   // VRMプロップが直接VRMファイルのパスを持っている場合と、VRM IDを持っている場合の両方に対応する。
   // 詳細はfunctions/api/vrm/[avatar_id].ts を参照。 --- IGNORE ---
@@ -127,9 +127,7 @@ onMounted(async () => {
 .vrm-canvas {
   /* aspect-ratio を明示しないと、canvas.width 属性が変わるたびにレイアウト幅も変わり ResizeObserver が無限に発火する。 */
   /* Without explicit aspect-ratio, layout width tracks canvas.width attribute, causing an infinite ResizeObserver feedback loop. */
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 4;
   height: 75vh;
-  filter: drop-shadow(3px 3px 64px 3px var(--bs-black))
-    drop-shadow(2px 2px 15px 5px var(--bs-black));
 }
 </style>

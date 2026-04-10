@@ -116,7 +116,7 @@ export function useDragRotation(
     globalThis.removeEventListener('keydown', onKeyDown);
   });
 }
-// 「金田！何が見える……？」 -- IGNORE
+// 「金田！何が見えた？」 -- IGNORE
 // "Kaneda! What do you see?" -- IGNORE
 
 // 「青い薬を飲めば…話は終わる。ベッドで目覚め、信じたいものを信じればいい。」 -- IGNORE
