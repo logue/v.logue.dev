@@ -1,12 +1,12 @@
 # v.logue.dev Web Content
 
-ソースコードを読んだり、そこに書かれているコメントを読んだり、コード生成ＡＩに解析させたからといって、同じ物が作れるとは限らない（ｗ
+*設計図*を読んだり、*道具*を揃えたり、*生成ＡＩ*に解析させたからといって、同じ物が作れるとは限らない（ｗ
 
-それくらいのことは、わかっているよな？
+それくらいのことは、**わかっている**よな？
 
-Just because you read the source code, read the comments written in it, or have a code-generating AI analyze it doesn't mean you can create the same thing (lol).
+Just because you can read _blueprints_, gather the necessary _tools_, and have a _generative AI_ analyze them doesn't mean you can create the same thing. (lol).
 
-You understand that much, right?
+You understand that much, **right**?
 
 ## 🧩 OBSERVATION_PROTOCOL
 
