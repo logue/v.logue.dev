@@ -61,9 +61,21 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   }
 
   // cookie から code_verifier と state を取得して検証
+  // Retrieve code_verifier and state from cookies and validate
   const cookieHeader = request.headers.get('Cookie') ?? '';
-  const getCookie = (name: string) =>
-    cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`))?.[1];
+  const getCookie = (name: string) => {
+    const prefix = `${name}=`;
+    const cookieStart = cookieHeader.indexOf(prefix);
+    if (cookieStart === -1) return undefined;
+    // Cookie の先頭か ; の直後から始まっているか確認
+    // Ensure it starts at the beginning of the cookie string or right after a ';'
+    if (cookieStart !== 0 && cookieHeader[cookieStart - 1] !== ';') {
+      return undefined;
+    }
+    const valueStart = cookieStart + prefix.length;
+    const valueEnd = cookieHeader.indexOf(';', valueStart);
+    return cookieHeader.substring(valueStart, valueEnd === -1 ? undefined : valueEnd).trim();
+  };
 
   const savedState = getCookie('vroid_state');
   const codeVerifier = getCookie('vroid_cv');
@@ -83,8 +95,10 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   }
 
   // redirect_uri は認可リクエスト時と同じ値 (origin から動的生成) を使う
+  // The redirect_uri should match the one used in the authorization request (dynamically generated from the origin)
   const redirectUri = `${new URL(request.url).origin}/api/auth/callback`;
 
+  /** VRoid Hub トークンエンドポイントへのリクエスト / Request to VRoid Hub token endpoint */
   let tokenRes: Response;
   try {
     tokenRes = await fetch('https://hub.vroid.com/oauth/token', {
@@ -183,6 +197,7 @@ export const onRequestGet: PagesFunction<Env> = async context => {
   }
 
   // KV にリフレッシュトークンを保存（以降の自動ローテーションに使用）
+  // Store the refresh token in KV for future automatic rotation
   if (env.TOKEN_STORE) {
     await env.TOKEN_STORE.put('vroid_refresh_token', tokenData.refresh_token);
   }

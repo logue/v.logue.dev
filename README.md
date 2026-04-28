@@ -23,5 +23,10 @@ If you consider yourself an Architect, you know where the real truth is hidden.
 
 ## License
 
-MIT License
+[MIT License](./LICENSE)
+
 &copy;2026 Logue
+
+> [!INFO]
+> ライセンスは扱いやすいMITにしてあるけど、仮に君がここのコードを参考に自分のプロダクトに流用したところで、使いこなせるかどうかは別問題だけどネｗ
+> The license is the easy-to-use MIT, but even if you were to use this code as a reference for your own product, whether you'd actually be able to use it effectively is another matter, lol.

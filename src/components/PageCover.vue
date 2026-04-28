@@ -57,8 +57,8 @@ const handleAccess = () => {
 
 <template>
   <aside
-    class="page-cover position-fixed d-flex align-items-center justify-content-center inset-0 w-100 h-100"
     :class="{ 'is-opening': isOpening }"
+    class="page-cover position-fixed d-flex align-items-center justify-content-center inset-0 w-100 h-100"
   >
     <div class="shutter-panel position-absolute z-1">
       <div class="upper-triangle position-absolute bg-dark w-100 h-100">

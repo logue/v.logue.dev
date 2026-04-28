@@ -16,8 +16,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 <template>
   <aside class="position-fixed top-0 left-0 w-100 z-n1">
     <pre
-      class="m-3 overflow-hidden"
       :style="{ transform: `translateY(${offsetY}px)` }"
+      class="m-3 overflow-hidden"
     ><span style="color: var(--color-green)">7f 45 4c 46</span> 02 01 01 00  <span style="color: var(--color-blue)">//</span> <span style="color:var(--color-green)">.ELF</span>....
 00 00 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ........
 <span style="color: var(--color-red)">b7</span> 00 3e 00 01 00 00 00  <span style="color: var(--color-blue)">//</span> <span style="color: var(--color-red)">.</span>.&gt;.....

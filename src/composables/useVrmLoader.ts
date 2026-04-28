@@ -61,13 +61,26 @@ export function useVrmLoader(
     console.log('Setting up VRM animation...');
     // ZIP をメモリ内で展開して VRMA を取り出す。fetchは不要。 -- IGNORE
     // Decompress ZIP in memory and extract VRMA. No fetch needed. -- IGNORE
+
+    // ホワイトリスト：.vrma ファイルのみ許可。ディレクトリトラバーサル防止。 -- IGNORE
+    // Allowlist: Only .vrma files. Prevents directory traversal. -- IGNORE
+    // 許可: サブディレクトリ内のファイル (例: VRMA_MotionPack/vrma/VRMA_01.vrma)
+    // Allowed: Files in subdirectories (e.g., VRMA_MotionPack/vrma/VRMA_01.vrma)
+    if (!/^(?!.*\.\.)[\w()\s/.\-]+\.vrma$/i.test(vrmaFileName)) {
+      throw new Error(
+        `Invalid VRMA file name: ${vrmaFileName}. Must be a .vrma file. Directory traversal (..) not allowed.`
+      );
+    }
+
     const unzipped = unzipSync(new Uint8Array(vrmaZipBuffer));
 
     if (!Object.hasOwn(unzipped, vrmaFileName)) {
       throw new Error(`File ${vrmaFileName} not found in ZIP`);
     }
-    // eslint-disable-next-line security/detect-object-injection
-    const motionData: Uint8Array | undefined = unzipped[vrmaFileName];
+
+    // vrmaFileName は許可リスト検証済み。オブジェクトインジェクション脆弱性の心配なし。 -- IGNORE
+    // vrmaFileName is validated against allowlist. No object injection risk. -- IGNORE
+    const motionData: Uint8Array | undefined = unzipped[vrmaFileName]; // eslint-disable-line security/detect-object-injection -- validated against allowlist
     if (!motionData) throw new Error(`File ${vrmaFileName} not found in ZIP`);
 
     const vrmaBuffer = motionData.slice().buffer;
@@ -177,7 +190,7 @@ export function useVrmLoader(
 // くれぐれも、ライセンスは守るんだぞ。 -- IGNORE
 
 // Hi kids. I hope you're having fun.
-// Important safety tip:
+// Important safety tip：
 // The animation zip file is used as is from the zip file downloaded from https://vroid.booth.pm/items/5512385,
 // but since the license explicitly states in the prohibitions that "Redistributing the motion or its derivative works in a state where it can be extracted without permission." is prohibited,
 // instead of directly including the file in the project, it is uploaded to an asset server built with CloudFlare R2 and fetched from there using a Worker. -- IGNORE

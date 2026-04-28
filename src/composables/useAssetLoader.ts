@@ -30,6 +30,15 @@ export const useAssetLoader = () => {
     targetFileName: string
   ): Promise<ArrayBuffer> => {
     console.log(`Fetching and decompressing motion from ${path}...`);
+
+    // ホワイトリスト：ディレクトリトラバーサル防止。ファイル名のみ許可。 -- IGNORE
+    // Allowlist: Prevent directory traversal. Only filenames allowed. -- IGNORE
+    if (!/^[a-zA-Z0-9_\-.]+$/.test(targetFileName)) {
+      throw new Error(
+        `Invalid file name: ${targetFileName}. Path separators and special characters not allowed.`
+      );
+    }
+
     const arrayBuffer = await fetchFile(path);
 
     // ZIPを展開
@@ -39,8 +48,9 @@ export const useAssetLoader = () => {
     if (!Object.hasOwn(unzipped, targetFileName)) {
       throw new Error(`File ${targetFileName} not found in ZIP`);
     }
-    // eslint-disable-next-line security/detect-object-injection
-    const motionData: Uint8Array | undefined = unzipped[targetFileName];
+    // targetFileName は許可リスト検証済み。オブジェクトインジェクション脆弱性の心配なし。 -- IGNORE
+    // targetFileName is validated against allowlist. No object injection risk. -- IGNORE
+    const motionData: Uint8Array | undefined = unzipped[targetFileName]; // eslint-disable-line security/detect-object-injection -- validated against allowlist
     if (!motionData) throw new Error(`File ${targetFileName} not found in ZIP`);
 
     // slice() でコピーを作り SharedArrayBuffer ではない純粋な ArrayBuffer を得る

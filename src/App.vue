@@ -42,8 +42,8 @@ const onAccess = () => {
 <template>
   <PageCover
     v-if="coverVisible"
-    audio="speaking anything ya (loop).ogg"
     :ready="audioReady && store.vrmReady"
+    audio="speaking anything ya (loop).ogg"
     @loaded="onAudioLoaded"
     @access="onAccess"
   />
@@ -73,7 +73,7 @@ const onAccess = () => {
   <AudioToast />
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import './styles/bootstrap';
 
 body {

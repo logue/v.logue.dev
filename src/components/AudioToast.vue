@@ -25,9 +25,9 @@ async function togglePlayback() {
       aria-label="Audio controls"
     >
       <button
+        :title="appStore.isAudioPlaying ? 'Pause' : 'Play'"
         class="audio-control btn btn-primary inline-flex align-items-center justify-content-center rounded-circle"
         type="button"
-        :title="appStore.isAudioPlaying ? 'Pause' : 'Play'"
         @click="togglePlayback"
       >
         <Icon :icon="appStore.isAudioPlaying ? 'bi:pause-fill' : 'bi:play-fill'" />

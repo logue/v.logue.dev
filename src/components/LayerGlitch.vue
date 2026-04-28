@@ -21,8 +21,8 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 <template>
   <aside class="position-fixed top-0 left-0 w-100 h-100 z-n1 overflow-hidden">
     <div
-      class="glitch position-relative overflow-hidden w-100 h-100"
       :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${props.bgsrc});`"
+      class="glitch position-relative overflow-hidden w-100 h-100"
     >
       <div class="channel r top-0 left-0 right-0 bottom-0"></div>
       <div class="channel g top-0 left-0 right-0 bottom-0"></div>

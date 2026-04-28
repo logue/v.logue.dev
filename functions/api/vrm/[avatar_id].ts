@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// めんどくさいので any で済ませる。 --- IGNORE ---
-// まあ、Env 以外は型定義するほどのものでもないしな。 --- IGNORE ---
-// It is troublesome, so I'll just use any. --- IGNORE ---
-// Well, it's not really worth defining types for anything other than Env. --- IGNORE ---
+// めんどくさいので any で済ませる。VRoid API のレスポンスは型が緩いので、Env 以外は any で十分。 --- IGNORE ---
+// It is troublesome, so I'll just use any. VRoid API responses are loosely typed. --- IGNORE ---
 
 interface Env {
   VROID_APP_ID: string;
@@ -89,6 +86,15 @@ export const onRequest: PagesFunction<Env> = async context => {
 
   // Path Parameter から avatar_id を取得
   const avatarId = context.params.avatar_id as string;
+
+  // ホワイトリスト：ディレクトリトラバーサル防止。英数字、ハイフン、アンダースコアのみ許可。 --- IGNORE ---
+  // Allowlist: Prevent directory traversal. Only alphanumeric, hyphens, and underscores allowed. --- IGNORE ---
+  if (!/^[a-zA-Z0-9_-]+$/.test(avatarId)) {
+    return new Response(JSON.stringify({ error: '❌ Invalid avatar_id format' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
   // KV に保存済みのリフレッシュトークンを優先し、なければ env var を使用
   const storedRefreshToken = await env.TOKEN_STORE?.get(KV_REFRESH_TOKEN_KEY);
@@ -196,6 +202,7 @@ export const onRequest: PagesFunction<Env> = async context => {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- VRoid API response is loosely typed
   const tokenData: any = tokenParsed.data;
 
   if (!tokenData.access_token) {
@@ -237,11 +244,14 @@ export const onRequest: PagesFunction<Env> = async context => {
       }
     );
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- VRoid API response is loosely typed
   const accountModelsData: any = accountModelsParsed.data;
   // console.info('Account models:', JSON.stringify(accountModelsData));
 
   // character.id が avatarId と一致するモデルを探す
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- API response uses generic any
   const models: any[] = accountModelsData?.data ?? [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- callback parameter must match array element type
   const matchedModel = models.find((m: any) => m?.character?.id === avatarId) ?? models[0];
   const characterModelId: string | undefined = matchedModel?.id;
 
@@ -283,6 +293,7 @@ export const onRequest: PagesFunction<Env> = async context => {
       }
     );
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- VRoid API response is loosely typed
   const licenseData: any = licenseParsed.data;
   const licenseId: string | undefined = licenseData?.data?.id;
 
@@ -320,7 +331,7 @@ export const onRequest: PagesFunction<Env> = async context => {
 // VRoid Hub API から VRM データを取得する実装に変更した。 --- IGNORE ---
 // 真実とは、時に痛みを伴うものでもあるのさ。 --- IGNORE ---
 
-// I'll be honest with you: There used to be code here that directly accessed the VRM file.
+// I'll be honest with you： There used to be code here that directly accessed the VRM file.
 // However, since I'm an honest person, I removed the VRM file that could potentially cause licensing issues from this repository and asset server,
 // and changed the implementation to call the VRoid Hub API to fetch the VRM data.
 // Sometimes the truth hurts. --- IGNORE ---

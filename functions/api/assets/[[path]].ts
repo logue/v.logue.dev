@@ -152,9 +152,11 @@ export const onRequestGet: PagesFunction<Env> = async context => {
       'Cache-Control': 'public, max-age=86400',
       ...makeCorsHeaders(allowedOrigin)
     };
+    // キーは許可リスト（Content-Length, Content-Range, Accept-Ranges）のみ。動的入力なし。 -- IGNORE
+    // Keys are from allowlist only. No dynamic input. -- IGNORE
     for (const key of ['Content-Length', 'Content-Range', 'Accept-Ranges']) {
       const val = assetRes.headers.get(key);
-      // eslint-disable-next-line security/detect-object-injection
+      // eslint-disable-next-line security/detect-object-injection -- key is from static allowlist
       if (val) respHeaders[key] = val;
     }
 
