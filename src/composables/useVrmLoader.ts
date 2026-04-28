@@ -66,7 +66,7 @@ export function useVrmLoader(
     // Allowlist: Only .vrma files. Prevents directory traversal. -- IGNORE
     // 許可: サブディレクトリ内のファイル (例: VRMA_MotionPack/vrma/VRMA_01.vrma)
     // Allowed: Files in subdirectories (e.g., VRMA_MotionPack/vrma/VRMA_01.vrma)
-    if (!/^(?!.*\.\.)[\w()\s/.\-]+\.vrma$/i.test(vrmaFileName)) {
+    if (!/^(?!.*\.\.)[\w()\s/.-]+\.vrma$/i.test(vrmaFileName)) {
       throw new Error(
         `Invalid VRMA file name: ${vrmaFileName}. Must be a .vrma file. Directory traversal (..) not allowed.`
       );

@@ -1,7 +1,172 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 
+/**
+ * パララックス効果を実現するためのオフセット値と、ELFダンプを表示するpre要素への参照。
+ * Offset value for parallax effect and reference to the pre element displaying the ELF dump.
+ */
 const offsetY = ref(0);
+const preRef = ref<HTMLElement | null>(null);
+
+const HIGHLIGHT_NAMES = ['elf-green', 'elf-blue', 'elf-red', 'elf-gray'] as const;
+
+/**
+ * 実はLinuxのExecutable and Linkable Format (ELF) のヘッダのダンプ。 --- IGNORE ---
+ * さてこのバイナリには致命的なウソがあるが気づいたかな？ --- IGNORE ---
+ * This is actually a dump of the header of the Executable and Linkable Format (ELF) used in Linux. --- IGNORE ---
+ * By the way, there's a critical lie in this binary. Did you notice? --- IGNORE ---
+ */
+const elfDump = `7f 45 4c 46 02 01 01 00  // .ELF....
+00 00 00 00 00 00 00 00  // ........
+b7 00 3e 00 01 00 00 00  // ..>.....
+50 18 40 00 00 00 00 00  // P.@.....
+40 00 00 00 00 00 00 00  // @.......
+b8 b5 00 00 00 00 00 00  // ........
+00 00 00 00 40 00 38 00  // ....@.8.
+09 00 40 00 20 00 1f 00  // ..@. ...
+06 00 00 00 05 00 00 00  // ........
+40 00 00 00 00 00 00 00  // @.......
+40 00 40 00 00 00 00 00  // @.@.....
+40 00 40 00 00 00 00 00  // @.@.....
+01 00 00 00 06 00 00 00  // ........
+00 00 00 00 00 00 00 00  // ........
+00 00 40 00 00 00 00 00  // ..@.....
+00 00 40 00 00 00 00 00  // ..@.....
+d0 15 00 00 00 00 00 00  // ........
+d0 15 00 00 00 00 00 00  // ........
+00 00 20 00 00 00 00 00  // .. .....`;
+
+const supportsCustomHighlight = canUseCustomHighlight();
+
+interface FallbackLine {
+  hexPart: string;
+  commentPart: string;
+}
+
+interface FallbackSegment {
+  text: string;
+  className?: 'fallback-green' | 'fallback-red';
+}
+
+const fallbackLines: FallbackLine[] = elfDump.split('\n').map(line => {
+  const divider = '  // ';
+  const dividerIndex = line.indexOf(divider);
+
+  if (dividerIndex < 0) {
+    return { hexPart: line, commentPart: '' };
+  }
+
+  return {
+    hexPart: line.slice(0, dividerIndex),
+    commentPart: line.slice(dividerIndex + divider.length)
+  };
+});
+
+function getFallbackHexSegments(hexPart: string): FallbackSegment[] {
+  const tokenRegex = /(7f 45 4c 46|\bb7\b)/g;
+  const segments: FallbackSegment[] = [];
+  let lastIndex = 0;
+
+  for (const match of hexPart.matchAll(tokenRegex)) {
+    if (match.index === undefined) {
+      continue;
+    }
+
+    if (match.index > lastIndex) {
+      segments.push({ text: hexPart.slice(lastIndex, match.index) });
+    }
+
+    segments.push({
+      text: match[0],
+      className: match[0] === 'b7' ? 'fallback-red' : 'fallback-green'
+    });
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < hexPart.length) {
+    segments.push({ text: hexPart.slice(lastIndex) });
+  }
+
+  return segments;
+}
+
+/**
+ * ブラウザがCSSのカスタムハイライト機能をサポートしているかどうかをチェックする関数。
+ * Function to check if the browser supports CSS custom highlights.
+ */
+function canUseCustomHighlight(): boolean {
+  return typeof CSS !== 'undefined' && 'highlights' in CSS && typeof Highlight !== 'undefined';
+}
+
+/**
+ * CSSのカスタムハイライトをクリアする関数。サポートされていない場合は何もしない。
+ * Function to clear CSS custom highlights. Does nothing if not supported.
+ */
+function clearHighlights(): void {
+  if (!canUseCustomHighlight()) {
+    return;
+  }
+
+  for (const name of HIGHLIGHT_NAMES) {
+    CSS.highlights.delete(name);
+  }
+}
+
+/**
+ * 指定されたテキストノードにハイライトを適用する関数。
+ * Applies highlights to the specified text node.
+ * @param name  ハイライトの名前。CSSで定義された名前と一致する必要がある。/ Name of the highlight. Must match the name defined in CSS.
+ * @param textNode  ハイライトを適用するテキストノード。/ The text node to apply the highlight to.
+ * @param source  ハイライトの対象となる文字列。/ The string to be highlighted.
+ * @param pattern  ハイライトのパターン。正規表現で指定する。/ The pattern for the highlight. Specified as a regular expression.
+ */
+function applyHighlight(name: string, textNode: Text, source: string, pattern: RegExp): void {
+  const highlight = new Highlight();
+
+  for (const match of source.matchAll(pattern)) {
+    if (match.index === undefined) {
+      continue;
+    }
+
+    const range = new Range();
+    range.setStart(textNode, match.index);
+    range.setEnd(textNode, match.index + match[0].length);
+    highlight.add(range);
+  }
+
+  CSS.highlights.set(name, highlight);
+}
+
+/**
+ * CSSのカスタムハイライトをセットアップする関数。ブラウザがサポートしていない場合は何もしない。
+ * Function to set up CSS custom highlights. Does nothing if the browser does not support it.
+ */
+function setupHighlights(): void {
+  if (!canUseCustomHighlight() || !preRef.value) {
+    return;
+  }
+
+  const textNode = preRef.value.firstChild;
+  if (!(textNode instanceof Text)) {
+    return;
+  }
+
+  clearHighlights();
+
+  // .ELFのマジックナンバーとヘッダを緑色
+  // .ELF magic number and header in green
+  applyHighlight('elf-green', textNode, elfDump, /7f 45 4c 46|\.ELF/g);
+  // コメント部分を青色
+  // Comments in blue
+  applyHighlight('elf-blue', textNode, elfDump, /\/\//g);
+  // アーキテクチャを示す部分を赤色。ここではaarch64を示す0xB7をハイライトしている。
+  // The part indicating the architecture in red. Here, 0xB7 is highlighted, which indicates aarch64.
+  applyHighlight('elf-red', textNode, elfDump, /\bb7\b/g);
+  // メモリのアドレスやデータを表す部分は明るい灰色
+  // Addresses and data are in light gray
+  applyHighlight('elf-gray', textNode, elfDump, /\b40|@\b/g);
+}
 
 function onScroll() {
   // 力付くでパララックス・スクロール
@@ -9,50 +174,48 @@ function onScroll() {
   offsetY.value = -window.scrollY * 0.1;
 }
 
-onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }));
-onUnmounted(() => window.removeEventListener('scroll', onScroll));
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true });
+  if (supportsCustomHighlight) {
+    setupHighlights();
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll);
+  clearHighlights();
+});
 </script>
 
 <template>
   <aside class="position-fixed top-0 left-0 w-100 z-n1">
     <pre
+      v-if="supportsCustomHighlight"
+      ref="preRef"
       :style="{ transform: `translateY(${offsetY}px)` }"
       class="m-3 overflow-hidden"
-    ><span style="color: var(--color-green)">7f 45 4c 46</span> 02 01 01 00  <span style="color: var(--color-blue)">//</span> <span style="color:var(--color-green)">.ELF</span>....
-00 00 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ........
-<span style="color: var(--color-red)">b7</span> 00 3e 00 01 00 00 00  <span style="color: var(--color-blue)">//</span> <span style="color: var(--color-red)">.</span>.&gt;.....
-50 18 <span style="color: var(--bs-gray-300)">40</span> 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> P.<span style="color: var(--bs-gray-200)">@</span>.....
-<span style="color: var(--bs-gray-300)">40</span> 00 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> <span style="color: var(--bs-gray-200)">@</span>.......
-b8 b5 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ........
-00 00 00 00 <span style="color: var(--bs-gray-300)">40</span> 00 38 00  <span style="color: var(--color-blue)">//</span> ....<span style="color: var(--bs-gray-200)">@</span>.8.
-09 00 <span style="color: var(--bs-gray-300)">40</span> 00 20 00 1f 00  <span style="color: var(--color-blue)">//</span> ..<span style="color: var(--bs-gray-200)">@</span>. ...
-06 00 00 00 05 00 00 00  <span style="color: var(--color-blue)">//</span> ........
-<span style="color: var(--bs-gray-300)">40</span> 00 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> <span style="color: var(--bs-gray-200)">@</span>.......
-<span style="color: var(--bs-gray-300)">40</span> 00 <span style="color: var(--bs-gray-300)">40</span> 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> <span style="color: var(--bs-gray-200)">@</span>.<span style="color: var(--bs-gray-200)">@</span>.....
-<span style="color: var(--bs-gray-300)">40</span> 00 <span style="color: var(--bs-gray-300)">40</span> 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> <span style="color: var(--bs-gray-200)"><span style="color: var(--bs-gray-200)">@</span></span>.<span style="color: var(--bs-gray-200)">@</span>.....
-01 00 00 00 06 00 00 00  <span style="color: var(--color-blue)">//</span> ........
-00 00 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ........
-00 00 <span style="color: var(--bs-gray-300)">40</span> 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ..<span style="color: var(--bs-gray-200)">@</span>.....
-00 00 <span style="color: var(--bs-gray-300)">40</span> 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ..<span style="color: var(--bs-gray-200)">@</span>.....
-d0 15 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ........
-d0 15 00 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> ........
-00 00 20 00 00 00 00 00  <span style="color: var(--color-blue)">//</span> .. .....</pre>
-    <!-- こういうのは、やっぱりテキストで見た方がわかりやすいよね。 --- IGNORE -->
-    <!-- ちなみに、ELFはバイナリ形式の実行ファイルで、ヘッダにはマジックナンバー（7f 45 4c 46）が含まれている。 --- IGNORE -->
-    <!-- そして、ELFのヘッダには、ファイルの種類やアーキテクチャ、エントリーポイントのアドレスなどの情報が含まれている。 --- IGNORE -->
-    <!-- ここでは、ELFのヘッダの最初の16バイトをハイライトしてみた。 --- IGNORE -->
-    <!-- 例えば、7f 45 4c 46は、ELFファイルのマジックナンバーで、これがあることでファイルがELF形式であることがわかる。 --- IGNORE -->
-    <!-- そして、02は、ELFのクラスを示していて、これは64ビットのELFファイルであることを意味する。 --- IGNORE -->
-    <!-- 赤色のb7は、アーキテクチャを示していて、これはaarch64を意味する。 --- IGNORE -->
-    <!-- さてこのバイナリには、致命的な嘘があるけど気づいたかな？ --- IGNORE -->
-
-    <!-- By the way, ELF is a binary format for executable files, and the header contains a magic number (7f 45 4c 46). --- IGNORE -->
-    <!-- The ELF header contains information such as the file type, architecture, and entry point address. --- IGNORE -->
-    <!-- Here, I highlighted the first 16 bytes of the ELF header. --- IGNORE -->
-    <!-- For example, 7f 45 4c 46 is the magic number of an ELF file, which indicates that the file is in ELF format. --- IGNORE -->
-    <!-- And 02 indicates the ELF class, which means this is a 64-bit ELF file. --- IGNORE -->
-    <!-- The red b7 indicates the architecture, which means aarch64. --- IGNORE -->
-    <!-- Now, can you spot the fatal lie in this binary? --- IGNORE -->
+      >{{ elfDump }}</pre
+    >
+    <pre
+      v-else
+      :style="{ transform: `translateY(${offsetY}px)` }"
+      class="m-3 overflow-hidden"
+    >
+      <template
+        v-for="(line, lineIndex) in fallbackLines"
+        :key="`fallback-line-${lineIndex}`"
+      >
+        <template
+          v-for="(segment, segmentIndex) in getFallbackHexSegments(line.hexPart)"
+          :key="`fallback-segment-${lineIndex}-${segmentIndex}`"
+        >
+          <span v-if="segment.className" :class="segment.className">{{ segment.text }}</span>
+          <template v-else>{{ segment.text }}</template>
+        </template>
+        <span v-if="line.commentPart" class="fallback-blue">  // {{ line.commentPart }}</span>
+        <template v-if="lineIndex < fallbackLines.length - 1">{{ '\n' }}</template>
+      </template>
+    </pre>
   </aside>
 </template>
 
@@ -79,5 +242,33 @@ aside {
     font-size: 3rem;
     line-height: 1.1;
   }
+}
+
+:global(::highlight(elf-green)) {
+  color: var(--color-green);
+}
+
+:global(::highlight(elf-blue)) {
+  color: var(--color-blue);
+}
+
+:global(::highlight(elf-red)) {
+  color: var(--color-red);
+}
+
+:global(::highlight(elf-gray)) {
+  color: var(--bs-gray-300);
+}
+
+:global(.fallback-green) {
+  color: var(--color-green);
+}
+
+:global(.fallback-blue) {
+  color: var(--color-blue);
+}
+
+:global(.fallback-red) {
+  color: var(--color-red);
 }
 </style>

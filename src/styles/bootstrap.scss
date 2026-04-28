@@ -21,6 +21,8 @@ $color-ghost-red: rgba(255, 20, 60);
 $color-ghost-green: rgba(30, 255, 30, 0.85);
 $color-ghost-blue: rgba(30, 80, 255, 0.85);
 
+$color-cover-gray: rgba(33, 37, 41, 0.5);
+
 :root {
   --konpeki-deep: #{$konpeki-deep};
   --hud-cyan: #{$hud-cyan};
@@ -36,6 +38,8 @@ $color-ghost-blue: rgba(30, 80, 255, 0.85);
   --color-ghost-red: #{$color-ghost-red};
   --color-ghost-green: #{$color-ghost-green};
   --color-ghost-blue: #{$color-ghost-blue};
+
+  --color-cover-gray: #{$color-cover-gray};
 
   --font-ocra: 'ocra';
   --font-lubri: 'WDXL Lubrifont JP N';
