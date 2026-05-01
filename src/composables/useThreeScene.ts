@@ -16,8 +16,6 @@ import type { ThreeSceneOptions } from '@/interfaces/ThreeSceneOptions';
 import fragmentShader from '@/shader/fragmentShader.glsl';
 import vertexShader from '@/shader/vertexShader.glsl';
 
-console.log('[useThreeScene] Imported shaders:', { fragmentShader, vertexShader });
-
 /**
  * Three.js シーン・カメラ・レンダラー・アニメーションループ・リサイズ対応
  * @param canvasRef 対象のcanvasタグ
@@ -93,17 +91,6 @@ export function useThreeScene(
     // Initial size (falls back to window size if it's 0 when hidden)
     const initW = canvas.clientWidth || window.innerWidth;
     const initH = canvas.clientHeight || window.innerHeight;
-    /*
-    console.log('[useThreeScene] Canvas mounted:', {
-      canvasRef: canvas,
-      clientWidth: canvas.clientWidth,
-      clientHeight: canvas.clientHeight,
-      initW,
-      initH,
-      offsetParent: canvas.offsetParent,
-      computedStyle: window.getComputedStyle(canvas)
-    });
-    */
 
     // カメラの設定。 -- IGNORE
     // The camera settings. -- IGNORE
@@ -167,12 +154,6 @@ export function useThreeScene(
 
     // グリッチをシェーダーで実装する。 -- IGNORE
     // Implementing glitch with shaders. -- IGNORE
-    console.log('[useThreeScene] Creating ShaderPass with:', {
-      vsLength: vertexShader.length,
-      fsLength: fragmentShader.length,
-      vsPreview: vertexShader.substring(0, 50),
-      fsPreview: fragmentShader.substring(0, 50)
-    });
     /**
      * [THE_ARCHITECT_LOGIC]
      * Total stability is a mathematical impossibility.
@@ -192,7 +173,6 @@ export function useThreeScene(
       // "Runaway" and "Hallucination" are not something to be prevented, but should be "allocated" as part of the system. --- IGNORE ---
       fragmentShader
     });
-    console.log('[useThreeScene] ShaderPass created:', glitchPass);
     composer.addPass(glitchPass);
 
     // 色空間変換を明示しないと、ポストプロセス経由で色が簡単に迷子になる。

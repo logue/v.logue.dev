@@ -9,7 +9,6 @@ export const useAssetLoader = () => {
    * @returns ArrayBuffer
    */
   const fetchFile = async (path: string): Promise<ArrayBuffer> => {
-    console.log(`Fetching asset from ${path}...`);
     // パスセグメントごとにエンコードしてスラッシュ区切りを保持する
     const encodedPath = path.split('/').map(encodeURIComponent).join('/');
     const res = await fetch(`/api/assets/${encodedPath}`);
@@ -29,8 +28,6 @@ export const useAssetLoader = () => {
     path: string,
     targetFileName: string
   ): Promise<ArrayBuffer> => {
-    console.log(`Fetching and decompressing motion from ${path}...`);
-
     // ホワイトリスト：ディレクトリトラバーサル防止。ファイル名のみ許可。 -- IGNORE
     // Allowlist: Prevent directory traversal. Only filenames allowed. -- IGNORE
     if (!/^[a-zA-Z0-9_\-.]+$/.test(targetFileName)) {

@@ -58,7 +58,6 @@ export function useVrmLoader(
     vrmaZipBuffer: ArrayBuffer,
     vrmaFileName: string
   ): Promise<THREE.AnimationMixer | null> {
-    console.log('Setting up VRM animation...');
     // ZIP をメモリ内で展開して VRMA を取り出す。fetchは不要。 -- IGNORE
     // Decompress ZIP in memory and extract VRMA. No fetch needed. -- IGNORE
 
@@ -91,7 +90,6 @@ export function useVrmLoader(
     const vrmaUrl = URL.createObjectURL(vrmaBlob);
 
     const vrmaGltf = (await loader.loadAsync(vrmaUrl)) as GLTF;
-    console.log('VRMA loaded and parsed:', vrmaGltf);
 
     const vrmAnimations = vrmaGltf.userData.vrmAnimations;
     if (vrmAnimations && vrmAnimations.length > 0) {
@@ -119,36 +117,35 @@ export function useVrmLoader(
     vrmaZipBuffer: ArrayBuffer,
     vrmaFile?: string
   ): Promise<void> {
-    let gltf: GLTF;
     try {
-      gltf = (await loader.loadAsync(vrmUrl)) as GLTF;
-    } catch (e) {
-      console.error('[useVrmLoader] loadAsync failed:', e);
+      let gltf: GLTF;
+      try {
+        gltf = (await loader.loadAsync(vrmUrl)) as GLTF;
+      } catch (e) {
+        console.error('[useVrmLoader] loadAsync failed:', e);
+        return;
+      }
+
+      // 知ってた？ VRM モデルは glTF のサブセットで、中身は JSON なんだぜ。 -- IGNORE
+      // Did you know? The VRM model is a subset of glTF, and its contents are JSON. -- IGNORE
+      const loadedVrm: VRM = gltf.userData.vrm;
+      if (!loadedVrm) {
+        console.error('VRM not found in gltf.userData.vrm');
+        return;
+      }
+
+      pivot.add(loadedVrm.scene);
+      vrm.value = loadedVrm;
+
+      // VRM ロード完了後にデフォルトアニメーションを自動起動する
+      setupAnimation(loadedVrm, loader, vrmaZipBuffer, vrmaFile ?? vrma_file)
+        .then(m => {
+          mixer.value = m ?? null;
+        })
+        .catch(console.error);
+    } finally {
       isLoading.value = false;
-      return;
     }
-
-    // 知ってた？ VRM モデルは glTF のサブセットで、中身は JSON なんだぜ。 -- IGNORE
-    // Did you know? The VRM model is a subset of glTF, and its contents are JSON. -- IGNORE
-    const loadedVrm: VRM = gltf.userData.vrm;
-    if (!loadedVrm) {
-      console.error('VRM not found in gltf.userData.vrm');
-      isLoading.value = false;
-      return;
-    }
-
-    pivot.add(loadedVrm.scene);
-    vrm.value = loadedVrm;
-
-    // VRM ロード完了後にデフォルトアニメーションを自動起動する
-    setupAnimation(loadedVrm, loader, vrmaZipBuffer, vrmaFile ?? vrma_file)
-      .then(m => {
-        mixer.value = m ?? null;
-      })
-      .catch(console.error);
-
-    isLoading.value = false;
-    console.log('ELF_LOADED');
   }
 
   /**
