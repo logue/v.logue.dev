@@ -195,13 +195,18 @@ const links: SocialLink[] = [
     icon: 'simple-icons:vroid'
   },
   {
-    // まだアカウントは作ってないけど、VRChatもそのうち追加しようと思ってる --- IGNORE ---
-    // I haven't created an account for it yet, but I plan to add VRChat eventually --- IGNORE ---
-    name: 'VRChat',
-    url: 'https://vrchat.com/home/user?id=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-    icon: 'simple-icons:vrchat'
+    name: 'booth',
+    url: 'https://ubiquity.booth.pm',
+    icon: 'simple-icons:booth'
   },
   */
+  {
+    // ついに、VRChat始めてしまい、その後速攻でワールドもアップしてしまっｔ。 --- IGNORE ---
+    // Finally, I started VRChat and uploaded my world immediately. --- IGNORE ---
+    name: 'VRChat',
+    url: 'https://vrchat.com/home/user/usr_ccf8cafc-05b5-4124-856d-5653f0964439',
+    icon: 'simple-icons:vrchat'
+  },
   {
     // ここもあまり更新してないけど、たまに何か書いてる --- IGNORE ---
     // I don't update it much, but I occasionally write something --- IGNORE ---
@@ -279,3 +284,5 @@ onMounted(() => {
     drop-shadow(0 0 8px var(--hud-cyan));
 }
 </style>
+<!-- JUST 真夏の夜の淫夢 （ｗ --- IGNORE -->
+<!-- JUST A Midsummer Night's Wet Dream (lol  --- IGNORE -->

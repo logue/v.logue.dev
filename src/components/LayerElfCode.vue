@@ -91,8 +91,7 @@ onUnmounted(() => {
       ref="preRef"
       :style="{ transform: `translateY(${offsetY}px)` }"
       class="m-3 overflow-hidden"
-      >{{ elfDump }}</pre
-    >
+      >{{ elfDump }}</pre>
     <pre v-else :style="{ transform: `translateY(${offsetY}px)` }" class="m-3 overflow-hidden">
       <template
         v-for="(line, lineIndex) in fallbackLines"
