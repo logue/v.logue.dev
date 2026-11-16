@@ -1,6 +1,5 @@
 import { onMounted, onUnmounted, type Ref } from 'vue';
 
-import { VRM } from '@pixiv/three-vrm';
 import * as THREE from 'three';
 // パスにexamplesが含まれているのは謎すぎる。 --- IGNORE ---
 // It's really strange that the path includes examples. --- IGNORE ---
@@ -16,21 +15,29 @@ import vertexShader from '@/shader/vertexShader.glsl';
 
 import type { ThreeSceneOptions } from '@/interfaces/ThreeSceneOptions';
 
+export interface UseThreeSceneParams {
+  /** 回転の中心となるオブジェクト。シーンに追加される / Pivot object added to the scene */
+  pivot: THREE.Object3D;
+  /**
+   * 毎フレーム呼ばれる更新処理。VRM やミキサーの更新はここで行う。
+   * Per-frame update callback. Update the VRM and mixer here.
+   */
+  onFrame?: (delta: number) => void;
+  /** グリッチの強度源となるビート強度 (0.0 - 1.0) / Beat intensity driving the glitch (0.0 - 1.0) */
+  getBeatIntensity?: () => number;
+  /** シーン設定オプション / Scene options */
+  options?: ThreeSceneOptions;
+}
+
 /**
  * Three.js シーン・カメラ・レンダラー・アニメーションループ・リサイズ対応
+ * Three.js scene, camera, renderer, animation loop, and resize handling.
  * @param canvasRef 対象のcanvasタグ
- * @param pivot 回転の中心となるオブジェクト
- * @param getVrm VRMモデルを取得する関数
- * @param getMixer アニメーションミキサーを取得する関数
- * @param options シーン設定オプション
+ * @param params シーンの依存関係と設定
  */
 export function useThreeScene(
-  canvasRef: Ref<HTMLCanvasElement | null>,
-  pivot: THREE.Object3D,
-  getVrm: () => VRM | null,
-  getMixer: () => THREE.AnimationMixer | null,
-  getBeatIntensity: () => number,
-  options: ThreeSceneOptions = {}
+  canvasRef: Readonly<Ref<HTMLCanvasElement | null>>,
+  { pivot, onFrame, getBeatIntensity = () => 0, options = {} }: UseThreeSceneParams
 ) {
   const {
     position = { x: 0, y: 0.5, z: 9 },
@@ -202,8 +209,7 @@ export function useThreeScene(
       }
 
       /** アニメーションの更新 */
-      getMixer()?.update(delta);
-      getVrm()?.update(delta);
+      onFrame?.(delta);
       composer.render();
     };
     update();

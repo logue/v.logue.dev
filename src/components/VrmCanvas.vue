@@ -1,105 +1,69 @@
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 
 import * as THREE from 'three';
 
-import { useAssetLoader } from '@/composables/useAssetLoader';
 import { useDragRotation } from '@/composables/useDragRotation';
 import { useThreeScene } from '@/composables/useThreeScene';
 import { useVrmLoader } from '@/composables/useVrmLoader';
+import { fetchAsset, resolveVrmUrl } from '@/services/assetLoader';
 import { useAppStore } from '@/stores/useAppStore';
 
-interface Props {
+const { vrm, zip, vrma } = defineProps<{
   /** VRM ファイルのパスもしくはID / VRM file path or ID */
   vrm: string;
   /** VRMA ZIP ファイルのパス / VRMA ZIP file path */
   zip: string;
   /** ZIP 内の VRMA ファイルパス / VRMA file path inside the ZIP */
   vrma: string;
-}
+}>();
 
-/** 3Dオブジェクトのピボット / Pivot of the 3D object */
-const pivot = new THREE.Object3D();
-/** プロップ / Props */
-const props = defineProps<Props>();
-/** 親方向バインディング / Parent direction binding */
+/**
+ * ロード処理が（成否に関わらず）終わったら通知する。失敗してもサイトは開けたいので。
+ * Notifies once loading has settled, success or not. The site should open even on failure.
+ */
 const emit = defineEmits<{
   ready: [];
 }>();
 
+/** 3Dオブジェクトのピボット / Pivot of the 3D object */
+const pivot = new THREE.Object3D();
 /** VRMを表示するキャンバスの参照 / Reference to the canvas displaying the VRM */
-const canvasRef = ref<HTMLCanvasElement | null>(null);
-/** VRMのロード状態。ロード完了まではローディング表示をするために使う。 / VRM loading state. Used to display loading until the load is complete. */
-const isLoading = ref(true);
-/** VRMファイルのURL。APIから取得する。 / VRM file URL. Obtained from the API. */
-const vrmFileUrl = computed<string>(() => {
-  // VRMプロップが直接VRMファイルのパスを持っている場合と、VRM IDを持っている場合の両方に対応する。
-  // 詳細はfunctions/api/vrm/[avatar_id].ts を参照。 --- IGNORE ---
-  // Supports both cases where the VRM prop directly holds the path to the VRM file and where it holds a VRM ID.
-  // For details, see functions/api/vrm/[avatar_id].ts. --- IGNORE ---
-  const vrm = props.vrm;
-  return vrm.endsWith('.vrm') ? `/api/assets/${vrm}` : `/api/vrm/${vrm}`;
-});
+const canvasRef = useTemplateRef<HTMLCanvasElement>('canvas');
 
-const { vrm, mixer, load } = useVrmLoader(props.vrma, pivot, isLoading);
-const { fetchFile } = useAssetLoader();
 const store = useAppStore();
+const { vrm: model, mixer, load } = useVrmLoader(vrma, pivot);
 
-const { getCamera } = useThreeScene(
-  canvasRef,
+const { getCamera } = useThreeScene(canvasRef, {
   pivot,
-  () => vrm.value,
-  () => mixer.value,
-  () => store.audioMgr.getBeatIntensity(),
-  {
+  onFrame: delta => {
+    mixer.value?.update(delta);
+    model.value?.update(delta);
+  },
+  getBeatIntensity: store.getBeatIntensity,
+  options: {
     position: { x: 0, y: 0.5, z: 7 },
     ambientLight: { color: 0xf8f9fa, intensity: 1.2 },
     directionalLight: { color: 0xfffde7, intensity: 1 },
     directionalLightPosition: { x: 0, y: 1, z: 2 },
     perspectiveCamera: { fov: 15, near: 0.1, far: 20 }
   }
-);
+});
 useDragRotation(canvasRef, pivot, getCamera);
 
 onMounted(async () => {
   // API から VRM URL を取得しつつ、VRMA ZIP を並列でフェッチする。
   // Fetch VRM URL from API while downloading the VRMA ZIP in parallel.
   try {
-    const [apiRes, vrmaZipBuffer] = await Promise.all([
-      fetch(vrmFileUrl.value),
-      fetchFile(props.zip)
-    ]);
-
-    if (!apiRes.ok) {
-      const body = await apiRes.text();
-      console.error('[VrmCanvas] VRM API failed:', apiRes.status, body.slice(0, 200));
-      isLoading.value = false;
-      emit('ready');
-      return;
+    const [vrmSource, vrmaZipBuffer] = await Promise.all([resolveVrmUrl(vrm), fetchAsset(zip)]);
+    try {
+      await load(vrmSource.url, vrmaZipBuffer, vrma);
+    } finally {
+      vrmSource.release();
     }
-
-    // Check if the response is JSON (VRoid Hub API) or binary (asset server)
-    const contentType = apiRes.headers.get('Content-Type') ?? '';
-
-    let vrmUrl: string;
-    if (contentType.includes('application/json')) {
-      // VRoid Hub API から JSON レスポンスを取得する場合
-      // Getting JSON response from VRoid Hub API
-      const { url: apiUrl } = (await apiRes.json()) as { url: string };
-      vrmUrl = apiUrl;
-    } else {
-      // アセットサーバーから直接 VRM バイナリを取得する場合
-      // Using binary VRM from asset server directly
-      const vrmBlob = await apiRes.blob();
-      vrmUrl = URL.createObjectURL(vrmBlob);
-    }
-
-    await load(vrmUrl, vrmaZipBuffer, props.vrma);
-    emit('ready');
   } catch (e) {
     console.error('[VrmCanvas] init failed:', e);
-    isLoading.value = false;
+  } finally {
     emit('ready');
   }
 });
@@ -108,7 +72,7 @@ onMounted(async () => {
 <template>
   <!-- ここには、自分のアバターが表示される。 -->
   <!-- This is where my avatar is displayed. -->
-  <canvas ref="canvasRef" class="mx-auto vrm-canvas"></canvas>
+  <canvas ref="canvas" class="mx-auto vrm-canvas"></canvas>
 </template>
 
 <style scoped>

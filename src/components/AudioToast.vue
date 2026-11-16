@@ -1,21 +1,18 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import { Icon } from '@iconify/vue';
 
 import { useAppStore } from '@/stores/useAppStore';
 
 const appStore = useAppStore();
 
-/**
- * 再生/一時停止をトグルする
- * Toggle play/pause
- */
-async function togglePlayback() {
-  if (appStore.isAudioPlaying) {
-    await appStore.pauseAudio();
-  } else {
-    await appStore.resumeAudio();
-  }
-}
+/** 再生状態に応じた表示内容 / Display content derived from playback state */
+const playback = computed(() =>
+  appStore.isAudioPlaying
+    ? { title: 'Pause', icon: 'bi:pause-fill', status: 'NOW PLAYING' }
+    : { title: 'Play', icon: 'bi:play-fill', status: 'PAUSED' }
+);
 </script>
 
 <template>
@@ -25,24 +22,25 @@ async function togglePlayback() {
       aria-label="Audio controls"
     >
       <button
-        :title="appStore.isAudioPlaying ? 'Pause' : 'Play'"
+        :aria-label="playback.title"
+        :title="playback.title"
         class="audio-control btn btn-primary inline-flex align-items-center justify-content-center rounded-circle"
         type="button"
-        @click="togglePlayback"
+        @click="appStore.toggleAudio()"
       >
-        <Icon :icon="appStore.isAudioPlaying ? 'bi:pause-fill' : 'bi:play-fill'" />
+        <Icon :icon="playback.icon" />
       </button>
       <div class="audio-toast-content">
         <div class="audio-toast-header d-flex align-items-center" style="color: var(--arasaka-red)">
           <Icon icon="bi:music-note-beamed" class="me-2" />
-          <strong class="me-auto">{{ appStore.isAudioPlaying ? 'NOW PLAYING' : 'PAUSED' }}</strong>
+          <strong class="me-auto">{{ playback.status }}</strong>
         </div>
         <div class="audio-toast-body overflow-hidden text-truncate">
           speaking anything ya
           <!-- 曲名がハードコーディングされているのは、自分が作曲者だからなのだ。-->
           <!-- The music title is hardcoded because I'm the composer. -->
-          <!--eslint-disable-next-line vuejs-accessibility/anchor-has-content -->
           <a
+            aria-label="SoundCloud"
             href="https://soundcloud.com/logue256/sets/bgm?si=5a4a228532a24e8c8ad96140f3d120b2&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
             target="_blank"
             rel="noopener noreferrer"

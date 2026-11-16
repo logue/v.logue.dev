@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+const { header, label, detail } = defineProps<{
   header: string;
   label: string;
   detail: string;
@@ -9,9 +9,9 @@ const props = defineProps<{
 <template>
   <div class="card">
     <div class="card-body">
-      <h3 class="card-title h5 font-lubri opacity-50">{{ props.header }}</h3>
-      <div class="fw-bold">{{ props.label }}</div>
-      <div class="small opacity-75">{{ props.detail }}</div>
+      <h3 class="card-title h5 font-lubri opacity-50">{{ header }}</h3>
+      <div class="fw-bold">{{ label }}</div>
+      <div class="small opacity-75">{{ detail }}</div>
     </div>
   </div>
   <!-- ただのBoostrapのカードコンポーネント。 -->

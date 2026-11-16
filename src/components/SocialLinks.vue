@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 
 import { Icon } from '@iconify/vue';
 import { Tooltip } from 'bootstrap';
@@ -235,17 +235,27 @@ const links: SocialLink[] = [
   }
 ];
 
+const listRef = useTemplateRef<HTMLUListElement>('list');
+let tooltips: Tooltip[] = [];
+
 onMounted(() => {
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  tooltipTriggerList.forEach(el => new Tooltip(el));
+  // ページ全体ではなく、このコンポーネント内のリンクだけを対象にする。
+  // Only target links inside this component, not the whole document.
+  const triggers = listRef.value?.querySelectorAll('[data-bs-toggle="tooltip"]') ?? [];
+  tooltips = Array.from(triggers, el => new Tooltip(el));
+});
+
+onUnmounted(() => {
+  for (const tooltip of tooltips) tooltip.dispose();
+  tooltips = [];
 });
 </script>
 
 <template>
-  <!-- eslint-disable vuejs-accessibility/anchor-has-content -->
-  <ul class="list-inline mb-0">
-    <li v-for="(link, index) in links" :key="index" class="list-inline-item mx-2">
+  <ul ref="list" class="list-inline mb-0">
+    <li v-for="link in links" :key="link.url" class="list-inline-item mx-2">
       <a
+        :aria-label="link.name"
         :data-bs-title="link.name"
         :href="link.url"
         :title="link.name"

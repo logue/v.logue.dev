@@ -9,12 +9,6 @@ import { useAppStore } from '@/stores/useAppStore';
 const vrm = String(import.meta.env.VITE_VROID_AVATAR_ID);
 const store = useAppStore();
 
-const onVrmReady = () => {
-  // App 側へイベントを投げるのをやめて、ストア経由で状態共有する。
-  // No more bubbling to App; share readiness through store instead.
-  store.setVrmReady(true);
-};
-
 // ここに書いてあるのは、いわゆる「実績」的なもの。 --- IGNORE
 // What is written here is so-called "accomplishments". --- IGNORE
 const accomplishments = [
@@ -49,8 +43,10 @@ const accomplishments = [
       :vrm="vrm"
       zip="VRMA_MotionPack.zip"
       vrma="VRMA_MotionPack/vrma/VRMA_01.vrma"
-      @ready="onVrmReady"
+      @ready="store.markVrmSettled"
     />
+    <!-- App 側へイベントを投げるのをやめて、ストア経由で状態共有する。 -->
+    <!-- No more bubbling to App; share readiness through store instead. -->
     <!-- A E S T H E T I C S -->
 
     <!-- 「エルフ」という亜人のアバターを使うこと自体が、リアリティを廃する行為だ。 -- IGNORE -->

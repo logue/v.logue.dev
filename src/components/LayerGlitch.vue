@@ -1,29 +1,19 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed } from 'vue';
 
-const props = defineProps<{ bgsrc: string }>();
+const { bgsrc } = defineProps<{
+  /** 背景画像の URL / Background image URL */
+  bgsrc: string;
+}>();
 
-const scrollY = ref(0);
-/**
- * 脳筋実装。スクロールイベントをリッスンして、スクロール量をリアルタイムで更新する。
- * もっとも、この場合の「脳筋」は本来の意味とは逆だが。
- * A musclehead implementation. Listen to scroll events and update the scroll amount in real time.
- * In this case, "musclehead" is actually the opposite of its original meaning.
- */
-const handleScroll = () => {
-  scrollY.value = window.scrollY;
-};
-
-onMounted(() => window.addEventListener('scroll', handleScroll));
-onUnmounted(() => window.removeEventListener('scroll', handleScroll));
+const backgroundStyle = computed(() => ({
+  backgroundImage: `linear-gradient(var(--color-cover-gray), var(--color-cover-gray)), url(${bgsrc})`
+}));
 </script>
 
 <template>
   <aside class="position-fixed top-0 left-0 w-100 h-100 z-n1 overflow-hidden">
-    <div
-      :style="`background-image: linear-gradient(var(--color-cover-gray), var(--color-cover-gray)), url(${props.bgsrc});`"
-      class="glitch position-relative overflow-hidden w-100 h-100"
-    >
+    <div :style="backgroundStyle" class="glitch position-relative overflow-hidden w-100 h-100">
       <div class="channel r top-0 left-0 right-0 bottom-0"></div>
       <div class="channel g top-0 left-0 right-0 bottom-0"></div>
       <div class="channel b top-0 left-0 right-0 bottom-0"></div>

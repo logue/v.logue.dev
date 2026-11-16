@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted, onUnmounted, shallowRef } from 'vue';
 
-import { useAssetLoader } from '@/composables/useAssetLoader';
+import { fetchAsset } from '@/services/assetLoader';
+
+/** シャッターが開くアニメーションの長さ (ms)。CSS の transition と揃えること。 / Shutter animation length (ms). Keep in sync with the CSS transition. */
+const OPENING_DURATION = 800;
 
 /**
  * オーディオファイルのパスだけ受け取る。VRM 関連は VrmCanvas の仕事になった。
  * Only receives the audio file path. VRM stuff is now VrmCanvas's problem.
  */
-const props = defineProps<{
-  /** アセットサーバー上のオーディオファイルパス */
+const { audio, ready = false } = defineProps<{
+  /** アセットサーバー上のオーディオファイルパス / Audio file path on the asset server */
   audio: string;
-  /** オーディオと VRM 両方の準備が完了したかどう */
+  /** オーディオと VRM 両方の準備が完了したかどうか / Whether both audio and VRM are ready */
   ready?: boolean;
 }>();
 
@@ -19,21 +22,19 @@ const props = defineProps<{
  * Audio fetch done → buffer to parent. ACCESS pressed → tell it to disappear.
  */
 const emit = defineEmits<{
-  (e: 'loaded', audio: ArrayBuffer): void;
-  (e: 'access'): void;
+  loaded: [audio: ArrayBuffer];
+  access: [];
 }>();
 
-const isLoading = ref(true);
-const isOpening = ref(false);
-
-const { fetchFile } = useAssetLoader();
+const isLoading = shallowRef(true);
+const isOpening = shallowRef(false);
+let openingTimer: ReturnType<typeof setTimeout> | undefined;
 
 onMounted(async () => {
   // オーディオだけ取りに行く。VRM は向こうが勝手に取ってくる。
   // Only fetching audio. VRM fetches itself over there.
   try {
-    const audio = await fetchFile(props.audio);
-    emit('loaded', audio);
+    emit('loaded', await fetchAsset(audio));
     isLoading.value = false;
   } catch (e) {
     // 404 など失敗したら静かに消える。叫んでも誰も聞いてない。
@@ -43,15 +44,18 @@ onMounted(async () => {
   }
 });
 
+onUnmounted(() => clearTimeout(openingTimer));
+
 /**
  * システムをオンラインにする。カバーを消して本体を露わにする。
  * Bring the system online. Remove the cover and reveal the main body.
  */
 const handleAccess = () => {
+  if (isOpening.value) return;
   isOpening.value = true;
   // アニメーションが終わったらカバーを消す。これもユーザーには見えてないところで静かに行われる。
   // After the animation ends, remove the cover. This also happens quietly, out of sight of the user.
-  setTimeout(() => emit('access'), 800);
+  openingTimer = setTimeout(() => emit('access'), OPENING_DURATION);
 };
 </script>
 
@@ -109,7 +113,11 @@ const handleAccess = () => {
         <!-- どうせ見えないから、アニメーション中もシステムが起動している感を出すために、背景にグリッドを重ねる。 -->
         <!-- The user grants ACCESS here. -->
         <!-- Since it's invisible anyway, layering a grid in the background to give a sense of the system being active even during the animation. -->
-        <button class="access-button btn btn-outline-danger btn-lg" @click="handleAccess">
+        <button
+          class="access-button btn btn-outline-danger btn-lg"
+          type="button"
+          @click="handleAccess"
+        >
           [ ACCESS ]
         </button>
       </div>

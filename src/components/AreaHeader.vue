@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 
-const isOpen = ref(false);
+const isOpen = shallowRef(false);
 </script>
 
 <template>
   <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">.ELF_LOADED</a>
+        <RouterLink class="navbar-brand" to="/">.ELF_LOADED</RouterLink>
         <button
           :aria-expanded="isOpen"
           class="navbar-toggler"
@@ -19,14 +19,10 @@ const isOpen = ref(false);
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div
-          id="navbarCollapse"
-          :class="isOpen ? 'collapse show' : 'collapse'"
-          class="navbar-collapse"
-        >
+        <div id="navbarCollapse" :class="{ show: isOpen }" class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto mb-2 mb-md-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">HOME</a>
+              <RouterLink class="nav-link" active-class="active" to="/">HOME</RouterLink>
             </li>
             <li class="nav-item"><a class="nav-link" href="https://github.com/logue">GITHUB</a></li>
             <li class="nav-item"><a class="nav-link" href="https://x.com/logue256">X_LOG</a></li>

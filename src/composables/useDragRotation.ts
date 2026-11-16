@@ -21,7 +21,7 @@ const ROTATE_SPEED = 0.01;
  * @param getCamera カメラを返す関数 (ズーム・リセット用) / Function returning the camera (for zoom/reset)
  */
 export function useDragRotation(
-  canvasRef: Ref<HTMLCanvasElement | null>,
+  canvasRef: Readonly<Ref<HTMLCanvasElement | null>>,
   pivot: THREE.Object3D,
   getCamera?: () => THREE.PerspectiveCamera | undefined
 ) {

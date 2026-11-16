@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, shallowRef, useTemplateRef } from 'vue';
 
 import { useTextHighlights, type TextHighlightMap } from '@/composables/useTextHighlights';
 
@@ -7,8 +7,9 @@ import { useTextHighlights, type TextHighlightMap } from '@/composables/useTextH
  * パララックス効果を実現するためのオフセット値と、ELFダンプを表示するpre要素への参照。
  * Offset value for parallax effect and reference to the pre element displaying the ELF dump.
  */
-const offsetY = ref(0);
-const preRef = ref<HTMLElement | null>(null);
+const offsetY = shallowRef(0);
+const preRef = useTemplateRef<HTMLElement>('pre');
+const parallaxStyle = computed(() => ({ transform: `translateY(${offsetY.value}px)` }));
 
 /**
  * 実はLinuxのExecutable and Linkable Format (ELF) のヘッダのダンプ。 --- IGNORE ---
@@ -88,11 +89,11 @@ onUnmounted(() => {
   <aside class="position-fixed top-0 left-0 w-100 z-n1">
     <pre
       v-if="supportsCustomHighlight"
-      ref="preRef"
-      :style="{ transform: `translateY(${offsetY}px)` }"
+      ref="pre"
+      :style="parallaxStyle"
       class="m-3 overflow-hidden"
       >{{ elfDump }}</pre>
-    <pre v-else :style="{ transform: `translateY(${offsetY}px)` }" class="m-3 overflow-hidden">
+    <pre v-else :style="parallaxStyle" class="m-3 overflow-hidden">
       <template
         v-for="(line, lineIndex) in fallbackLines"
         :key="`fallback-line-${lineIndex}`"
