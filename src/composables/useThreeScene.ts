@@ -9,12 +9,12 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
-import type { ThreeSceneOptions } from '@/interfaces/ThreeSceneOptions';
-
 // シェーダーのインポート。 --- IGNORE ---
 // Importing shaders. --- IGNORE ---
 import fragmentShader from '@/shader/fragmentShader.glsl';
 import vertexShader from '@/shader/vertexShader.glsl';
+
+import type { ThreeSceneOptions } from '@/interfaces/ThreeSceneOptions';
 
 /**
  * Three.js シーン・カメラ・レンダラー・アニメーションループ・リサイズ対応

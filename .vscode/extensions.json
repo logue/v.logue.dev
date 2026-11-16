@@ -1,5 +1,11 @@
 {
   "recommendations": [
-    "Vue.volar"
-  ]
+    "EditorConfig.EditorConfig",
+    "ms-playwright.playwright",
+    "oxc.oxc-vscode",
+    "vitest.explorer",
+    "Vue.volar",
+    "VoidZero.vite-plus-extension-pack"
+  ],
+  "unwantedRecommendations": ["biomejs.biome", "dbaeumer.vscode-eslint"]
 }

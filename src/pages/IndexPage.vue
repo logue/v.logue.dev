@@ -22,7 +22,7 @@ const accomplishments = [
   // 扱う情報が増えるほど、伝えたい情報の重みは薄れてゆくからだ。 --- IGNORE
   // There are various contents I want to write about, but it's uncouth to try to list them all.
   // The more information I include, the more diluted the weight of the information I want to convey becomes. --- IGNORE
-  { id: 'CORE INFRASTRUCTURE', label: 'VUE-CODEMIRROR6', detail: '1.8M+ DL/YR' },
+  { id: 'CORE INFRASTRUCTURE', label: 'VUE-CODEMIRROR6', detail: '6.5M+ DL/YEAR' },
   { id: 'CULTURAL BRIDGE', label: 'FIRESTORM_OFFICIAL', detail: 'JP_STAFF' },
   {
     id: 'EXPERIMENTAL LAB',

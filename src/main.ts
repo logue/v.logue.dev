@@ -1,3 +1,6 @@
+import '@/styles/fonts.css';
+import '@/styles/bootstrap.scss';
+
 /**
  * [SYSTEM_PROLOGUE]
  * * "As you can see, we've had our eye on you for some time now, Mr. Anderson."
@@ -14,15 +17,13 @@
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
-import { addCollection } from '@iconify/vue';
 // Bundle Iconify icon sets for offline use
 import biIcons from '@iconify-json/bi/icons.json';
 import simpleIcons from '@iconify-json/simple-icons/icons.json';
+import { addCollection } from '@iconify/vue';
 
-import App from './App.vue';
-import router from './router';
-import './styles/fonts.css';
-import './styles/bootstrap.scss';
+import App from '@/App.vue';
+import router from '@/router';
 
 addCollection(biIcons);
 addCollection(simpleIcons);

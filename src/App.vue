@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+// 画像はインポートして URL を得るスタイル。パラメータはスタイルシートでも流用。 --IGNORE
+// Images are imported to get their URLs. The parameter is also used in stylesheets. --IGNORE
+import bgsrc from '@/assets/bg.jpeg';
+import { useAppStore } from '@/stores/useAppStore';
+
 import AreaFooter from './components/AreaFooter.vue';
 import AreaHeader from './components/AreaHeader.vue';
 import AudioToast from './components/AudioToast.vue';
@@ -8,11 +13,6 @@ import LayerElfCode from './components/LayerElfCode.vue';
 import LayerGlitch from './components/LayerGlitch.vue';
 import LayerScanline from './components/LayerScanline.vue';
 import PageCover from './components/PageCover.vue';
-
-// 画像はインポートして URL を得るスタイル。パラメータはスタイルシートでも流用。 --IGNORE
-// Images are imported to get their URLs. The parameter is also used in stylesheets. --IGNORE
-import bgsrc from '@/assets/bg.jpeg';
-import { useAppStore } from '@/stores/useAppStore';
 
 const store = useAppStore();
 
