@@ -40,3 +40,7 @@ minimumReleaseAgeExclude:
 # If you use rust, comment out bellow:
 # cargo:
 #  enabled: true
+
+permissions:
+  taze:
+    skills: true
