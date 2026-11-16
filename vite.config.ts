@@ -70,9 +70,9 @@ export default defineConfig(({ command, mode }): UserConfig => {
       // vite-plugin-checker
       // https://github.com/fi3ework/vite-plugin-checker
       checker({
-        typescript: true
+        typescript: true,
         // vueTsc: true,
-        // oxlint: true,
+        oxlint: true
       }),
       // Cloudflare Workers (dev only: provides miniflare bindings via vite dev server)
       // Excluded during build to avoid adding Workers Assets config that conflicts with Pages projects.

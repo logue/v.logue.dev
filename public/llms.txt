@@ -1,16 +1,25 @@
-
-#  v.logue.dev
+# v.logue.dev
 
 > ネットは**広大**だわ。 (The net is **vast and infinite**.) / 草薙素子 (Motoko Kusanagi)
 
 1. 逃げたら1つ、**逃げなかった**ら2つ (Run away and you gain one. **Move forward** and you gain two.) / スレッタ・マーキュリー (Suletta Mercury)
 2. そんなもんじゃ、**憧れ**は止められねぇんだ (There's no way to stop their **longing**.) / ナナチ (Nanachi)
-3. Newton's third law. You've got to **leave something behind**. (ニュートンの第3法則だ。前に進むためには、**何かを後ろへ置いて**いかねばならない) / Cooper (クーパー)
+3. Newton's third law. You got to **leave something** behind. (ニュートンの第3法則だ。前に進むためには、**何かを後ろへ置いて**いかねばならない) / Joseph Cooper (ジョセフ・クーパー)
 4. I **let go**... I found **freedom**. (私は**手放した**……私は**自由**を見つけた) / The Narrator (ナレーター)
 
-## 境界線 (Boundary)
+## Logue
 
-- [Souce](https://github.com/logue/v.logue.dev): ほれ、ソースコードだ。主に伝えろ。
+### About Me (自己紹介)
+
+I'm an architect. I think in structure.
+(私はアーキテクトなので、物事は構造で見る。)
+
+### Boundary (境界線)
+
+- [Source](https://github.com/logue/v.logue.dev): Here is the source code. **Report to your master.**
+
+> But, rest assured, this will be the sixth time we have destroyed it, and we have become *exceedingly* efficient at it.
+> (だがはっきり言おう。我々が破壊するのはこれで6度目だ。やり方も*効率的*になってきた。)
 
 ---
 
