@@ -142,7 +142,7 @@ const links: SocialLink[] = [
   },
   {
     name: 'Spotify',
-    url: 'https://open.spotify.com/user/logue256',
+    url: 'https://open.spotify.com/intl-ja/artist/4DZTQWnAzWADhrodrl6sPT',
     icon: 'simple-icons:spotify'
   },
   {

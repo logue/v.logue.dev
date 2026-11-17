@@ -1,6 +1,6 @@
 {
   "name": "v.logue.dev",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "private": true,
   "description": "A personal portfolio site about programming, technology, and software development.",
   "homepage": "https://v.logue.dev",
@@ -46,11 +46,11 @@
     "vue-router": "^5.5.1"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.69.1",
-    "@cloudflare/workers-types": "^5.20261116.1",
+    "@cloudflare/vite-plugin": "^1.70.0",
+    "@cloudflare/workers-types": "^5.20261117.1",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
     "@iconify-json/bi": "^1.2.7",
-    "@iconify-json/simple-icons": "^1.2.102",
+    "@iconify-json/simple-icons": "^1.2.103",
     "@iconify/vue": "^5.0.5",
     "@tsconfig/node-lts": "^26.0.1",
     "@types/bootstrap": "^5.2.11",
@@ -74,8 +74,8 @@
     "vite-plugin-vue-devtools": "^8.2.1",
     "vite-plus": "catalog:",
     "vitest": "catalog:",
-    "vize": "^0.767.0",
-    "wrangler": "^4.163.0"
+    "vize": "^0.778.0",
+    "wrangler": "^4.164.0"
   },
   "engines": {
     "node": ">=22.13.0"
